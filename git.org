@@ -1,0 +1,8 @@
+* Case Senstive
+Windows and MacOSX are case-insenstive, Linux is case-senstive
+* Amend the last commit
+  git commit --amend -m ""
+* push to a remote branch
+  git push -u origin branch
+* delete a branch
+git branch -d <branch name>
