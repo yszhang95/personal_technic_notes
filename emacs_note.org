@@ -198,7 +198,7 @@ screen column.
 ** unix-like
    In unix-like terminal, you can try
    #+NAME: EmacsClient-in-terminal
-   #+BEGIN_SRC: sh
+   #+BEGIN_SRC sh
    $emacs --daemon
    $emacsclient -c file # open in a window
    #emacsclient -t file # open in terminal
@@ -208,9 +208,9 @@ screen column.
    In windows, I did not figure out how to open cygwin-built emacs via --daemon
    I can successfully open emacs via --daemon with windows-built emacs.
    Firstly create a shortcut with
-   src_sh{c:\path\to\emacs\bin\emacsclientw.exe -c -n -a runemacs.exe}
+   src_sh[:exports code]{c:\path\to\emacs\bin\emacsclientw.exe -c -n -a runemacs.exe}
    #+NAME: EmacsClient-in-windows
-   #+begin_src: sh
+   #+begin_src sh
    $cd /path/to/emacs
    $runemacs --daemon
    #+end_src

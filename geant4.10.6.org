@@ -9,7 +9,7 @@ Sections follow the same order in the userguide.
   instructions required to set up Geant4 in your computing
   environment.
 ** What I did
-  On MacOS, I execute in terminal src_sh{sudo port install geant4}.
+  On MacOS, I execute in terminal src_sh[:exports code]{sudo port install geant4}.
 * An example
 ** A main() program
 *** Source code
