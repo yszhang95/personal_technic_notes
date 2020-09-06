@@ -1,0 +1,56 @@
+All of the following are based on
+[[rmail:http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/fo/BookForApplicationDevelopers.pdf][Geant4.10.6BookForApplicationDevelopers]].
+Sections follow the same order in the userguide.
+
+* Installation
+** Instructions from official website
+  You can begin installing Geant4 by downloading the [[https://cern.ch/geant4/support/download][code]] from the
+  distribution page. Next, consult the Installation [[http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/InstallationGuide/html/][Guide]] for the
+  instructions required to set up Geant4 in your computing
+  environment.
+** What I did
+  On MacOS, I execute in terminal src_sh{sudo port install geant4}.
+* An example
+** A main() program
+*** Source code
+ #+name: simplest-example-of-main
+ #+begin_src c++
+ #include "G4RunManager.hh"
+ #include "G4UImanager.hh"
+ #include "ExG4DetectorConstruction01.hh"
+ #include "ExG4PhysicsList00.hh"
+ #include "ExG4ActionInitialization01.hh"
+ int main()
+ {
+   // construct the default run manager
+   G4RunManager* runManager = new G4RunManager;
+   // set mandatory initialization classes
+   // ExG4DetectorConstruction0 is user initialization of
+   // detector setup, including its geometry,
+   // the materials used in its construction,
+   // a definition of its sensitive regions and
+   // the readout schemes of the sensitive regions.
+   // ExG4DetectorConstruction0 is derived from G4VUserDetectorConstruction
+   runManager->SetUserInitialization(new ExG4DetectorConstruction01);
+   // ExG4PhysicsList0 is a user class derived from G4VUserPhysicsList
+   //
+   runManager->SetUserInitialization(new ExG4PhysicsList00);
+   runManager->SetUserInitialization(new ExG4ActionInitialization01);
+   // initialize G4 kernel
+   runManager->Initialize();
+   // get the pointer to the UI manager and set verbosities
+   G4UImanager* UI = G4UImanager::GetUIpointer();
+   UI->ApplyCommand("/run/verbose 1");
+   UI->ApplyCommand("/event/verbose 1");
+   UI->ApplyCommand("/tracking/verbose 1");
+   // start a run
+   int numberOfEvent = 3; runManager->BeamOn(numberOfEvent);
+   // job termination
+   delete runManager;
+   return 0;
+ }
+ #+end_src
+*** G4RunManager
+    It must be created. It controls the flow the program and manages the
+    event loop(s) within a run. It cannot be used multi-threadedly. Use
+    G4MTRunManager instead
