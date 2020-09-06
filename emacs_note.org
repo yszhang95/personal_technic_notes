@@ -15,17 +15,17 @@
     C-x k buffer <RET>    Kill buffer buffer (kill-buffer).
     M-x kill-some-buffers Offer to kill each buffer, one by one.
     M-x kill-matching-buffers
-        Offer to kill all buffers matching a regular expression. 
+        Offer to kill all buffers matching a regular expression.
 
 ** Commands
 *** Repeat counts
-M-8 other commands
-C-u 8 other commands
-eg. M-8 C-f
-exceptions, C-u 8 C-v only scrolls by 8 lines, not screens
+    M-8 other commands
+    C-u 8 other commands
+    eg. M-8 C-f
+    exceptions, C-u 8 C-v only scrolls by 8 lines, not screens
 
 *** To quit a partially entered command
- type C-g
+    type C-g
 
 *** Disabled commands
     If you really want to try the command, type <SPC> (the Space bar) in
@@ -66,10 +66,10 @@ exceptions, C-u 8 C-v only scrolls by 8 lines, not screens
 *** <ESC> <ESC> <ESC>
     That is an all-purpose "get out" command.  You can also use it for
     eliminating extra windows, and getting out of the minibuffer.
- 
+
 ** Windows
    C-x 1   One window (i.e., kill all other windows)
-   
+
 ** Movements
 *** View next (previous) screen
     C-v, M-v
@@ -92,10 +92,10 @@ exceptions, C-u 8 C-v only scrolls by 8 lines, not screens
 *** <DEL>, "Backspace", C-d, M-d, M-<DEL>, c-k, M-k
     <DEL>        Delete the character just before the cursor
     C-d          Delete the next character after the cursor
-    
+
     M-<DEL>      Kill the word immediately before the cursor
     M-d          Kill the next word after the cursor
-    
+
     C-k          Kill from the cursor position to end of line
     M-k          Kill to the end of the current sentence
 
@@ -111,7 +111,7 @@ exceptions, C-u 8 C-v only scrolls by 8 lines, not screens
 *** Undo  C-/, C-_, C-x u
 *** Completion
     Can be found in the manual Completion. It helps enter arguments.
-    
+
 *** Dired
     Dired makes an Emacs buffer containing a listing of a directory, and
     optionally some of its subdirectories as well. The Dired buffer is
@@ -192,21 +192,51 @@ screen column.
 
 *** Dired
 
+* Emacs client
+  [[https://www.emacswiki.org/emacs/EmacsClient][EmacsClient]]
+
+** unix-like
+   In unix-like terminal, you can try
+   #+NAME: EmacsClient-in-terminal
+   #+BEGIN_SRC: sh
+   $emacs --daemon
+   $emacsclient -c file # open in a window
+   #emacsclient -t file # open in terminal
+   #+END_SRC
+
+** windows
+   In windows, I did not figure out how to open cygwin-built emacs via --daemon
+   I can successfully open emacs via --daemon with windows-built emacs.
+   Firstly create a shortcut with
+   src_sh{c:\path\to\emacs\bin\emacsclientw.exe -c -n -a runemacs.exe}
+   #+NAME: EmacsClient-in-windows
+   #+begin_src: sh
+   $cd /path/to/emacs
+   $runemacs --daemon
+   #+end_src
+   Double click the shortcut.
+
 * desktop
 ** bookmark
-'desktop-path' is searched to find a desktop file to load.
-if you use Bookmark+,
-then you have any number of desktops and use them as bookmarks,
-jumping from one to another at anytime.
-You create a desktop bookmark using 'C-x r K'
-(command 'bmkp-set-desktop-bookmark')
+   'desktop-path' is searched to find a desktop file to load.
+   if you use Bookmark+,
+   then you have any number of desktops and use them as bookmarks,
+   jumping from one to another at anytime.
+   You create a desktop bookmark using 'C-x r K'
+   (command 'bmkp-set-desktop-bookmark')
 * org mode
 ** deadline
- C-c C-d
+   C-c C-d
 ** link
-C-c C-l or \[\[link\]\[description\]] or \[link\],
-I add \ to indicate it is []
+   C-c C-l or \[\[link\]\[description\]] or \[link\],
+   I add \ to indicate it is []
 ** add a new header
-on cygwin, C-<RET>, otherwise, M-<RET>
+   on cygwin, C-<RET>, otherwise, M-<RET>
+** Code blocks
+   [[https://orgmode.org/manual/Structure-of-Code-Blocks.html][CodeBlocks]]
+** Structure templates
+   [[https://orgmode.org/manual/Structure-Templates.html#Structure-Templates][StructureTemplates]]
+   C-c C-,
+
 ** Alternative keys for arrows
-[[https://orgmode.org/manual/TTY-Keys.html][Using Org on a TTY]]
+   [[https://orgmode.org/manual/TTY-Keys.html][Using Org on a TTY]]
