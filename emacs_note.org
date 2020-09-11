@@ -15,7 +15,7 @@
     C-x k buffer <RET>    Kill buffer buffer (kill-buffer).
     M-x kill-some-buffers Offer to kill each buffer, one by one.
     M-x kill-matching-buffers
-        Offer to kill all buffers matching a regular expression.
+    Offer to kill all buffers matching a regular expression.
 
 ** Commands
 *** Repeat counts
@@ -131,20 +131,20 @@
 
 ** Terms
 *** electric
-The <Return> key is special, in that pressing it may do more than
-just insert a Newline character.  Depending on the surrounding text,
-it may insert whitespace after the Newline character, so that when
-you start typing on the newly created line, the text lines up with
-that on the previous line.  We call this behavior (where pressing a
-key does more than simply inserting the relevant character) "electric".
+    The <Return> key is special, in that pressing it may do more than
+    just insert a Newline character.  Depending on the surrounding text,
+    it may insert whitespace after the Newline character, so that when
+    you start typing on the newly created line, the text lines up with
+    that on the previous line.  We call this behavior (where pressing a
+    key does more than simply inserting the relevant character) "electric".
 
 *** "continued" line
- If you're using a
-graphical display, little curved arrows appear in the narrow spaces on
-each side of the text area (the left and right "fringes"), to indicate
-where a line has been continued.  If you're using a text terminal, the
-continued line is indicated by a backslash ('\') on the rightmost
-screen column.
+    If you're using a
+    graphical display, little curved arrows appear in the narrow spaces on
+    each side of the text area (the left and right "fringes"), to indicate
+    where a line has been continued.  If you're using a text terminal, the
+    continued line is indicated by a backslash ('\') on the rightmost
+    screen column.
 
 *** kill, delete and yank
     The difference between "killing" and "deleting" is that "killed" text
@@ -215,6 +215,11 @@ screen column.
    $runemacs --daemon
    #+end_src
    Double click the shortcut.
+** kill
+   #+begin_src sh
+$emacsclient -e '(kill-emacs)' # or try below
+$emacsclient -e '(client-save-kill-emacs)'
+   #+end_src
 
 * desktop
 ** bookmark
@@ -224,6 +229,17 @@ screen column.
    jumping from one to another at anytime.
    You create a desktop bookmark using 'C-x r K'
    (command 'bmkp-set-desktop-bookmark')
+* ivy and swiper
+  [[https://oremacs.com/swiper/][IvyUserManual]]
+** Started
+   M-x ivy-mode
+** Key bindings
+*** Global key bindings
+    C-c g is overloaed by prelude as prelude-google
+    C-c m is undefined by prelude-emacs
+    A lot of global key bindings are overloaded or undefined by prelude.
+    Check later.
+*** Minibuffer key bindings
 * org mode
 ** deadline
    C-c C-d
