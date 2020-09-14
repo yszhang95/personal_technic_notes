@@ -1,31 +1,31 @@
 * Basic
 ** Files
 *** Find a file
-    C-x C-f   Find a file
+    =C-x C-f=   Find a file
 *** Save a file
-    C-x C-s   Save the file
+    =C-x C-s=   Save the file
 *** to end the Emacs session
-    type C-x C-c.
+    type =C-x C-c=.
 ** BUFFERS
 *** List, switch and save buffers
-    C-x C-b list buffers
-    C-x b switch to a buffer
-    C-x s save some buffers
-    [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Buffer.html][Kill-Buffer]]
-    C-x k buffer <RET>    Kill buffer buffer (kill-buffer).
-    M-x kill-some-buffers Offer to kill each buffer, one by one.
-    M-x kill-matching-buffers
-    Offer to kill all buffers matching a regular expression.
+    - =C-x C-b= list buffers
+    - =C-x b= switch to a buffer
+    - =C-x s= save some buffers
+    - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Buffer.html][Kill-Buffer]]
+      * =C-x k buffer <RET>=    Kill buffer buffer (kill-buffer).
+      * =M-x kill-some-buffers= Offer to kill each buffer, one by one.
+      * =M-x kill-matching-buffers= Offer to kill all buffers
+        matching a regular expression.
 
 ** Commands
 *** Repeat counts
-    M-8 other commands
-    C-u 8 other commands
-    eg. M-8 C-f
-    exceptions, C-u 8 C-v only scrolls by 8 lines, not screens
+    - =M-8 other commands=
+    - =C-u 8 other commands=
+      - eg. =M-8 C-f=
+      - exceptions, =C-u 8 C-v= only scrolls by 8 lines, not screens
 
 *** To quit a partially entered command
-    type C-g
+    type =C-g=
 
 *** Disabled commands
     If you really want to try the command, type <SPC> (the Space bar) in
@@ -33,82 +33,79 @@
     disabled command, answer the question with "n".
 
 *** Extending the command set
-    C-x     Character eXtend.  Followed by one character.
-    M-x     Named command eXtend.  Followed by a long name.
-
-    C-x C-f         Find file
-    C-x C-s         Save file
-    C-x s           Save some buffers
-    C-x C-b         List buffers
-    C-x b           Switch buffer
-    C-x C-c         Quit Emacs
-    C-x 1           Delete all but one window
-    C-x u           Undo
-
-    M-x replace-string
+    - =C-x=     Character eXtend.  Followed by one character.
+      * =C-x C-f=         Find file
+      * =C-x C-s=         Save file
+      * =C-x s=           Save some buffers
+      * =C-x C-b=         List buffers
+      * =C-x b=           Switch buffer
+      * =C-x C-c=         Quit Emacs
+      * =C-x 1=           Delete all but one window
+      * =C-x u=           Undo
+    - =M-x=     Named command eXtend.  Followed by a long name.
+      * =M-x replace-string=
 
 *** C-z
-    C-z is the command to exit Emacs *temporarily*--so that you can go
+    =C-z= is the command to exit Emacs *temporarily*--so that you can go
     back to the same Emacs session afterward.  When Emacs is running on a
     text terminal, C-z "suspends" Emacs; that is, it returns to the shell
     but does not destroy the Emacs job.  In the most common shells, you
     can resume Emacs with the "fg" command or with "%emacs".
 
 *** Set margin size
-    C-x f
+    =C-x f=
 
 *** Re-fill inside the middle of a paragraph
-    M-q
+    =M-q=
 
 *** Searching
-    C-s, forward search, C-r, reverse search
+    =C-s=, forward search, =C-r=, reverse search
 
-*** <ESC> <ESC> <ESC>
+*** =<ESC> <ESC> <ESC>=
     That is an all-purpose "get out" command.  You can also use it for
     eliminating extra windows, and getting out of the minibuffer.
 
 ** Windows
-   C-x 1   One window (i.e., kill all other windows)
+   =C-x 1=   One window (i.e., kill all other windows)
 
 ** Movements
 *** View next (previous) screen
-    C-v, M-v
-*** C-l
+    =C-v=, =M-v=
+*** =C-l=
     Clear screen and redisplay all the text,
     moving the text around the cursor
     to the center of the screen.
     (That's CONTROL-L, not CONTROL-1.)
-*** C-b, C-p, C-f, C-n, M-b, M-f
-    Backward, previous line, foward, next line, no M-p nor M-n
+*** =C-b=, =C-p=, =C-f=, =C-n=, =M-b=, =M-f=
+    Backward, previous line, forward, next line, no M-p nor M-n
 *** C-a, C-e, M-a, M-e
     beginning or end of a line / sentence.
 *** M-<, M->
-    M-< (META Less-than),
-    which moves to the beginning of the whole text, and M-> (META
+    =M-<= (META Less-than),
+    which moves to the beginning of the whole text, and =M->= (META
     Greater-than), which moves to the end of the whole text.
     On most terminals, the "<" is above the comma, so you must use the
     shift key to type it.
 ** Edit
 *** <DEL>, "Backspace", C-d, M-d, M-<DEL>, c-k, M-k
-    <DEL>        Delete the character just before the cursor
-    C-d          Delete the next character after the cursor
+    - =<DEL>=        Delete the character just before the cursor
+    - =C-d=          Delete the next character after the cursor
 
-    M-<DEL>      Kill the word immediately before the cursor
-    M-d          Kill the next word after the cursor
+    - =M-<DEL>=      Kill the word immediately before the cursor
+    - =M-d=          Kill the next word after the cursor
 
-    C-k          Kill from the cursor position to end of line
-    M-k          Kill to the end of the current sentence
+    - =C-k=          Kill from the cursor position to end of line
+    - =M-k=          Kill to the end of the current sentence
 
 *** Cut, copy and paste
     [[https://www.emacswiki.org/emacs/CopyAndPaste][CopyAndPaste]]
-    Mark the beginning, C-<SPC>.
-    Move to the end.
-    C-w (kill-region) or M-w (Kill-ring-save)
-    Move to the place you want to paste
-    C-y (yank)
-    M-y yank more previous kills.
+    1. Mark the beginning, =C-<SPC>=.
+    2. Move to the end.
+    3. =C-w= (kill-region) or =M-w= (Kill-ring-save)
+    4. Move to the place you want to paste
+    5.=C-y= (yank), =M-y= yank more previous kills.
 
-*** Undo  C-/, C-_, C-x u
+*** Undo  =C-/=, =C-_=, =C-x u=
 *** Completion
     Can be found in the manual Completion. It helps enter arguments.
 
@@ -121,13 +118,13 @@
      C-x d
 
 ** HELP
-   C-h ? or M-x help or <F1>
-   C-h c or C-h k and a command character or sequence
-   C-h f Describe a function.  You type in the name of the function.
-   C-h v displays the documentation of variables
-   C-h i        Read included Manuals (a.k.a. Info).
-   C-h a
-   C-h r read manuals
+   =C-h ?= or =M-x help= or =<F1>=
+   =C-h c= or =C-h k= and a command character or sequence
+   =C-h f= Describe a function.  You type in the name of the function.
+   =C-h v= displays the documentation of variables
+   =C-h i=        Read included Manuals (a.k.a. Info).
+   =C-h a=
+   =C-h r= read manuals
 
 ** Terms
 *** electric
@@ -155,39 +152,39 @@
 *** AUTO SAVE and recover
     For example, if your file is named "hello.c", its auto save
     file's name is "#hello.c#".
-    you can recover your auto-saved editing by
+    You can recover your auto-saved editing by
     finding the file normally (the file you were editing, *not* the auto
-    save file) and then typing M-x recover-this-file <Return>.
+    save file) and then typing =M-x recover-this-file <Return>=.
 *** ECHO AREA
     If Emacs sees that you are typing multicharacter commands slowly, it
     shows them to you at the bottom of the screen in an area called the
     "echo area".  The echo area contains the bottom line of the screen.
 *** MODE LINE
     e.g
-    -:**-  TUTORIAL       63% L749    (Fundamental)
+    =-:**-  TUTORIAL       63% L749    (Fundamental)=
 *** Major modes
     e.g. fundamental
-    C-h m, To view documentation on your current major mode
-    M-x modes you want
+    =C-h m=, To view documentation on your current major mode.
+    =M-x modes you want=
 *** Minor modes
-    e.g. auto fill
-    M-x auto-fill-mode
+    e.g. auto fill,
+    =M-x auto-fill-mode=
 *** Frames
-    C-x 2 which splits the screen into two windows
-    C-M-v or <ESC> C-v, scroll down the other window
-    C-x o  to switch between the windows
-    C-x 1 kill others except the one I am in
-    C-x 3 splits the screen into two, vertically
-    Type C-x 4 C-f followed by the name of one of your files.
-    End with <Return>.  See the specified file appear in the bottom
-    window.  The cursor goes there, too.
+    - =C-x 2= which splits the screen into two windows
+    - =C-M-v= or =<ESC> C-v=, scroll down the other window
+    - =C-x o=  to switch between the windows
+    - =C-x 1= kill others except the one I am in
+    - =C-x 3= splits the screen into two, vertically
+    - Type =C-x 4 C-f= followed by the name of one of your files.
+      End with =<Return>=.  See the specified file appear in the bottom
+      window.  The cursor goes there, too.
 *** RECURSIVE EDITING LEVELS
     This is indicated by square brackets in the mode line,
     surrounding the parentheses around the major mode name.  For
     example, you might see [(Fundamental)] instead of (Fundamental).
-    To get out of the recursive editing level, type <ESC> <ESC> <ESC>.
-    You cannot use C-g to get out of a recursive editing level.  This is
-    because C-g is used for canceling commands and arguments *WITHIN* the
+    To get out of the recursive editing level, type =<ESC> <ESC> <ESC>=.
+    You cannot use =C-g= to get out of a recursive editing level.  This is
+    because =C-g= is used for canceling commands and arguments *WITHIN* the
     recursive editing level.
 
 *** Dired
@@ -227,32 +224,94 @@ $emacsclient -e '(client-save-kill-emacs)'
    if you use Bookmark+,
    then you have any number of desktops and use them as bookmarks,
    jumping from one to another at anytime.
-   You create a desktop bookmark using 'C-x r K'
+   You create a desktop bookmark using =C-x r K=
    (command 'bmkp-set-desktop-bookmark')
 * ivy and swiper
   [[https://oremacs.com/swiper/][IvyUserManual]]
 ** Started
-   M-x ivy-mode
+   =M-x ivy-mode=
 ** Key bindings
 *** Global key bindings
-    C-c g is overloaed by prelude as prelude-google
-    C-c m is undefined by prelude-emacs
+    =C-c g= is overloaed by prelude as prelude-google
+    =C-c m= is undefined by prelude-emacs
     A lot of global key bindings are overloaded or undefined by prelude.
     Check later.
 *** Minibuffer key bindings
 * org mode
 ** deadline
-   C-c C-d
+   =C-c C-d=
 ** link
-   C-c C-l or \[\[link\]\[description\]] or \[link\],
-   I add \ to indicate it is []
+   =C-c C-l= or =[[link][description]]= or =[link]=,
 ** add a new header
-   on cygwin, C-<RET>, otherwise, M-<RET>
+   on cygwin,=C-<RET>=, otherwise, =M-<RET>=
 ** Code blocks
-   [[https://orgmode.org/manual/Structure-of-Code-Blocks.html][CodeBlocks]]
+   [[https://orgmode.org/manual/Structure-of-Code-Blocks.html][CodeBlocks]],
+   you can also use ==%s== for inline codes.
 ** Structure templates
    [[https://orgmode.org/manual/Structure-Templates.html#Structure-Templates][StructureTemplates]]
-   C-c C-,
-
+   =C-c C-,=
 ** Alternative keys for arrows
    [[https://orgmode.org/manual/TTY-Keys.html][Using Org on a TTY]]
+
+** Bullet list
+   [[https://orgmode.org/manual/Plain-Lists.html][Plain-Lists]]
+   - Unordered, start with '-', '+' or '*'
+   - Ordered, start with '1.' or '1)' or '[@20]'. Alphabets are
+     allowed, see more on the link.
+   - Description, used like
+     src_org[:exports code]{- Elijah Wood :: He plays Frodo}.
+
+** Export
+*** Commands
+    =C-c C-e= and then other options.
+*** Code blocks
+    [[https://orgmode.org/manual/Languages.html#Languages][Languages]] and [[https://orgmode.org/manual/Using-Header-Arguments.html#Using-Header-Arguments][Header arguments]].
+    - inline, use ==%s== or =src_<language>[header arguments]{codes}=.
+      A useful example, =src_latex[:exports code]{$\alpha$}=.
+    - Use =#+begin_src <language>[<header arguments>]{<body>} #+end_src= and
+      =[header arguments]= is optional. To insert these, use =C-c, C-,=.
+*** Latex
+    Here are examples
+    1. Normally insert latex codes
+    #+begin_src latex
+      The radius of the sun is R_sun = 6.96 x 10^8 m.  On the other
+      hand, the radius of Alpha Centauri is R_{Alpha Centauri} = 1.28 x
+      R_{sun}.
+
+      \begin{equation}                        % arbitrary environments,
+      x=\sqrt{b}                              % even tables, figures
+      \end{equation}                          % etc
+
+      If $a^2=b$ and \( b=2 \), then the solution must be
+      either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
+    #+end_src
+    2. Headers and sectioning structures, [[https://orgmode.org/manual/LaTeX-header-and-sectioning.html][link]]
+       #+begin_src org
+       #+LATEX_CLASS_OPTIONS: [a4paper,11pt,twoside,twocolumn]
+       #+LATEX_CLASS: article
+       #+LATEX_CLASS_OPTIONS: [a4paper]
+       #+LATEX_HEADER: \usepackage{xyz}
+       * Headline 1
+         some text
+       * Headline 2
+         some more text
+       #+end_src
+    3. Quoting, [[https://orgmode.org/manual/Quoting-LaTeX-code.html#Quoting-LaTeX-code][link]]
+       - Inserting in-line quoted with @ symbols: =Code embedded
+         in-line @@latex:any arbitrary LaTeX code@@ in a paragraph.=
+       - Inserting as one or more keyword lines in the Org file:
+         =#+LATEX: any arbitrary LaTeX code=
+       - Inserting as an export block in the Org file, where the
+         back-end exports any code between begin and end markers:
+         #+begin_src org
+         #+BEGIN_EXPORT latex
+           any arbitrary LaTeX code
+         #+END_EXPORT
+         #+end_src
+
+** Paragraphs
+   Paragraphs are separated by at least one empty line. Regarding formats:
+   VERSE, QUOTE and CENTER,
+   details can be found in [[https://orgmode.org/guide/Paragraphs.html#Paragraphs][Paragraphs]].
+** Evaluating code blocks
+   [[https://orgmode.org/manual/Evaluating-Code-Blocks.html][link]]
