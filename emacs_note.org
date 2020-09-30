@@ -315,3 +315,14 @@ $emacsclient -e '(client-save-kill-emacs)'
    details can be found in [[https://orgmode.org/guide/Paragraphs.html#Paragraphs][Paragraphs]].
 ** Evaluating code blocks
    [[https://orgmode.org/manual/Evaluating-Code-Blocks.html][link]]
+* Compilation
+** C++
+*** Simplest codes
+    =M-x compile= and then clean commands, type in =g++ hello_world.cpp=.
+* TRAMP
+** cleanup
+   [[https://www.gnu.org/software/emacs/manual/html_node/tramp/Cleanup-remote-connections.html][Cleanup-remote-connections]]
+   - =tramp-cleanup-connection=
+   - =tramp-cleanup-this-connection=
+   - =tramp-cleanup-all-connections=
+   - =tramp-cleanup-all-buffers=
