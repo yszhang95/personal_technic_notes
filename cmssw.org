@@ -1,0 +1,94 @@
+* EDM (Event Data Model framework) standalone utilities
+** edmFileUtil
+   to find the physical file name (PFN)
+   where the file is actually stored at your site,
+   given the logical file name (LFN) which is an alias
+   that can be used in CMSSW at any site.
+** edmDumpEventContent
+   to dump a summary of the products that are contained within the
+   file we're interested in
+** emdProvDump
+   print out all the tracked parameters used to create the data file
+** edmEventSize
+   to determine the size of different branches in the data file
+
+* AOD Format
+
+* Global Tag
+** config on the DAS
+** mtd MC campaing
+* CMSSW in data analysis
+** Identifying Data in the Event
+** Data within the Event are uniquely identified by four quantities:
+  * C++ class type of the data
+  * module label
+  * product instance label
+  * process name
+
+  One can explore the content by =edDumpEventContent=.
+** Getting data from the Event
+  * edm::Handle<type> -- access to event data
+    All Event data access methods use the
+    edm::Handle<type>, where type is the C++ type of the datum,
+    to hold the result of an access.
+  * To request data from an Event: =getBy*= and =getManyBy*= In your
+    module, use a form of one of the following: =get= which either
+    returns one object or throws a C++ exception. =getMany= which
+    returns a list of zero or more matches to the data request. After
+    =get= or =getMany=, indicate how to identify the data ,
+    e.g. =getByLabel= or =getManyByType=, and then use the name associated
+    with the handle type
+  * The processing model
+
+* FWLite
+** check out a package from github
+   * =git cms-addpkg PhysicsTools/FWLite=
+** compile the packages
+   * =scarm b=
+   * =cmsenv=
+* verify your grid ceritificate is OK
+** initilize your proxy
+   =voms-proxy-init --voms cms=
+* CRAB
+** setup CRAB
+   * =...=
+   * =git cms-init=
+   * =source /cvmfs/cms.cern.ch/common/crab-setup.sh=
+   * =voms-proxy-init -voms cms=
+** check if you can write to the /store/user/area
+   * =crab checkwrite --site=<site-name>=
+** submit jobs through CRAB
+   * =crab submit -c <configuration file>=
+** examine the status
+   * =crab status [-t] <CRAB-project-directory>=
+* PAT
+* Trigger info
+** How trigger path is designed
+*** Path
+    * Triggers defined as =path= blocks : sequence of modules and
+      operands :
+      =path MyTrigger = {doL1Reco & doL1Seeding & ApplyPrescale & doHltReco, HltCondition}=
+    * Modules :
+      - Reconstruction : =doL1Reco=, =doHltReco=, etc...
+      - Prescale : =ApplyPrescale=
+      - Filter : =HltCondition=
+    * Operands :
+      - the "," or dependency operator, the operand to the right is
+        dependent on the operand on the left (i.e. the right accesses
+        data produced by the left)
+      - the "&" or sequencing operator, the operand on the left is
+        executed first, followed by the operand on the right, but they
+        are not dependent on each other
+    * Consequences :
+      - The result of each operand is a boolean : the final outcome of
+        =MyTrigger= is "reject" or "accept"
+      - For a given path, the overall answer is the "AND" of all
+        operands : If ever one of the operands on the left fails, reject
+        AND stop processing : Saving CPU time !
+*** Tools
+    [[https://twiki.cern.ch/twiki/bin/view/CMS/EvfConfDBGUI][ConfDB GUI]]
+** Trigger studies
+*** Find menu of a file
+    * =hltInfo= or McM
+      [[https://twiki.cern.ch/twiki/bin/view/CMS/HowToFindHLTMenu][More details]]
+*** Find prescale
