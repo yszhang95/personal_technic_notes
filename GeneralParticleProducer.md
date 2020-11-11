@@ -82,9 +82,10 @@ Configurations
 
 ### Examples
 
--   $\Lambda_c \to K_s+p$
+-   [*Λ*~*c*~ → *K*~*s*~ + *p*]{.math .inline}
 
-    ``` {.python}
+    ::: {#cb2 .sourceCode}
+    ``` {.sourceCode .python}
     # Add the VertexComposite producer
     from VertexCompositeAnalysis.VertexCompositeProducer.generalParticles_cff import generalParticles
     process.kShort = generalParticles.clone(
@@ -141,10 +142,12 @@ Configurations
     # Define the analysis steps
     process.rereco_step = cms.Path(process.ntrack_seq * process.kShort * process.LambdaC)
     ```
+    :::
 
--   $D^0 \to K\pi$
+-   [*D*^0^ → *Kπ*]{.math .inline}
 
-    ``` {.python}
+    ::: {#cb3 .sourceCode}
+    ``` {.sourceCode .python}
     # D0 candidate rereco
     process.load("VertexCompositeAnalysis.VertexCompositeProducer.generalParticles_cff")
     process.generalD0CandidatesNew = process.generalParticles.clone(
@@ -203,6 +206,7 @@ Configurations
       )
     process.generalD0CandidatesNew.mva = cms.InputTag("generalTracks","MVAValues") ###cesar:to change iter6 tracking mva cut
     ```
+    :::
 
 ### Options
 
@@ -413,7 +417,7 @@ Configurations
 
 ### Examples
 
--   $D^{0} \to K\pi$, tree producer
+-   [*D*^0^ → *Kπ*]{.math .inline}, tree producer
 
     ``` {.example}
     # tree producer
@@ -429,7 +433,7 @@ Configurations
     process.generalana_step = cms.EndPath( process.generalanaNewSeq )
     ```
 
--   $\Lambda_{c} \to K_{s}+p$, ntuple producer
+-   [*Λ*~*c*~ → *K*~*s*~ + *p*]{.math .inline}, ntuple producer
 
     ``` {.example}
     # Add the VertexComposite tree
