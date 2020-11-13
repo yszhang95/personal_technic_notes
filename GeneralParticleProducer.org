@@ -340,8 +340,11 @@ process.generalD0CandidatesNew.mva = cms.InputTag("generalTracks","MVAValues") #
      Further documentation needed.
 
 *** =ParticleFitter=
-**** =addParticles(ParticleDaughter& d, const edm::Event& iEvent)=
-     Add particles depending on =pdgId= of =ParticleDaughter=.
+    1. =addParticles(ParticleDaughter& d, const edm::Event& iEvent)=
+       Add particles depending on =pdgId= of =ParticleDaughter=.
+    2. =vertices()=
+       Return primary vertices associated with decay products.
+
 
 * General tree producer
 ** Configurations
