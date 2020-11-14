@@ -340,11 +340,88 @@ process.generalD0CandidatesNew.mva = cms.InputTag("generalTracks","MVAValues") #
      Further documentation needed.
 
 *** =ParticleFitter=
-    1. =addParticles(ParticleDaughter& d, const edm::Event& iEvent)=
-       Add particles depending on =pdgId= of =ParticleDaughter=.
-    2. =vertices()=
-       Return primary vertices associated with decay products.
+**** =void addParticles(ParticleDaughter& d, const edm::Event& iEvent)=
+     Add particles depending on =pdgId= of =ParticleDaughter=.
+**** =const reco::VertexCollection& vertices()=
+     Return primary vertices associated with decay products.
+**** =const pat::GenericParticleCollection& particles()=
+     Return candidate collection of decay particles.
+**** =const pat::GenericParticleCollection& daughters()=
+     Return daughter collection of decay particles, including both daughters and
+     granddaughters.
+**** =const bool hasNoDaughters()=
+     Check whether daughter collection is empty.
+**** =reco::VertexRef getVertexRef(const reco::Vertex& vertex)=
+     It generate =reco::VertexRef= taking the =vertices_= variable as the
+     associated collection and using the index of each element in =vertices_=
+     as =key_value=. It compares the input vertex with position, multiplicity
+     and =isFake= with saved ones to avoid duplication.
 
+**** =math::XYZTLorentzVector getP4(const GlobalVector& p, const double& m)=
+     Return the p4.
+**** =pat::GenericParticleRef addParticle(const pat::GenericParticle& particle)=
+     It generate =pat::Genericparticle= taking the =particles_=
+     variable as the associated collection and using the index of each
+     element in =particles_= as =key_value=. Particles are identified via
+     their pT, eta, phi, mass and charge. It recursively store
+     daughters of daughters into the =particles_= and change their
+     primary vertices reference to the collection with new product ID. The
+     trick used here is =const_cast=. Examples are here.
+     #+BEGIN_EXAMPLE
+  if (particle.hasUserData("daughters")) {
+    auto& daughters = *const_cast<pat::GenericParticleRefVector*>(particle.userData<pat::GenericParticleRefVector>("daughters"));
+    pat::GenericParticleRefVector dauColl(dauProd_.id());
+    for (const auto& dau : daughters) { dauColl.push_back(addParticle(*dau)); }
+    daughters = dauColl;
+  }
+  if (particle.hasUserData("primaryVertex")) {
+    auto& priVtx = *const_cast<reco::VertexRef*>(particle.userData<reco::VertexRef>("primaryVertex"));
+    priVtx = getVertexRef(*priVtx);
+  }
+     #+END_EXAMPLE
+**** TODO =void matchPrimaryVertex(pat::GenericParticle& cand, const TransTrackColl& tracks={}, FreeTrajectoryState fts={}, const double& thr=1.E-9)=
+     This function associate the candidate to a vertex using
+     =pat::addUserData<reco::VertexRef>=. It is customized via the option
+     =matchVertex= in the configuration.
+     * =matchVertex == False=: In this case, the =VetexRef= is set to be the
+       same as =vertex_= and this value is set in =ParticleFitter::setVertex=,
+       #+begin_example
+vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
+       #+end_example
+       And whether the first one is the one with leading pT2 or the
+       highest multiplicity depends on the configuration. For the Run2 backward
+       compatibility, keep =matchVertex == False=.
+     * =matchVertex == True=: This case is not used in analyses before 2020.
+       Personally I do not use it yet (say, 2021) and am not very clear about
+       the details. I document my thinking here.
+       * It will at first check whether the value of =userFloat("vertexProb")=
+         is larger than =thr= and whether the size of primary vertex collection
+         is larger than 1. If either of them is not satisfied, this function
+         will return the value in =vertex_=.
+       * If the conditions above are satisfied, then it will try to give the
+         point of the closet approach (PCA). It will give two tries.
+         1. If the input of =FreeTrajectoryState fts= has no error, the function
+            will try to construct the =FreeTrajectoryState= of the candidate via
+            the candidate information, =userData("kinematicParametersError")=
+            and other kinematic information, p4, mass and decay point position.
+            And PCA will be computed via the constructed via this =fts=.
+            Moreover, if the probability of PCA extrapolation is larger than
+            =thr=, PCA is set to the extrapolated value (a non-null value).
+            If any step discussed above failed, PCA will be a null value. This
+            function will try the second way to compute PCA.
+         2. If the track collection is not empty, this function will try to fit
+            a vertex constrained to beam spot with =KalmanVertexFitter=. And
+            PCA is computed if the vertex probability is larger than =thr=.
+         3. If 1 or 2 succeed, the function will try to find whether the
+            =isGoodPV= condition is satisfied, and further check distance
+            conditions,
+            #+begin_example
+  const bool& isGoodPV = (pv.position() == vertex_.position() || pv.tracksSize() >= puMap_.size() || fabs(pv.z()-vertex_.z()) > puMap_[pv.tracksSize()]);
+  if (isGoodPV && std::abs(pv.z()-pca.z()) < std::abs(candPV.z()-pca.z())-0.4) { candPV = pv; }
+            #+end_example
+            Here =puMap_= is the map of dz tolerance and specified via
+            =puMap= in the configuration. If the conditions are not satisfied,
+            value in =vertex_= will be used.
 
 * General tree producer
 ** Configurations
