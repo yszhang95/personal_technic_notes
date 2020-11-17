@@ -422,6 +422,133 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
             Here =puMap_= is the map of dz tolerance and specified via
             =puMap= in the configuration. If the conditions are not satisfied,
             value in =vertex_= will be used.
+**** =RefCountedKinematicTree fitVertex(const ParticleInfo& parInfo, const int& fitAlgo, GlobalPoint decP, const reco::Vertex& priVtx={})=
+     This function can do three kind of fit.
+     - =fitAlgo == 0=, unconstrained fit
+     - =fitAlgo == 1=, make use of =MultiTrackPointingKinematicConstraint=,
+       primary vertex and decay vertex information (currently obtained
+       from prior fit) will be used.
+     - =fitAlgo == 2=, make use of =MultiTrackMassKinematicConstraint=,
+       the PDG mass of reconstructed particles and number of daughters
+       are used.
+**** =RefCountedKinematicTree fitVertex(const ParticleInfo& parInfo, const int& fitAlgo)=
+     This function fit the vertex with =fitAlgo= from 3 to 6. After vertex is
+     reconstructed, it will be converted to kinematic particle vertex. They are
+     not tested yet.
+**** =bool ParticleFitter::fitCandidate(pat::GenericParticle& cand, const pat::GenericParticleCollection& dauColl)=
+     This function tries to fit a candidate. It does following things:
+     - Get the daughters transient tracks. Converted photons will have multiple
+       tracks, otherwise, each daughter has one track, constructed by its track
+       or =userData("kineamticParametersError")=.
+     - Measure distance between daughter tracks at their point of closest
+       approach, if each candidate has two daughters. I do not know why it does
+       not work when one daughter is an intermediate particle (for instance
+       $K_s$). If the DCA between two particles cannot be calculated, this fit
+       will be labeled as failure and return. Also, =userFloat("bestMass")= is
+       available for case of number of daughter equal to 2.
+     - Prepare particles for decay vertex fit. The variable
+       =ParticleInfo parInfo= will be sent to =ParticleFitter::fitVertex=.
+       =parInfo= will carry the information of
+       =std::vector<RefCountedKinematicParticle>=,
+       =std::vector<reco::TransientTrack>= and
+       =std::map<ParticleTuple, size_t>>=. The first parameter is the collection
+       of the kinematic particles (for converted photons they are decay
+       particles of photons and for others they are themselves.) The second one
+       contains the corresponding transient tracks of kinematic particles. The
+       third one stores the map between each particle dynamics and the
+       corresponding index in the first parameter.
+     - Fir the decay vertex through a few algorithms which are stored in
+       =fitAlgoV_=. If there are multiple fit algorithms users want to
+       use, then they are saved as =userData("decayVertex")= (the main one,
+       the first one in the =fitAlgoV_=) and
+       =userData("decayVertex_label")= where label is each element in the
+       =fitAlgoV_= except the main one. This step does the following things
+       - Loop over all the algorithms
+         - Check whether the algorithm is the kinematic fit (with or without
+           constraints). If true, call
+           =fitVertex(const ParticleInfo& parInfo, const int& fitAlgo, GlobalPoint decP, const reco::Vertex& priVtx={})=.
+           It will perform a prior fit if users want the kinematic
+           fit with constraints and then fit again with the obtained decay vertex
+           from prior fit. Otherwise the fit result will be the prior one.
+         - If the algorithm is not kinematic one, the fit result will be given
+           through =fitVertex(const ParticleInfo& parInfo, const int& fitAlgo)=.
+         - If the main fit fails, it will not perform fit any more and return
+           =false=.
+         - Other information like =userFloat("normaChi2")=,
+           =userFloat("vertexProb")=, =vertex= (a member function), p4 info,
+           =userData("daughtersP4")= and =userData("kinematicParametersError")=
+           are saved only for the main fit.
+       - =matchPrimaryvertex= will be called if everything works fine above.
+       - Return =true=, this means the fit succeeds!
+**** =void setVtxProd(const reco::VertexRefProd& prod)=
+     ={ vtxProd_ = prod; };=
+**** =setDauProd(const GenericParticleRefProd& prod)=
+     ={ dauProd_ = prod; }=
+**** =void getNTracks(const edm::Event& iEvent)=
+     Seems not implemented.
+**** =void fillDaughters(const edm::Event& iEvent, const edm::EventSetup& iSetup)=
+     Call =ParticleFitter::addParticles= to fill the collection of
+     =ParticleDaughter=.
+**** =bool isUniqueDaughter(ParticleSet& set, const pat::GenericParticle& dau)=
+     Check whether =dau= is in =set=. If so, return =false= since =dau= is a
+     duplicate in =set=, the daughter is not unique. If not, =dau= will be
+     inserted to =set= and this function return =true=.
+**** =void makeCandidates()=
+     This function defines how the fitter works.
+     - It will generate daughter collection from the collection, =dauColls=, of
+       =ParticleDaughter=, =daughters_=.
+     - With the =dauColls=, combinations of daughters are generated via
+       [[https://github.com/artem-ogre/combinations_cpp][make_combinations]].
+     - Loop over combinations.
+       - The candidate charge, p4 are set by the sum of
+         daughters'. The PDG ID is set to the same as input configuration and the
+         status of the candidate is set to 3. A tuple of each candidate is also
+         inserted to the set of candidates to avoid duplication. Only those
+         particles without any duplicate daughter will be kept.
+       - Some =userFloat= variables will be calculated. =userData("daughtersP4")=
+         will be filled with daughters' original p4 but will change later in
+         =fitCandidate=. =preSelection_= is done.
+       - Daughters will be reordered if =doSwap_ == true=, via =swapDaughters=.
+       - The masses of each candidate and its corresponding swap candidate with
+         reordered daughters will be computed and the one closet to PDG mass
+         has to be in the region =|mass_ - bestMass| < width=. If not, the
+         candidate and its swap counterparts will not be saved. Best mass will
+         be overwrite in =fitCandidate= if the number of daughters is two.
+       - =preMassSelection_= is done.
+       - =fitCandidate= is called.
+       - Extra information are added via =addExtraInfo=. =pocaSelection_= is
+         done there.
+       - Candidate collection =pat::GenericParticleCollection candidates= is
+         created.
+       - =pat::GenericParticleCollection swapCandColl= is created via
+         =addSwapCandidates=. =swapCandColl= will be empty if =doSwap_ == false=.
+       - =candidates= and =swapCandColl= are combined.
+       - Daughter collection is reordered following
+         =ParticleTreeComparator=. References to daughter collection
+         are saved.
+     - The collection of candidates is reordered via =ParticleMassComparator=.
+**** =void swapDaughters(DoubleMap& swapDauColls, const pat::GenericParticle& cand, const pat::GenericParticleCollection& dauColl)=
+     This function works only when =doSwap_ == true=. This function will do
+     permutation based on =ParticleComparator=. Moreover, there are two
+     conditions need to be considered.
+     - Each candidate have daughters with opposite charges and candidate is
+       neutral. Taking the $D^0$ as an example, the reconstructed channel
+       is $D^0 \to K^- \pi^+$. We /*assume*/ that the negative tracks are
+       $K^-$s and positive tracks are $\pi^+$s. But if we /*assume*/ vice verse,
+       then we are trying to reconstruct $\bar{D}^0 \to K^+ \pi^-$. They are
+       reconstructed with the same track pair but different mass assumptions.
+       If the fitter will not use the charge or mass information of tracks, then
+       we do not need to fit twice with the same pair. We just make a
+       /*swapped*/ $D^0$ (it is an assumption) which is a $\bar{D}^0$ (it is
+       also an assumption).
+     - Each candidate have more than two daughters. Taking the
+       $\Lambda_c^+ \to \pi^+ K^- p$ as an example, we assume that the
+       positive tracks are ($\pi^+$, $p$) pair. We can also assume that the
+       track pair is ($p$, $\pi^+$). Again, if the fitter does not consider
+       the charge information or mass information of particles, we are not
+       necessary to fit twice. Just swap the $pi^+$ and $p$ and assign a new
+       mass to the candidate. This is the sense of /*swap*/, which is different
+       from the case of $D^0$, where a charge conjugate is obtained.
 
 * General tree producer
 ** Configurations
