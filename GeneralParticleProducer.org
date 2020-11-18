@@ -527,7 +527,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
          =ParticleTreeComparator=. References to daughter collection
          are saved.
      - The collection of candidates is reordered via =ParticleMassComparator=.
-**** =void swapDaughters(DoubleMap& swapDauColls, const pat::GenericParticle& cand, const pat::GenericParticleCollection& dauColl)=
+**** TODO =void swapDaughters(DoubleMap& swapDauColls, const pat::GenericParticle& cand, const pat::GenericParticleCollection& dauColl)=
      This function works only when =doSwap_ == true=. This function will do
      permutation based on =ParticleComparator=. Moreover, there are two
      conditions need to be considered.
@@ -549,7 +549,38 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
        necessary to fit twice. Just swap the $pi^+$ and $p$ and assign a new
        mass to the candidate. This is the sense of /*swap*/, which is different
        from the case of $D^0$, where a charge conjugate is obtained.
+    The daughters to swap are necessary to have the same =userInt("sourceID")=
+    (if not have this =userInt=, source ID is set to 0; if source ID is 1, they
+    are tracks, 2 for pf candidates). If =sourceID == 0=, does not do swap.
+    If the daughter and permutated daughter share the same PDGID, then does
+    not do swap.
 
+**** =void setBestMass(pat::GenericParticle& cand, const DoubleMap& swapDauColls)=
+     Works only when =doSwap_ == true=. Choose the mass value closet to the PDG
+     value from candidates and their swap counterparts.
+**** =void addSwapCandidates(pat::GenericParticleCollection& swapCandColl, const pat::GenericParticle& cand, const DoubleMap& swapDauColls)=
+     Works only when =doSwap_ == true=. Fill swapped candidates to
+     =swapCandColl=.
+**** =void addExtraInfo(pat::GenericParticle& cand)=
+     =userData("decayVertex")=, =userData("primaryVertex")=,
+     =userFloat("lVtxMag")=, =userFloat("rVtxMag")=, =userFloat("lVtxSig")=,
+     =userFloat("rVtxSig")=, =userFloat("angle3D")= and =userFloat("angle2D")=
+     are saved.
+**** =void clear()=
+     #+begin_example
+  vertex_ = reco::Vertex();
+  beamSpot2D_ = reco::Vertex();
+  beamSpot_ = reco::BeamSpot();
+  clear(candidates_);
+  clear(particles_);
+  clear(vertices_);
+  clear(priVertices_);
+  vertexRefMap_.clear();
+  particleRefMap_.clear();
+  std::for_each(daughters_.begin(), daughters_.end(), [](ParticleDaughter &d){ d.clear(); });
+     #+end_example
+**** =template<class T> void clear(std::vector<T>& v)=
+     ={ std::vector<T>().swap(v); };=
 * General tree producer
 ** Configurations
 *** Examples
@@ -585,27 +616,27 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 
 *** Options
     #+CAPTION: This is the table of configurable parameters of general tree producer
-    | Name                 | Descriptions                                                                                                  | Type                     | Default values                         |
-    |----------------------+---------------------------------------------------------------------------------------------------------------+--------------------------+----------------------------------------|
-    | =beamSpot=           |                                                                                                               | =cms.InputTag=           | =offlineBeamSpot=                      |
-    | =primaryVertices=    |                                                                                                               | =cms.InputTag=           | =offlinePrimaryVertices=               |
-    | =recoParticles=      | The =pat::GenericParticleCollection= user want to save as tree                                                | =cms.InputTag=           | =generalParticles=                     |
-    | =nTracksVMap=        | The =ValueMap= of number of offline tracks                                                                    | =cms.untracked.InputTag= | =generalParticles:nTracks=             |
-    | =triggerResults=     |                                                                                                               | =cms.untracked.InputTag= | =TriggerResults::HLT=                  |
-    | =triggerEvent=       |                                                                                                               | =cms.untracked.InputTag= | =hltTriggerSummaryAOD::HLT=            |
-    | =triggerInfo=        | Further documentation needed                                                                                  | =cms.untracked.VPSet=    |                                        |
-    | =matchInfo=          | trigger-reco matching information, further documentation needed                                               | =cms.untracked.VPSet=    |                                        |
-    | =eventFilterResults= |                                                                                                               | =cms.untracked.InputTag= | =TriggerResults=                       |
-    | =eventFilterNames=   |                                                                                                               | =cms.untracked.vstring=  | Please check corresponding branch      |
-    | =selectEvents=       |                                                                                                               | =cms.string=             | Please check corresponding branch      |
-    | =centralityBin=      |                                                                                                               | =cms.untrakced.InputTag= | =InputTag("centralityBin","HFtowers")= |
-    | =centrality=         |                                                                                                               | =cms.untracked.InputTag= | =hiCentrality=                         |
-    | =eventPlane=         |                                                                                                               | =cms.untracked.InputTag= | =hiEvtPlaneFlat=                       |
-    | =lumiInfo=           |                                                                                                               | =cms.untracked.InputTag= | =InputTag("lumiInfo", "brilcalc")=     |
-    | =lumiScalers=        |                                                                                                               | =cms.untracked.InputTag= | =scalersRawToDigi=                     |
-    | =lumiRecord=         |                                                                                                               | =cms.untracked.InputTag= | =onlineMetaDataDigis=                  |
-    | =saveTree=           | If =True= then save tree else save ntuple                                                                     | =cms.untracked.bool=     | =True=                                 |
-    | =addTrgObj=          |                                                                                                               | =cms.untracked.bool=     | =False=                                |
-    | =genParticles=       | Input tag for =reco::GenParticleCollection=. Work when dealing with MC samples                                | =cms.untracked.InputTag= | =genParticles=                         |
-    | =genInfo=            | Further documentation needed                                                                                  | =cms.untracked.InputTag= | =generator=                            |
+    | Name                 | Descriptions                                                                                                   | Type                     | Default values                         |
+    |----------------------+----------------------------------------------------------------------------------------------------------------+--------------------------+----------------------------------------|
+    | =beamSpot=           |                                                                                                                | =cms.InputTag=           | =offlineBeamSpot=                      |
+    | =primaryVertices=    |                                                                                                                | =cms.InputTag=           | =offlinePrimaryVertices=               |
+    | =recoParticles=      | The =pat::GenericParticleCollection= user want to save as tree                                                 | =cms.InputTag=           | =generalParticles=                     |
+    | =nTracksVMap=        | The =ValueMap= of number of offline tracks                                                                     | =cms.untracked.InputTag= | =generalParticles:nTracks=             |
+    | =triggerResults=     |                                                                                                                | =cms.untracked.InputTag= | =TriggerResults::HLT=                  |
+    | =triggerEvent=       |                                                                                                                | =cms.untracked.InputTag= | =hltTriggerSummaryAOD::HLT=            |
+    | =triggerInfo=        | Further documentation needed                                                                                   | =cms.untracked.VPSet=    |                                        |
+    | =matchInfo=          | trigger-reco matching information, further documentation needed                                                | =cms.untracked.VPSet=    |                                        |
+    | =eventFilterResults= |                                                                                                                | =cms.untracked.InputTag= | =TriggerResults=                       |
+    | =eventFilterNames=   |                                                                                                                | =cms.untracked.vstring=  | Please check corresponding branch      |
+    | =selectEvents=       |                                                                                                                | =cms.string=             | Please check corresponding branch      |
+    | =centralityBin=      |                                                                                                                | =cms.untrakced.InputTag= | =InputTag("centralityBin","HFtowers")= |
+    | =centrality=         |                                                                                                                | =cms.untracked.InputTag= | =hiCentrality=                         |
+    | =eventPlane=         |                                                                                                                | =cms.untracked.InputTag= | =hiEvtPlaneFlat=                       |
+    | =lumiInfo=           |                                                                                                                | =cms.untracked.InputTag= | =InputTag("lumiInfo", "brilcalc")=     |
+    | =lumiScalers=        |                                                                                                                | =cms.untracked.InputTag= | =scalersRawToDigi=                     |
+    | =lumiRecord=         |                                                                                                                | =cms.untracked.InputTag= | =onlineMetaDataDigis=                  |
+    | =saveTree=           | If =True= then save tree else save ntuple                                                                      | =cms.untracked.bool=     | =True=                                 |
+    | =addTrgObj=          |                                                                                                                | =cms.untracked.bool=     | =False=                                |
+    | =genParticles=       | Input tag for =reco::GenParticleCollection=. Work when dealing with MC samples                                 | =cms.untracked.InputTag= | =genParticles=                         |
+    | =genInfo=            | Further documentation needed                                                                                   | =cms.untracked.InputTag= | =generator=                            |
     | =genPdgId=           | The vector saving =pdgId= of decay particles, their decay products and other particles users want to match gen | =cms.untracked.vuint32=  | left as empty                          |
