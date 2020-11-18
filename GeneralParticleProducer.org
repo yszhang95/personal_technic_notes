@@ -383,15 +383,15 @@ process.generalD0CandidatesNew.mva = cms.InputTag("generalTracks","MVAValues") #
      This function associate the candidate to a vertex using
      =pat::addUserData<reco::VertexRef>=. It is customized via the option
      =matchVertex= in the configuration.
-     * =matchVertex == False=: In this case, the =VetexRef= is set to be the
+     * ~matchVertex == False~: In this case, the =VetexRef= is set to be the
        same as =vertex_= and this value is set in =ParticleFitter::setVertex=,
        #+begin_example
 vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
        #+end_example
        And whether the first one is the one with leading pT2 or the
        highest multiplicity depends on the configuration. For the Run2 backward
-       compatibility, keep =matchVertex == False=.
-     * =matchVertex == True=: This case is not used in analyses before 2020.
+       compatibility, keep ~matchVertex == False~.
+     * ~matchVertex == True~: This case is not used in analyses before 2020.
        Personally I do not use it yet (say, 2021) and am not very clear about
        the details. I document my thinking here.
        * It will at first check whether the value of =userFloat("vertexProb")=
@@ -424,11 +424,11 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
             value in =vertex_= will be used.
 **** =RefCountedKinematicTree fitVertex(const ParticleInfo& parInfo, const int& fitAlgo, GlobalPoint decP, const reco::Vertex& priVtx={})=
      This function can do three kind of fit.
-     - =fitAlgo == 0=, unconstrained fit
-     - =fitAlgo == 1=, make use of =MultiTrackPointingKinematicConstraint=,
+     - ~fitAlgo == 0~, unconstrained fit
+     - ~fitAlgo == 1~, make use of =MultiTrackPointingKinematicConstraint=,
        primary vertex and decay vertex information (currently obtained
        from prior fit) will be used.
-     - =fitAlgo == 2=, make use of =MultiTrackMassKinematicConstraint=,
+     - ~fitAlgo == 2~, make use of =MultiTrackMassKinematicConstraint=,
        the PDG mass of reconstructed particles and number of daughters
        are used.
 **** =RefCountedKinematicTree fitVertex(const ParticleInfo& parInfo, const int& fitAlgo)=
@@ -508,7 +508,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
        - Some =userFloat= variables will be calculated. =userData("daughtersP4")=
          will be filled with daughters' original p4 but will change later in
          =fitCandidate=. =preSelection_= is done.
-       - Daughters will be reordered if =doSwap_ == true=, via =swapDaughters=.
+       - Daughters will be reordered if ~doSwap_ == true~, via =swapDaughters=.
        - The masses of each candidate and its corresponding swap candidate with
          reordered daughters will be computed and the one closet to PDG mass
          has to be in the region =|mass_ - bestMass| < width=. If not, the
@@ -521,14 +521,14 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
        - Candidate collection =pat::GenericParticleCollection candidates= is
          created.
        - =pat::GenericParticleCollection swapCandColl= is created via
-         =addSwapCandidates=. =swapCandColl= will be empty if =doSwap_ == false=.
+         =addSwapCandidates=. =swapCandColl= will be empty if ~doSwap_ == false~.
        - =candidates= and =swapCandColl= are combined.
        - Daughter collection is reordered following
          =ParticleTreeComparator=. References to daughter collection
          are saved.
      - The collection of candidates is reordered via =ParticleMassComparator=.
 **** TODO =void swapDaughters(DoubleMap& swapDauColls, const pat::GenericParticle& cand, const pat::GenericParticleCollection& dauColl)=
-     This function works only when =doSwap_ == true=. This function will do
+     This function works only when ~doSwap_ == true~. This function will do
      permutation based on =ParticleComparator=. Moreover, there are two
      conditions need to be considered.
      - Each candidate have daughters with opposite charges and candidate is
@@ -551,15 +551,15 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
        from the case of $D^0$, where a charge conjugate is obtained.
     The daughters to swap are necessary to have the same =userInt("sourceID")=
     (if not have this =userInt=, source ID is set to 0; if source ID is 1, they
-    are tracks, 2 for pf candidates). If =sourceID == 0=, does not do swap.
+    are tracks, 2 for pf candidates). If ~sourceID == 0~, does not do swap.
     If the daughter and permutated daughter share the same PDGID, then does
     not do swap.
 
 **** =void setBestMass(pat::GenericParticle& cand, const DoubleMap& swapDauColls)=
-     Works only when =doSwap_ == true=. Choose the mass value closet to the PDG
+     Works only when ~doSwap_ == true~. Choose the mass value closet to the PDG
      value from candidates and their swap counterparts.
 **** =void addSwapCandidates(pat::GenericParticleCollection& swapCandColl, const pat::GenericParticle& cand, const DoubleMap& swapDauColls)=
-     Works only when =doSwap_ == true=. Fill swapped candidates to
+     Works only when ~doSwap_ == true~. Fill swapped candidates to
      =swapCandColl=.
 **** =void addExtraInfo(pat::GenericParticle& cand)=
      =userData("decayVertex")=, =userData("primaryVertex")=,
