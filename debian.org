@@ -12,7 +12,6 @@
     #+begin_src shell
     su
     adduser yousen sudo
-    exit
     reboot
     #+end_src
     After executing the codes above, actions will take effects after
@@ -41,11 +40,18 @@
     #+begin_src shell
     cd /media/cdrom
     sudo sh VBoxLinuxAdditions.run
-    reboot
+    sudo reboot
     #+end_src
 *** Clipboard, dragging, shared folder between guest and host.
     Click =Devices= of the =VirtualBox= window after you install guest
     additions.
+
+    To access the shared folder inside guest, users on guests are
+    needed to be in the user group of =virtualbox=. I tried the
+    command src_sh[:exports code]{cat /etc/group | grep -i vb} and it gives
+    =vboxsf:x:998=. After running
+    src_sh[:exports code]{sudo adduser yousen vboxsf} and rebooting, I
+    can access the shared folder.
 ** Software installations
 *** =EMACS= and =VIM=
     #+begin_src shell

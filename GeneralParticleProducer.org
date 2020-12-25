@@ -379,7 +379,7 @@ process.generalD0CandidatesNew.mva = cms.InputTag("generalTracks","MVAValues") #
     priVtx = getVertexRef(*priVtx);
   }
      #+END_EXAMPLE
-**** TODO =void matchPrimaryVertex(pat::GenericParticle& cand, const TransTrackColl& tracks={}, FreeTrajectoryState fts={}, const double& thr=1.E-9)=
+**** =void matchPrimaryVertex(pat::GenericParticle& cand, const TransTrackColl& tracks={}, FreeTrajectoryState fts={}, const double& thr=1.E-9)=
      This function associate the candidate to a vertex using
      =pat::addUserData<reco::VertexRef>=. It is customized via the option
      =matchVertex= in the configuration.
@@ -527,7 +527,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
          =ParticleTreeComparator=. References to daughter collection
          are saved.
      - The collection of candidates is reordered via =ParticleMassComparator=.
-**** TODO =void swapDaughters(DoubleMap& swapDauColls, const pat::GenericParticle& cand, const pat::GenericParticleCollection& dauColl)=
+**** =void swapDaughters(DoubleMap& swapDauColls, const pat::GenericParticle& cand, const pat::GenericParticleCollection& dauColl)=
      This function works only when ~doSwap_ == true~. This function will do
      permutation based on =ParticleComparator=. Moreover, there are two
      conditions need to be considered.

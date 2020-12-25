@@ -92,3 +92,22 @@
     * =hltInfo= or McM
       [[https://twiki.cern.ch/twiki/bin/view/CMS/HowToFindHLTMenu][More details]]
 *** Find prescale
+* McM
+  [[https://indico.cern.ch/event/976524/][McM]]
+** Term
+   - wmLHE
+   - wmLHEGS
+   - pLHE
+   - Request
+   - Prep ID
+   - Campaign
+   - Flow
+   - Chained campaign
+** How to register
+   - User->Add me->send a request to HN->questionaire
+   - Clone request, navigation, press clone
+   - Edit the request, extension number, update the configuration
+   - Validation
+   - Dataset name structure:
+     DatasetName/Campaign-ProcessingString-globalTag-Ext-Version/DataTier
+** Gridpacks
