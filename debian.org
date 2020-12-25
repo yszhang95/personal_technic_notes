@@ -1,0 +1,53 @@
+#+TITLE: Debian related stuffs
+* Installation on virtual machine
+** Installation
+   - Install the latest =VirtualBox=.
+   - Download the testing release of =Debian=. I am using =Debian 10 testing=
+     (i.e. =Debian bullseye=) when I am writing this org file.
+   - Install =Debian= following the instructions. I choose to install both
+     =Gnome= and =KDE=.
+** Configuration after installation
+*** =sudo= privilege
+    Use =adduser=. If you cannot find it, try =whereis adduser=.
+    #+begin_src shell
+    su
+    adduser yousen sudo
+    exit
+    reboot
+    #+end_src
+    After executing the codes above, actions will take effects after
+    re-logging in.
+*** Desktop
+    I install both =KDE= and =Gnome=. To switch, in the log-in session,
+    when you are typing in the password, you can also see a button on
+    the right-bottom corner. Click it and you will find several options.
+    This button will show if you have installed =gdm3= and put the content
+    =/path/to/gdm3= in =/etc/X11/default-display-manager=.
+
+    Never confuse the system using different settings simultaneously if
+    you are not an expert. Stick to one desktop environment.
+*** Build tools
+    Try src_sh[:exports code]{sudo apt install build-essential}
+*** Guest additions
+    After building essentials, run
+    src_sh[:exports code]{sudo apt install
+    linux-headers-$(buname -r) module-assistant}.
+
+    Next, click the menu tab =Devices= of the =VirtualBox= window.
+    Choose =Insert guest additions CD images...=. The package should be
+    mounted. If not, run =mount /media/cdrom=.
+
+    Then,
+    #+begin_src shell
+    cd /media/cdrom
+    sudo sh VBoxLinuxAdditions.run
+    reboot
+    #+end_src
+*** Clipboard, dragging, shared folder between guest and host.
+    Click =Devices= of the =VirtualBox= window after you install guest
+    additions.
+** Software installations
+*** =EMACS= and =VIM=
+    #+begin_src shell
+    sudo apt install emacs vim
+    #+end_src
