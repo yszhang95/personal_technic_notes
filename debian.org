@@ -52,8 +52,105 @@
     =vboxsf:x:998=. After running
     src_sh[:exports code]{sudo adduser yousen vboxsf} and rebooting, I
     can access the shared folder.
-** Software installations
-*** =EMACS= and =VIM=
+* Softwares
+** =EMACS= and =VIM=
+*** Installations
     #+begin_src shell
     sudo apt install emacs vim
+    #+end_src
+** =HepMC2=
+*** Installations
+    #+begin_src shell
+    mkdir /path/to/temp && cd /path/to/temp
+    git clone https://gitlab.cern.ch/hepmc/HepMC.git
+    mkdir build && cd build
+    mkdir -p /home/yousen/.local/HepMC
+    cmake -DCMAKE_INSTALL_PREFIX=/home/yousen/.local/HepMC \
+    -Dmomentum=GEV \
+    -Dlength=MM \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -Dbuild_docs:BOOL=OFF \
+    ../HepMC
+    # Set default units are MM and GEV, to be consistent with HepMC3
+    make
+    make install
+    make test
+    #+end_src
+    I run ~make test~ but it shows several tests fail. I am not sure
+    why.  Docs are not generated. It may need ~texlive~ and
+    ~doxygen~. I do not install them. Units can be =MEV= and =MM= and
+    are required to be specified. =CMAKE_BUILD_TYPE= can be
+    =Debug|Release|RelWithDebInfo|MinSizeRel=.
+
+    To execute the examples, I tried some. Not every example work. The
+    configurations of examples may be outdated.
+    #+begin_src shell
+    cp -r /home/yousen/.local/HepMC/share/HepMC/examples . && cd examples
+    make
+    #+end_src
+    =gfortran= is required. And I modified the =GNUmakefile=. Replace
+    the empty ~HepMC_libdir~ to ~${prefix}/lib~. The make process gives
+    some warnings but it works. I do not understand the warnings yet.
+** =HepMC3=
+*** Installations
+    #+begin_src shell
+    mkdir -p ~/.local/HepMC3
+    git clone https://gitlab.cern.ch/hepmc/HepMC3.git
+    mkdir build && cd build
+    cmake -DHEPMC3_ENABLE_ROOTIO:BOOL=OFF -DHEPMC3_ENABLE_TEST:BOOL=OFF  \
+      -DHEPMC3_INSTALL_INTERFACES:BOOL=ON \
+      -DHEPMC3_ENABLE_PYTHON:BOOL=ON \
+      -DHEPMC3_PYTHON_VERSIONS=3.9 \
+      -DHEPMC3_BUILD_STATIC_LIBS:BOOL=OFF -DHEPMC3_BUILD_DOCS:BOOL=OFF  \
+      -DCMAKE_INSTALL_PREFIX=/home/yousen/.local/HepMC3   \
+      -DHEPMC3_Python_SITEARCH39=/home/yousen/.local/lib/python3.9/site-packages \
+      ../HepMC3
+    make
+    make install
+    #+end_src
+** =Pythia8=
+*** Installations
+    #+begin_src shell
+    sudo apt intall rsync # needed for the step make install
+    mkdir pythia8 && cd pythia8
+    mkdir -p ~/.local/pythia8
+    ./configure --prefix=/home/yousen/.local/pythia8/ \
+    --with-hepmc2=/path/to/hepmc/root \
+    --with-hepmc3=/path/to/hepmc3/root \
+    --cxx=g++
+    # e.g. /home/yousen/.local/HepMC
+    make
+    make installl
+    #+end_src
+** =CMAKE=
+*** Installation
+    #+begin_src shell
+    sudo apt install cmake
+    #+end_src
+*** Check =cmake= options
+    See this [[https://stackoverflow.com/questions/16851084/how-to-list-all-cmake-build-options-and-their-default-values/53075317][link]].
+    #+begin_src shell
+    mkdir build
+    cd build
+    cmake ..
+    cmake -LA | awk '{if(f)print} /-- Cache values/{f=1}'
+    #+end_src
+** =Python=
+*** Installations
+    #+begin_src shell
+    sudo apt install python3
+    #+end_src
+*** Packages
+    Try at first src_sh[:exports code]{apt search python3-{package-name}}.
+    For instance, to install =numpy=. Do the following,
+    #+begin_src shell
+    apt search numpy
+    apt search python3-numpy
+    sudo apt install python3-numpy* # all related to numpy, not just numpy
+    #+end_src
+    If you cannot find the package, try =pip=. Taking =uproot= as an example,
+    #+begin_src shell
+    apt search python3-pip
+    sudo apt install python3-pip
+    pip3 install uproot --user # install package under ~/.local/lib/pythonxx
     #+end_src
