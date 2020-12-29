@@ -108,6 +108,33 @@
     make
     make install
     #+end_src
+** =Fastjet3=
+*** Installations
+    #+begin_src shell
+    wget http://fastjet.fr/repo/fastjet-3.3.4.tar.gz
+    tar zxvf fastjet-3.3.4.tar.gz
+    cd fastjet-3.3.4/
+    mkdir -p ~/.local/fastjet3
+    ./configure --prefix=/home/yousen/.local/fasjet3
+    make
+    make check
+    make install
+    #+end_src
+** ~FastJet Contrib~
+*** Installations
+    #+begin_src shell
+    mkdir fjcontrib
+    wget http://fastjet.hepforge.org/contrib/downloads/fjcontrib-1.045.tar.gz
+    tar zxf fjcontrib-1.045.tar.gz
+    cd fjcontrib-1.045
+    ./configure \
+    --fastjet-config=/home/yousen/.local/fastjet-3.3.4/bin/fastjet-config \
+    --prefix=/home/yousen/.local/fastjet-3.3.4
+    make
+    make check # optional
+    make install
+    #+end_src
+
 ** =Pythia8=
 *** Installations
     #+begin_src shell
@@ -115,13 +142,15 @@
     mkdir pythia8 && cd pythia8
     mkdir -p ~/.local/pythia8
     ./configure --prefix=/home/yousen/.local/pythia8/ \
-    --with-hepmc2=/path/to/hepmc/root \
-    --with-hepmc3=/path/to/hepmc3/root \
+    --with-hepmc2=/path/to/hepmc/rootdir \
+    --with-hepmc3=/path/to/hepmc3/rootdir \
+    --with-fastjet3=/path/to/fastjet3/rootdir \
     --cxx=g++
     # e.g. /home/yousen/.local/HepMC
     make
     make installl
     #+end_src
+    =examples/main74.cc= cannot be compiled. I cannot read the messages.
 ** =CMAKE=
 *** Installation
     #+begin_src shell
