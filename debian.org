@@ -260,8 +260,47 @@
     -DPYTHIA8_INCLUDE_DIR=/home/yousen/.local/pythia8/include \
     -DPYTHIA8_LIBRARY=/home/yousen/.local/pythia8/lib/libpythia8.so \
     ../root-6.22.06
+    make
+    make install
     #+end_src
     ~VecGeom~ is not installed.
+
+    After installing root, do not forget to append the root setup to
+    ~.bashrc~. Use the following: src_sh[:exports code]{source
+    ~/.local/root6/bin/thisroot.sh}.
+
+*** External libraries
+    I will take ~Pythia8~ as an example. Others may be similar. But I
+    do not try.
+
+    To help ~ROOT~ find ~libpythia8.so~, you may want to modify the
+    environment variable ~LD_LIBRARY_PATH~. But it is really dirty.
+    Instead you may want to use ~gSystem->Load("/path/to/lib")~ inside
+    ~rootlogon.C~.
+
+    If you want to compile the macro using ~ACLiC~
+    with external ~Pythia8~ libraries inside root prompt, do the following:
+    #+begin_src shell
+    # Taking pythia 8 as an example.
+    # asumming we are under tutorial/pythia
+    root [0] gSystem->AddIncludePath("-I$(pythia8-config --includedir)")
+    # To make the c++ options like
+    # c++ -shared -L/path/to/pythia8/lib -lpythia8 you have to follow the
+    # below and remeber AddLinkedLibs does not recognize
+    # $(pythia8-config --libdir).
+    # To get the string of output of above command,
+    # try the following line,
+    # auto out = gSystem->GetFromPipe("pythia8-config --libdir")
+    root [1] gSystem->AddLinkedLibs("-lpythia8") # libpythia8.so
+    root [2] gSystem->AddLinkedLibs("-L/path/to/pythia8/lib")
+    # or swap the these two above
+    # or alternatively
+    # root [1] gSystem->AddLinkedLibs("-L/path/to/pythia8/lib -lpythia8")
+    root [3] .L pythia8.C+
+    root [4] pythia8()
+    #+end_src
+
+
 ** ~cvmfs~
 *** Installations
     #+begin_src shell
@@ -314,7 +353,9 @@
     #+end_src
 ** ~R Language~
 *** Installations
+    Read this [[https://cran.r-project.org/bin/linux/debian/][link]].
     #+begin_src shell
+    apt-cache search "^r-.*" | sort
     sudo apt install r-base r-base-dev r-cran-rinside r-cran-rcpp
     #+end_src
 ** ~Qt5~
