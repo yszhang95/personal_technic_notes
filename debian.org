@@ -75,6 +75,12 @@
     make
     make install
     make test
+    # not good, may contaminate the environment variable
+    cat >> ~/.bashrc <<- _EOF_
+
+    # HepMC2
+    export HEPMC2=~/.local/HepMC2
+    _EOF_
     #+end_src
     I run ~make test~ but it shows several tests fail. I am not sure
     why.  Docs are not generated. It may need ~texlive~ and
@@ -107,6 +113,15 @@
       ../HepMC3
     make
     make install
+    cd ~/.local/bin
+    ln -s ~/.local/HepMC3/bin/HepMC3-config
+    # the following are useless, use HepMC3-config instead
+    # may contaminate the environment variable
+    cat >> ~/.bashrc <<-_EOF_
+
+    # HEPMC3
+    export HEPMC3=~/.local/HepMC3
+    _EOF_
     #+end_src
 ** =Fastjet3=
 *** Installations
@@ -119,6 +134,14 @@
     make
     make check
     make install
+    cd ~/.local/bin
+    ln -s ~/.local/fastjet3/bin/fasjet-config . # soft link
+    # it is not a good way to do the following. Use fastjet-config instead.
+    # may contaminate the environment variable
+    cat >> ~/.bashrc <<-_EOF_
+
+    # FastJet
+    export FASTJET=~/.local/fastjet3
     #+end_src
 ** ~FastJet Contrib~
 *** Installations
@@ -151,6 +174,107 @@
     make installl
     #+end_src
     =examples/main74.cc= cannot be compiled. I cannot read the messages.
+    After installing ~EvtGen~. Do the following:
+    #+begin_src shell
+    ./configure --prefix=/home/yousen/.local/pythia8/ \
+    --with-hepmc2=/path/to/hepmc/rootdir \
+    --with-hepmc3=/path/to/hepmc3/rootdir \
+    --with-fastjet3=/path/to/fastjet3/rootdir \
+    --with-evtgen=/path/to/evtgen/rootdir \
+    --cxx=g++
+    #+end_src
+    I do not check what will happen for ~EvtGen~ after doing above.
+    Finally, create soft link.
+    #+begin_src shell
+    cd ~/.local/bin
+    ln -s ~/.local/pythia8/bin/pythia8-config .
+    #+end_src
+** ~EvtGen~
+*** Installations
+    #+begin_src shell
+    mkdir evtgen && cd evtgen
+    git clone https://phab.hepforge.org/source/evtgen.git
+    mkdir ~/.local/evtgen_R02_00_00
+    mkdir build && cd build
+    cmake -DCMAKE_INSTALL_PREFIX=/home/yousen/.local/evtgen_R02_00_00/ \
+    -DEVTGEN_HEPMC3=ON
+    -DHEPMC3_ROOT_DIR=/home/yousen/.local/HEPMC_03_02_03/ \
+    -DEVTGEN_PYTHIA=ON \
+    -DPYTHIA8_ROOT_DIR=/home/yousen/.local/pythia8303/  ../evtgen/
+    make
+    make install
+    echo "" >> ~/.bashrc
+    echo "#pythia8" >> ~/.bashrc
+    echo "export PYTHIA8=~/.local/pythia8303" >> ~/.bashrc # not good one
+    echo "export PYTHIA8DATA=~/.local/pythia8303/share/Pythia8/xmldoc" >> ~/.bashrc # necessary one
+
+    # the following are not good, may contaminate the environment variable
+    cat >> ~/.bashrc <<- _EOF_
+
+    # EvtGen
+    export EVTGEN=~/.local/evtgen
+    _EOF_
+    #+end_src
+** ~ROOT6~
+*** Installations
+    Required prerequisite,
+    #+begin_src shell
+    sudo apt install dpkg-dev cmake g++ gcc \
+    binutils libx11-dev libxpm-dev libxft-dev \
+    libxext-dev python python3 libssl-dev
+    #+end_src
+    Optional prerequisite,
+    #+begin_src shell
+    sudo apt-get install gfortran libpcre3-dev \
+    xlibmesa-glu-dev libglew1.5-dev libftgl-dev libgfal2-dev \
+    libmariadb-dev libmariadb-dev-compat libfftw3-dev libcfitsio-dev \
+    graphviz-dev libavahi-compat-libdnssd-dev \
+    libldap2-dev python-dev python3-dev libxml2-dev libkrb5-dev \
+    libgsl-dev qtbase5-dev libqt5webview5-dev qtwebengine5-dev\
+    krb5-user python3-numpy \
+    libgif-dev libtiff-dev libfcgi-dev \
+    libafterimage-dev
+    #+end_src
+    External libraries and binaries:
+    #+begin_src shell
+    sudo apt install gfal2 libgfal2-dev srm-ifce-dev \
+    r-base r-base-dev r-cran-rinside r-cran-rcpp \
+    postgresql libpostgresql postgresql-server-dev-13 \
+    libopenblas64-pthread-dev dcap-dev \
+    qtbase5-dev libqt5webview5-dev qtwebengine5-dev \
+    libsqlite3-dev
+    #+end_src
+    I am not sure ~postgresql-server-dev-13~ is required.
+    It seems ~Pythia6~, ~m~, ~Monalisa~, ~Alien~,
+    ~Arrow~, ~VecGeom~ cannot be linked. I am not sure
+    how to install these external packages.
+
+    Build ~ROOT6~.
+    #+begin_src shell
+    wget https://root.cern/download/root_v6.22.06.source.tar.gz
+    tar zxf root_v6.22.06.source.tar.gz
+    mkdir build && cd build
+    cmake -DCMAKE_INSTALL_PREFIX=/home/yousen/.local/root6 \
+    -DCMAKE_CXX_STANDARD=14 \
+    -DPYTHIA8_DIR=/home/yousen/.local/pythia8 \
+    -DPYTHIA8_INCLUDE_DIR=/home/yousen/.local/pythia8/include \
+    -DPYTHIA8_LIBRARY=/home/yousen/.local/pythia8/lib/libpythia8.so \
+    ../root-6.22.06
+    #+end_src
+    ~VecGeom~ is not installed.
+** ~cvmfs~
+*** Installations
+    #+begin_src shell
+    git clone --recursive https://github.com/cvmfs/cvmfs.git
+    mkdir build && cd build
+    sudo apt install python2 python3 python-setuptools python3-setuptools \
+    openssl libssl-dev uuid-dev fuse libfuse-dev libfuse3-dev \
+    libcap-dev libpcap-dev autofs attr
+    cmake ../
+    make
+    sudo sudomake install
+    #+end_src
+    Please read [[https://cvmfs.readthedocs.io/en/stable/cpt-quickstart.html][get-started]]. I cannot manage to run ~cvmfs~.
 ** =CMAKE=
 *** Installation
     #+begin_src shell
@@ -182,4 +306,25 @@
     apt search python3-pip
     sudo apt install python3-pip
     pip3 install uproot --user # install package under ~/.local/lib/pythonxx
+    #+end_src
+** ~Kerberos~
+*** Installations
+    #+begin_src shell
+    sudo apt install krb5-user
+    #+end_src
+** ~R Language~
+*** Installations
+    #+begin_src shell
+    sudo apt install r-base r-base-dev r-cran-rinside r-cran-rcpp
+    #+end_src
+** ~Qt5~
+*** Installations
+    #+begin_src shell
+    sudo apt install qt*5
+    # might be redundant
+    sudo apt install qtbase5-dev libqt5webview5-dev qtwebengine5-dev \
+    libqt5websockets5-dev libqt5websockets5 \
+    libqt5webchannel5 libqt5webchannel5-dev \
+    libqt5webkit5 libqt5webkit5-dev \
+    libqt5webview5 libqt5webview5-dev
     #+end_src
