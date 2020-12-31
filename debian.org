@@ -300,7 +300,91 @@
     root [4] pythia8()
     #+end_src
 
+*** Build your own shared library
+    See this [[https://root-forum.cern.ch/t/shared-libraries-interpreter-vs-compiled-macro/29389][post]] and this [[https://root.cern/manual/interacting_with_shared_libraries/][link]].
+    Make use of ~rootcling~ and ~root-config~ to generate ~rootmap~.
+    To make ~rootmap~ work, append the path to ~rootmap~ to
+    ~LD_LIBRARY_PATH~ or its equivalence.
+    My example codes are posted below.
+    #+NAME: File system structure
+    #+begin_verse
+    .
+    ├── Linkdef.h
+    ├── Makefile
+    ├── MyClass.cxx
+    └── MyClass.h
+    #+end_verse
 
+    #+name: Linkdef.h
+    #+begin_src c++
+    /* Linkdef.h */
+    #ifdef __CLING__
+    #pragma link off all globals;
+    #pragma link off all classes;
+    #pragma link off all functions;
+    #pragma link C++ nestedclasses;
+
+    #pragma link C++ class Outer+;
+
+    #endif
+    #+end_src
+
+    #+name: Makefile
+    #+begin_src shell
+# Makefile
+#CXXFLAGS=$(shell root-config --cflags)
+CXXFLAGS=-std=c++14 -fPIC -I/home/yousen/.local/root6.22.06/include
+LDFLAGS=$(shell root-config --libs)
+CXX=g++
+
+all: libMyClass.so
+
+libMyClass.so: MyClass.cxx MyClassDict.cxx
+	$(CXX) -shared -o $@ $(CXXFLAGS) $(LDFLAGS) $^
+
+MyClassDict.cxx: MyClass.h Linkdef.h
+	rootcling -f $@ -rmf MyClassDict.rootmap -rml libMyClass.so $^
+    #+end_src
+
+    #+name: MyClass.h
+    #+begin_src C++
+    /* MyClass.h */
+    include <TString.h>
+    class Outer
+    {
+      public:
+        Outer();
+        class Inner
+        {
+          public:
+            Inner();
+          private:
+            TString inner_;
+        };
+      private:
+        TString _outer;
+        Inner _inner;
+    };
+    #+end_src
+
+    #+name: MyClass.cxx
+    #+begin_src C++
+/* MyClass.cxx */
+#include "MyClass.h"
+#include <iostream>
+
+using std::cout;
+using std::endl;
+Outer::Outer (): _outer ("outer"), _inner(Inner())
+{
+  cout << _outer << endl;
+}
+
+Outer::Inner::Inner() : inner_("inner")
+{
+  cout << inner_ << endl;
+}
+    #+end_src
 ** ~cvmfs~
 *** Installations
     #+begin_src shell
@@ -311,7 +395,7 @@
     libcap-dev libpcap-dev autofs attr
     cmake ../
     make
-    sudo sudomake install
+    sudo make install
     #+end_src
     Please read [[https://cvmfs.readthedocs.io/en/stable/cpt-quickstart.html][get-started]]. I cannot manage to run ~cvmfs~.
 ** =CMAKE=
