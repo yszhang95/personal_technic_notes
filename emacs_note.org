@@ -243,10 +243,10 @@ $emacsclient -e '(client-save-kill-emacs)'
 ** link
    =C-c C-l= or =[[link][description]]= or =[link]=,
 ** add a new header
-   on cygwin,=C-<RET>=, otherwise, =M-<RET>=
+   on cygwin, src_sh[:exports code]{C-<RET>}, otherwise, =M-<RET>=
 ** Code blocks
    [[https://orgmode.org/manual/Structure-of-Code-Blocks.html][CodeBlocks]],
-   you can also use ==%s== for inline codes.
+   you can also use ~~ and == for inline codes.
 ** Structure templates
    [[https://orgmode.org/manual/Structure-Templates.html#Structure-Templates][StructureTemplates]]
    =C-c C-,=
@@ -319,6 +319,8 @@ $emacsclient -e '(client-save-kill-emacs)'
 ** C++
 *** Simplest codes
     =M-x compile= and then clean commands, type in =g++ hello_world.cpp=.
+*** Makefile exists
+    ~M-x compile~ and then ~make~.
 * TRAMP
 ** cleanup
    [[https://www.gnu.org/software/emacs/manual/html_node/tramp/Cleanup-remote-connections.html][Cleanup-remote-connections]]
@@ -326,3 +328,6 @@ $emacsclient -e '(client-save-kill-emacs)'
    - =tramp-cleanup-this-connection=
    - =tramp-cleanup-all-connections=
    - =tramp-cleanup-all-buffers=
+* Miscellaneous
+** Insert the current date to the current buffer
+   ~C-u M-! date~. See more in the [[https://www.emacswiki.org/emacs/InsertingTodaysDate][link]] and [[https://stackoverflow.com/questions/251908/how-can-i-insert-current-date-and-time-into-a-file-using-emacs][link]].
