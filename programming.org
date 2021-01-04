@@ -1,0 +1,19 @@
+#+TITLE: Programming stuffs
+* Executables and libaries
+  Only the executables and libraries in format of Executable and
+  Linking Format (ELF) are discussed.
+** Three types of program libraries
+   - Static
+   - Shared
+   - dynamical loaded (DL): can be either static or shared libraries.
+** Static libraries
+   Static libraries are a collection of ordinary object files, ending
+   with the =.a= suffix. The tool =ar= (meaning archiver) help you
+   create static libraries. Here is an example:
+   #+begin_src shell
+   ar rcs my_library.a file1.o file2.o
+   #+end_src
+   For more info please see the manual of ar via =man ar= and have a
+   look at section =OPTIONS=.
+** Shared libraries
+   Shared libraries are libraries loaded when the programs start.

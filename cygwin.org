@@ -1,0 +1,11 @@
+#+Title: Cygwin related stuffs
+* Users and groups
+** =HOME= directory
+   See this [[https://stackoverflow.com/questions/1494658/how-can-i-change-my-cygwin-home-folder-after-installation][post]]. Modifiy the file =/etc/nsswitch.conf=.
+   Change the line for =db_home=. I change this line because
+   I found =Cygwin= misunderstand what is =${HOME}= sometimes.
+   =${HOME}= will be expanded to =/cygdrive/c/Users/zysri= or
+   =/home/zysri=. According to the user guide of =Cygwin=, I
+   supposed that it should be =/cygdrive/c/Users/zysri= since
+   =Cygwin= would like to use windows-exisiting environment
+   variables.

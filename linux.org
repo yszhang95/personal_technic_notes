@@ -1,0 +1,49 @@
+#+TITLE: Linux tips
+* Text manipulation
+** =sed=
+*** Print
+    Try =/pattern/p=.
+    #+begin_example
+    sed -n "/^#/p" input_file # -n help you supress the output
+    #+end_example
+*** Replacement
+    Try =s/pattern/replacement/option=. And you can preceed address
+    (=man sed=) to =s=. Here, =option= can be =g=, similar to =vim=.
+    =pattern= is written in format of regular expression.  You can use
+    =&= and =\1= to =\9= to denote the matched portion of =pattern= in
+    =replacement=.  For instance, if you want to replace =-= in the
+    first part of =1-2-3-4 1E-10=. Let us do the following,
+    #+begin_src shell
+    cat > example.txt
+    1-2-3-4 1E-10
+    ^D
+    sed -E 's/([^E])-/\1 /g' example.txt # -E or -r means extended-regular-expressions
+    #+end_src
+*** Scripts
+    A simple example of sequential replacement.Supposing that
+    we have an example file =example.txt= having the following content,
+    #+begin_example
+    1-2-3-4 1E-10
+    2-3-4-5 2E10
+    3-4-5-6 3E-99
+    #+end_example
+    write in the file
+    =sed-example.bash= the following content:
+    #+begin_example
+      #!/usr/bin/bash
+      # or /bin/bash, depending on the system
+      # -i means in-place, do not use it if you are not sure you are doing
+      # the correct things
+      sed -iE '
+      1,1s/([^E])-/\1 /g
+      2,2s/([^E])-/\1~/g
+      3,3s/([^E])-/\1./g
+      ' $@
+    #+end_example
+    And execute ~chmod +x sed-example.bash~ and =./sed-example.bash
+    example.txt=. The output will look like
+    #+begin_example
+    1 2 3 4 1E-10
+    2~3~4~5 2E10
+    3.4.5.6 3E-99
+    #+end_example
