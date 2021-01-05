@@ -1,0 +1,9 @@
+#+TITLE: Perl tips
+* One-line phraser
+** =grep= and =sed= print
+   Try =perl -ne 'print if /pattern/' input.txt=. For find in
+   a range and print, try
+   =perl -ne 'print if (m/PatternA/..m/PatternB/)'=.
+** =sed= replacement
+   To replace the original string with the new in a specific range,
+   try =perl -ne 's/this/that/g if (m/PatternA/..m/PatternB/)'=.

@@ -2,10 +2,14 @@
 * Text manipulation
 ** =sed=
 *** Print
-    Try =/pattern/p=.
+    Try =/pattern/p=. Address can be used.
     #+begin_example
     sed -n "/^#/p" input_file # -n help you supress the output
     #+end_example
+    Suppose we have an example file the same as the one in [[SED-SCRIPTS]].
+    Run with command =sed -n '/1-/,/2-/p' example.txt=.
+    and
+
 *** Replacement
     Try =s/pattern/replacement/option=. And you can preceed address
     (=man sed=) to =s=. Here, =option= can be =g=, similar to =vim=.
@@ -19,7 +23,10 @@
     ^D
     sed -E 's/([^E])-/\1 /g' example.txt # -E or -r means extended-regular-expressions
     #+end_src
+    Suppose we have an example file the same as the one in [[SED-SCRIPTS]]. Run
+    =sed -E '/^1/,/^2/s/^([0-9])-([0-9])-([0-9])-([0-9])/\1,\2,\3,\4/' example.txt=.
 *** Scripts
+    <<SED-SCRIPTS>>
     A simple example of sequential replacement.Supposing that
     we have an example file =example.txt= having the following content,
     #+begin_example
