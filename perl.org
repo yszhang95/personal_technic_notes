@@ -7,3 +7,4 @@
 ** =sed= replacement
    To replace the original string with the new in a specific range,
    try =perl -ne 's/this/that/g if (m/PatternA/..m/PatternB/)'=.
+   I never try other cases without specificing a range.
