@@ -62,6 +62,7 @@
 ** examine the status
    * =crab status [-t] <CRAB-project-directory>=
 * PAT
+  Need to be done
 * Trigger info
 ** How trigger path is designed
 *** Path
@@ -92,6 +93,7 @@
     * =hltInfo= or McM
       [[https://twiki.cern.ch/twiki/bin/view/CMS/HowToFindHLTMenu][More details]]
 *** Find prescale
+    Need to be done.
 * McM
   [[https://indico.cern.ch/event/976524/][McM]]
 ** Term
@@ -111,3 +113,13 @@
    - Dataset name structure:
      DatasetName/Campaign-ProcessingString-globalTag-Ext-Version/DataTier
 ** Gridpacks
+   Need to be done...
+* Message and logger
+** Timing information
+   #+begin_example
+process.Timing = cms.Service("Timing",
+  summaryOnly = cms.untracked.bool(False),
+  useJobReport = cms.untracked.bool(True)
+)
+   #+end_example
+   See more in this [[https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideEDMTimingAndMemory][link]].

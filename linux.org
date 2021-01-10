@@ -60,6 +60,7 @@
     Please consult this [[https://www.reddit.com/r/Fedora/comments/ii3tor/install_fedora_32_or_33_on_windows_10_wsl_2/][post]] and this [[https://dev.to/bowmanjd/install-fedora-on-windows-subsystem-for-linux-wsl-4b26][link]].
 *** Some configurations after installations
     Create or edit the file =/etc/wsl.conf=.
+    Append to =wsl.conf= the following content:
     #+BEGIN_EXAMPLE
 [automount]
 enabled = true
@@ -68,3 +69,42 @@ options = "metadata,umask=22,fmask=111"
 [interop]
 appendWindowsPath = false
     #+END_EXAMPLE
+*** Explore linux files using Widows explorer
+    Comment out the lines inside =/etc/wsl.conf=,
+    #+BEGIN_EXAMPLE
+#[interop]
+#appendWindowsPath = false
+    #+END_EXAMPLE
+    And then run =explorer.exe .=. See this [[https://stackoverflow.com/questions/44245721/launching-explorer-from-wsl][post]].
+
+    Or use =PowerShell= to check =WSL= directory outside =Linux=.
+    Then you do not have to edit =/etc/wsl.conf=. See this [[https://github.com/microsoft/WSL/issues/4027#issuecomment-494969089][post]].
+    Run =dir //wsl$/<your-distro>=. To get =<your-distro>=,
+    run =wsl -l= inside =PowerShell=.
+*** Windows terminal shortcuts
+    If you want to disable some keybindings, like "toggleFullscreen",
+    use the following,
+    #+begin_example
+{ "command": null, "keys": "alt+enter" },
+{ "command": null, "keys": "f11" },
+    #+end_example
+    More actions please see [[https://docs.microsoft.com/en-us/windows/terminal/customize-settings/actions][this link]] and [[https://superuser.com/questions/1558490/how-can-i-remove-a-default-key-binding-in-windows-terminal][this post]].
+
+    For the time being, the shortcut =C-c C-,= in =org-mode= does not work.
+    I may give up =Windows Terminal=.
+*** =X11= supports
+    I followed this [[https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2][link]].
+    Append this two lines into ~.bashrc~ or other similar files.
+    #+begin_example
+export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0
+export LIBGL_ALWAYS_INDIRECT=1
+    #+end_example
+    The suggested =X11= application is [[https://sourceforge.net/projects/vcxsrv/][VcXSrv]]. You need to toggle the option
+    =Disable access control= when you open it.
+*** Change the default shell
+    I did not find =chsh= which is supposed to switch shell in some other
+    releases of =Linux=. Instead I chose to directly edit =/etc/passwd=.
+
+    I want to try =oh-my-zsh=. I installed =zsh= via =sudo dnf install zsh=.
+    And I followed the [[https://ohmyz.sh/#install][link]] to download =oh-my-zsh=. I have not mastered it
+    yet. You can read its [[https://github.com/ohmyzsh/ohmyzsh/wiki][wiki]].
