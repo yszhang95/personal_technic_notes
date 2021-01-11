@@ -93,6 +93,7 @@ appendWindowsPath = false
     For the time being, the shortcut =C-c C-,= in =org-mode= does not work.
     I may give up =Windows Terminal=.
 *** =X11= supports
+    <<X11-supports-wsl>>
     I followed this [[https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2][link]].
     Append this two lines into ~.bashrc~ or other similar files.
     #+begin_example
@@ -108,3 +109,25 @@ export LIBGL_ALWAYS_INDIRECT=1
     I want to try =oh-my-zsh=. I installed =zsh= via =sudo dnf install zsh=.
     And I followed the [[https://ohmyz.sh/#install][link]] to download =oh-my-zsh=. I have not mastered it
     yet. You can read its [[https://github.com/ohmyzsh/ohmyzsh/wiki][wiki]].
+*** =gnome-terminal=
+    I can run =gnome-terminal= after running
+    #+begin_example
+    sudo dnf install gnome-terminal dbus dbus-x11
+    #+end_example
+    After setting up the environment variable following [[X11-supports-wsl]]
+    (or try another way), =gnome-terminal= can work.
+
+    If you do not write those two lines (see [[X11-supports-wsl]])
+    into =.bashrc=. You may face errors like
+    #+begin_example
+libGL error: No matching fbConfigs or visuals found
+libGL error: failed to load driver: swrast
+    #+end_example
+    To fix it, you may try =sudo dnf install mesa-dri-drivers=.
+    If it does not work, you can try
+    #+begin_example
+DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0 LIBGL_ALWAYS_INDIRECT=1 dbus-launch gnome-terminal
+    #+end_example
+
+    I have not found a way successfully starting terminal from windows
+    shortcuts.
