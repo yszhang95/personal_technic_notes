@@ -246,3 +246,15 @@ int main()
 
     I cannot figure out why the first character in =zsh= would display in
     wrong way. You may consult the [[https://unix.stackexchange.com/questions/90772/first-characters-of-the-command-repeated-in-the-display-when-completing][link]] to solve it.
+*** =man= utilities
+    See this [[https://ask.fedoraproject.org/t/wsl-2-and-man-pages/11337][link]]. I quote his words here:
+    #+begin_quote
+Comment out or remove =tsflags=nodocs= from:
+=/etc/dnf/dnf.conf=
+Remove and reinstall =man & man-db= and =$ man man= now works as expected.
+Because the =rootfs= system is being borrowed from a container project,
+docs are turned off by default to save space. If you have any packages
+already install and you require the man pages,
+it will need to be reinstalled;
+so the man pages can be grabbed at install time.
+    #+end_quote
