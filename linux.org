@@ -109,7 +109,7 @@ export LIBGL_ALWAYS_INDIRECT=1
     I want to try =oh-my-zsh=. I installed =zsh= via =sudo dnf install zsh=.
     And I followed the [[https://ohmyz.sh/#install][link]] to download =oh-my-zsh=. I have not mastered it
     yet. You can read its [[https://github.com/ohmyzsh/ohmyzsh/wiki][wiki]].
-*** =gnome-terminal=
+*** Terminals
     I can run =gnome-terminal= after running
     #+begin_example
     sudo dnf install gnome-terminal dbus dbus-x11
@@ -131,3 +131,118 @@ DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0 L
 
     I have not found a way successfully starting terminal from windows
     shortcuts.
+
+    I successfully run =konsole= from a windows shortcut. Run
+    =sudo dnf install konsole dbus dbus-x11=. And then in windows platform,
+    create two files. I consulted two links, [[https://itnext.io/using-windows-10-as-a-desktop-environment-for-linux-7b2d8239f2f1][link-1]] and [[https://baroni.tech/posts/best-wsl-terminal/][link-2]]. I post
+    scripts here. Script-1 will be used in script-2.
+
+    The content of script-1 (I named it =wsl-runner-app.bat=):
+    #+begin_example
+@echo off
+for /f "tokens=3 delims=: " %%I in ('netsh interface IPv4 show addresses "vEthernet (WSL)" ^| findstr /C:"IP Address"') do set ip==%%I
+set ipAddress=%ip:~1%
+Powershell.exe wsl "DISPLAY='%ipAddress%':0" %1
+    #+end_example
+    Script-2 looks like (I named it =runkonsole.vbs=):
+    #+begin_example
+Function CheckCommandIsRunning(ProcessName)
+	sComputerName = "."
+	Set objWMIService = GetObject("winmgmts:\\" & sComputerName & "\root\cimv2")
+	sQuery = "SELECT * FROM Win32_Process WHERE CommandLine LIKE '%" + ProcessName + "%'"
+	Set objItems = objWMIService.ExecQuery(sQuery)
+	If objItems.Count > 0 Then
+		CheckCommandIsRunning = True
+	Else
+		CheckCommandIsRunning = False
+	End If
+	Set objWMIService = Nothing
+	Set objItems = Nothing
+End Function
+
+Function SilentlyStartCommand(Command)
+	Set WshShell = CreateObject("WScript.Shell" )
+	WshShell.Run Command, 0 
+	Set WshShell = Nothing 
+End Function
+
+If Not CheckCommandIsRunning("vcxsrv.exe") Then
+	SilentlyStartCommand """C:\Program Files\VcXsrv\vcxsrv.exe"" :0 -ac -terminate -lesspointer -multiwindow -clipboard -wgl"
+	WScript.Sleep 1000
+End If
+
+Set oShell = CreateObject ("Wscript.Shell") 
+Dim strArgs
+strArgs = "cmd /c wsl-runner-app.bat konsole"
+oShell.Run strArgs, 0, false
+    #+end_example
+    It will run =VcXsrv= automatically. But note, if you have already run
+    =VcXsrv=, this script will crash. Make sure you do not do that.
+
+    The keybindings of =gnome-terminal=, =konsole= and other terminals does
+    not work properly. I cannot type in =C-,=. Instead I will have =,= if
+    I typ =C-,=.
+
+    Finally, I switch to =xterm=. It can work properly. I consulted several
+    links: [[https://www.reddit.com/r/bashonubuntuonwindows/comments/izo943/setting_default_font_type_and_size_with_vcxsrv/][Reddit-link-for-xterm-configuration]],
+    [[https://wiki.archlinux.org/index.php/Xterm][xterm-descriptions-on-ArchLinuxWiki]],
+    [[https://wiki.archlinux.org/index.php/X_resources][X-resources-descriptions-on-ArchLinuxWiki]],
+    [[https://github.com/Filius-Patris/dotfiles/blob/master/xterm/xdefaults][a-portable-configuration-on-github]]. I post my configurations
+    in =~/.Xresources=. To make it take effects, run =xrdb ~/.Xresources=
+    or =xrdb -merge ~/.Xresources=. Option =merge= will keep the old and
+    append the new (that is why it is called "merge"). The contents of
+    =.Xresources= are:
+    #+begin_example
+Xterm*locale: false
+Xterm*utf8: 1
+XTerm*renderFont: true
+
+!XTerm*reverseVideo:    on
+xterm*VT100.Translations: #override \
+                 Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
+                 Ctrl Shift <Key>C:    copy-selection(CLIPBOARD)
+
+! Fonts ====================================================
+! set font and fontsize
+! XTerm*faceName: DejaVu Sans Mono
+XTerm*faceName: Terminus
+XTerm*faceSize: 16
+
+! VT Font Menu: Unreadable
+xterm*faceSize1: 6
+! VT font menu: Tiny
+xterm*faceSize2: 8
+! VT font menu: Medium
+xterm*faceSize3: 10
+! VT font menu: Large
+xterm*faceSize4: 14
+! VT font menu: Huge
+xterm*faceSize5: 20
+
+XTerm*termName: xterm-256color
+XTerm*metaSendsEscape: true
+
+XTerm*saveLines: 4096
+XTerm*scrollBar: true
+XTerm*scrollbar.width: 8
+
+    #+end_example
+
+    To start =xterm= from =$HOME=, I created a small program using =c++=.
+    I create a file called =run_xterm.cpp= and compile it with
+    =g++ run_xterm.cpp -o run-xterm=. And put it under =/usr/bin=. Then you
+    can replace the line ~strArgs = "cmd /c wsl-runner-app.bat konsole"~
+    with =strArgs = "cmd /c wsl-runner-app.bat run-xterm"=. The file content
+    of =run_xterm.cpp= are shown below:
+    #+begin_src c++
+#include <cstdlib>
+#include <iostream>
+
+int main()
+{
+    std::system("cd;xterm /bin/zsh");
+}
+    #+end_src
+
+    I cannot figure out why the first character in =zsh= would display in
+    wrong way. You may consult the [[https://unix.stackexchange.com/questions/90772/first-characters-of-the-command-repeated-in-the-display-when-completing][link]] to solve it.
