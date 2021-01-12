@@ -187,7 +187,8 @@ oShell.Run strArgs, 0, false
     links: [[https://www.reddit.com/r/bashonubuntuonwindows/comments/izo943/setting_default_font_type_and_size_with_vcxsrv/][Reddit-link-for-xterm-configuration]],
     [[https://wiki.archlinux.org/index.php/Xterm][xterm-descriptions-on-ArchLinuxWiki]],
     [[https://wiki.archlinux.org/index.php/X_resources][X-resources-descriptions-on-ArchLinuxWiki]],
-    [[https://github.com/Filius-Patris/dotfiles/blob/master/xterm/xdefaults][a-portable-configuration-on-github]]. I post my configurations
+    [[https://github.com/Filius-Patris/dotfiles/blob/master/xterm/xdefaults][a-portable-configuration-on-github]] and [[https://www.emacswiki.org/emacs/MetaKeyProblems][Emacs-Meta-Key-Wiki]].
+    I post my configurations
     in =~/.Xresources=. To make it take effects, run =xrdb ~/.Xresources=
     or =xrdb -merge ~/.Xresources=. Option =merge= will keep the old and
     append the new (that is why it is called "merge"). The contents of
@@ -221,6 +222,7 @@ xterm*faceSize5: 20
 
 XTerm*termName: xterm-256color
 XTerm*metaSendsEscape: true
+XTerm*eightBitInput: false
 
 XTerm*saveLines: 4096
 XTerm*scrollBar: true
