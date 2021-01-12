@@ -247,7 +247,11 @@ int main()
     #+end_src
 
     I cannot figure out why the first character in =zsh= would display in
-    wrong way. You may consult the [[https://unix.stackexchange.com/questions/90772/first-characters-of-the-command-repeated-in-the-display-when-completing][link]] to solve it.
+    wrong way. You may consult the [[https://unix.stackexchange.com/questions/90772/first-characters-of-the-command-repeated-in-the-display-when-completing][link]] to solve it. After installing
+    =en_US.UTF-8=, I have everything normal. I am not sure whether this
+    is the reason. To install the corresponding =locale=, run
+    ~sudo dnf install glibc-langpack-en~.
+
 *** =man= utilities
     See this [[https://ask.fedoraproject.org/t/wsl-2-and-man-pages/11337][link]]. I quote his words here:
     #+begin_quote
