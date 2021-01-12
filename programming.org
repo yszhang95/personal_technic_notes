@@ -16,4 +16,45 @@
    For more info please see the manual of ar via =man ar= and have a
    look at section =OPTIONS=.
 ** Shared libraries
-   Shared libraries are libraries loaded when the programs start.
+   Shared libraries are libraries loaded when the programs start. There
+   are some conventions you may be interested in.
+*** Shared library names
+    There are three types of names for each library:
+    - "soname". It has the prefix "lib", the name of the library, the
+      phrase ".so", followed by a period and the version number (the lowest
+      level C libraries does not start with "lib"). A fully-qualified soname
+      includes the directly it is in as a prefix. And on a working system
+      a fully-qualified soname is simply a symbolic link to the shared
+      library's "real name".
+    - "real name". It is the filename containing the actual library code.
+      The real name adds to the soname a period, a minor number, another
+      period, and the release number. The last period and release number
+      are optional. The minor number and release number supports configuration
+      contral by letting you know exactly what version(s) of the library
+      are installed.
+    - "linker name" (a jargon). It is used by compiler when requesting
+      a library, which is simply the soname without any version number.
+
+    After you create a shared library with a specific filename (real name),
+    use =ldconfig= to help you create the soname (a symbolic link to the
+    file) and set up cache file (=/etc/ld.so.cache= by default).
+
+    But you need to manually create linker name during the software
+    installation. =ldconfig= cannot do this. You just create a symbolic
+    link to the soname (recommended) or the real name.
+
+    Here is an example, =/usr/lib64/libreadline.so.8.0= (on ~Fedora-33-WSL~)
+    is a fully-qualified real name. And =/usr/lib64/libreadline.so.8= is
+    the soname (symbolic link to the real name). You can create a linker name
+    =/usr/lib64/libreadline.so= (I did not find it). Another example is
+    =/usr/lib64/root/libMathCore.so.6.22.06=,
+    =/usr/lib64/root/libMathCore.so.6.22= and =/usr/lib64/root/libMathCore.so=,
+    after installing =ROOT= via =sudo dnf install root=.
+*** File system
+    It is better to follow [[https://www.gnu.org/prep/standards/html_node/Directory-Variables.html][GNU standards]] and [[https://www.pathname.com/fhs/][Filesystem Hierarchy Standard]].
+    Install the developers' source codes to =/usr/local/lib= (usually you
+    manually install it) while install the distributors' source codes to
+    =/usr/lib=. Note you should put libraries which can only be called via
+    libraries under =/usr/libexec=. And one thing to keep in mind, =RedHat=
+    derived systems do not include =/usr/local/lib= by default in their
+    search for libraries.
