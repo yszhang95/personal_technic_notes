@@ -1,5 +1,6 @@
 #+TITLE: Programming stuffs
 * Executables and libaries
+  Please consulte this [[https://tldp.org/HOWTO/Program-Library-HOWTO/index.html][paper]].
   Only the executables and libraries in format of Executable and
   Linking Format (ELF) are discussed.
 ** Three types of program libraries
@@ -58,3 +59,207 @@
     libraries under =/usr/libexec=. And one thing to keep in mind, =RedHat=
     derived systems do not include =/usr/local/lib= by default in their
     search for libraries.
+*** How libraries are used
+    Shared libraries are loaded via loader when program start on unix-like
+    systems. The loader is =/lib/ld-linux.so.X= where =X= is the version
+    number. On =Fedora-33-WSL2=, it is =/lib64/ld-linux-x86-64.so.2=. It will
+    find and load all shared libraries used by the program.
+
+    The search paths are stored in the file =/etc/ld.so.conf=. On Red Hat
+    derived systems, =/usr/local/lib= is usually not considered as the
+    search path. To fix it, put it inside =/etc/ld.so.conf=. I illustrate
+    an example here. The content in =/etc/ld.so.conf= is
+    #+begin_example
+include ld.so.conf.d/*.conf
+    #+end_example
+    And the content in =/etc/ld.so.conf.d/root-x86_64.conf= is
+    #+begin_example
+/usr/lib64/root
+    #+end_example
+
+    There is also a file called =/etc/ld.so.preload=. You can put the names
+    of a few =.o= files, which contains some functions you want to override
+    the standard ones. These functions should only be used in emergency.
+
+    Instead of searching each time when program start up, the program will
+    use a cache file, =/etc/ld.so.cache=. You should run =ldconfig= to update
+    the cache file once the libraries change (usually done in a step during
+    the software installation). The cache file on =FreeBSD= is put on
+    different path (maybe =/var/run/ld-elf.so.hints= for ELF and
+    =/var/run/ld.so.hints= for [[https://en.wikipedia.org/wiki/A.out][a.out]]). Please consult other materials.
+*** Environment variables
+**** =LD_LIBRARY_PATH=
+     Libraries under paths saved in =LD_LIBRARY_PATH= will be searched at
+     first, before the standard libraries. This is useful when you debug
+     a new library. See more in [[http://xahlee.info/UnixResource_dir/_/ldpath.html][Why LD_LIBRARY_PATH is Bad]]. I am not sure
+     whether this environment variable works without updating
+     =/etc/ld.so.cache=. I think it works. Someone may check.
+
+     If you do not want to set =LD_LIBRARY_PATH=, you can try
+     #+begin_src shell
+/lib/ld-linux.so.2 --library-path PATH EXECUTABLE
+     #+end_src
+     Then the program =EXECUTABLE= will load libraries under =PATH=. This
+     is a substitute of =LD_LIBRARY_PATH=.
+
+     *But let us say again, DO NOT USE THIS FOR NORMAL USE*.
+
+**** =LD_DEBUG=
+     It can be set to =files=, =bindings=, =libs= and =versions=. More details
+     should be consulted via google search. An example of usage is:
+     #+begin_src shell
+export LD_DEBUG=files
+command_to_run
+     #+end_src
+     Again, *DO NOT USE THIS FOR NORMAL USE*.
+
+**** Other variables
+     There are a number of variables beginning with =LD_= or =RTLD_=. Please
+     consult manual of =gcc=.
+
+*** Creating a shared library
+    You should follow this:
+    #+begin_src shell
+gcc -shared -Wl,-soname,your_soname \
+    -o library_name file_list library_list
+    #+end_src
+    Here is an example.
+    #+begin_src shell
+gcc -fPIC -g -c -Wall a.c
+gcc -fPIC -g -c -Wall b.c
+gcc -shared -Wl,-soname,libmystuff.so.1 \
+    -o libmystuff.so.1.0.1 a.o b.o -lc
+    #+end_src
+    The option =-fPIC= (or =-fpic=) means "position independent code"
+    generation and is required when creating shared libraries. The
+    option =fpic= may generate faster and smaller-size files but not
+    work anytime while =fPIC= always work. The option =-Wl= is used to
+    pass the soname. It preceeds the comma and
+    =-soname,name=. Unescaped whitespaces will lead to fatal errors
+    and confuse the compiler (please consult this [[https://stackoverflow.com/questions/6562403/i-dont-understand-wl-rpath-wl][link]]).
+    The other options means: enabling debug
+    information (=-g=), generating warnings (=-Wall=) and compiling
+    and generating object files (=-c=).
+
+    Several tips should be kept in mind.
+    - Never use =-fomit-frame-pointer= unless you have to.
+    - Sometimes you need =-Wl,-export-dynamic= or =-rdynamic=. The later
+      one usually on works on =Linux=. Please consult more via web search
+      and the [[https://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html][link]].
+
+    If you are modifying a library used by other libraries and programs and
+    you do not want them to use the modified version except the one you are
+    testing against. You can use options =rpath= of =ld= command. This option
+    specifies the runtime library search path of that particular being
+    compiled. From =gcc=, you can invoke the =rpath= option by specifying
+    it this way:
+    #+begin_src shell
+-Wl,-rpath,$(DEFAULT_LIB_INSTALL_PATH)
+    #+end_src
+    In this case, you do not need to bother =LD_LIBRARY_PATH= and
+    you just make sure it does not conflict.
+
+    I made a small example here. It includes a collection of files =Makefile=,
+    =main.cpp=, =lib/libmyprint.h=, =lib/libmyprint1.cpp= and
+    =lib/libmyprint2.cpp=. You need to create the directory =libmyprint1=
+    and =libmyprint2=. I pasted the contents of these files here.
+
+    - =Makefile=
+    #+begin_src shell
+all: libmyprint1/libmyprint.so libmyprint2/libmyprint.so \
+     main_lib1 main_lib2 main_lib2_rpath
+
+main_lib1: main.cpp
+	g++ $^ -o $@ -Llibmyprint1 -lmyprint
+# I do not include the header here as well, you may figure out why it works.
+# I do not know
+
+main_lib2: main.cpp
+	g++ $^ -o $@ -Llibmyprint2 -lmyprint
+
+main_lib2_rpath: main.cpp
+	g++ $^ -o $@ -Wl,-rpath,'./libmyprint2' -Llibmyprint2 -lmyprint
+
+%/libmyprint.so: lib/%.o
+	g++ -shared -o $@ $^ -lc
+
+lib/%.o : lib/%.cpp lib/libmyprint.h
+	g++ -fPIC -g -Wall -o $@ -c $<
+# I do not include header in the command here because it will produce an error
+# like: file.o cannot be recognized by the step g++ -shared something.
+# So I use $< instead of $^
+.PHONY: clean
+clean:
+	rm -rf lib/*o */*so */*gch main_lib*
+    #+end_src
+    - =lib/libmyprint.h=
+    #+begin_src c++
+#ifndef __LIB_MYPRINT_h__
+#define __LIB_MYPRINT_h__
+
+#include <iostream>
+#include <string>
+
+void print_message(const std::string&);
+
+#endif
+    #+end_src
+    - =lib/libmyprint1.cpp=
+    #+begin_src c++
+#include "libmyprint.h"
+
+#ifdef __LIB_MYPRINT_h__
+
+using std::cout;
+using std::endl;
+using std::string;
+
+void print_message(const string& s)
+{
+  cout << "print_message (version 1): " << s << endl;
+}
+
+#endif
+    #+end_src
+    - =lib/libmyprint2.cpp=
+    #+begin_src c++
+#include "libmyprint.h"
+
+#ifdef __LIB_MYPRINT_h__
+
+using std::cout;
+using std::endl;
+using std::string;
+
+void print_message(const string& s)
+{
+  cout << "print_message (version 2): " << s << endl;
+}
+
+#endif
+    #+end_src
+    - =main.cpp=
+    #+begin_src c++
+#include <iostream>
+#include "lib/libmyprint.h"
+
+int main()
+{
+  print_message("Hello, world!");
+}
+    #+end_src
+
+    And you can run the following: =./main_lib1=, =./main_lib2= and
+    =./main_lib2_rpath=. You will have the following output:
+    #+begin_example
+print_message (version 1): Hello, world!
+print_message (version 2): Hello, world!
+print_message (version 2): Hello, world!
+    #+end_example
+    And if you set =LD_LIBRARY_PATH= via
+    ~export LD_LIBRARY_PATH=./libmyprint1~, you will have the following output:
+    #+begin_example
+print_message (version 1): Hello, world!
+print_message (version 1): Hello, world!
+print_message (version 2): Hello, world!
+    #+end_example    
