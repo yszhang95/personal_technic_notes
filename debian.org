@@ -349,7 +349,7 @@ MyClassDict.cxx: MyClass.h Linkdef.h
     #+name: MyClass.h
     #+begin_src C++
     /* MyClass.h */
-    include <TString.h>
+    #include <TString.h>
     class Outer
     {
       public:

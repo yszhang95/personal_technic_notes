@@ -1,0 +1,111 @@
+#+TITLE: Tips for ROOT6
+* Library generation
+** Build your own shared library
+    See this [[https://root-forum.cern.ch/t/shared-libraries-interpreter-vs-compiled-macro/29389][post]] and this [[https://root.cern/manual/interacting_with_shared_libraries/][link]].
+    Make use of ~rootcling~ and ~root-config~ to generate ~rootmap~.
+    To make ~rootmap~ work, append the path to ~rootmap~ to
+    ~LD_LIBRARY_PATH~ or its equivalence.
+    My example codes are posted below.
+    #+NAME: File system structure
+    #+begin_verse
+    .
+    ├── Linkdef.h
+    ├── Makefile
+    ├── Inner.cc
+    ├── Outer.cc
+    ├── Inner.h
+    └── Outer.h
+    #+end_verse
+
+    #+name: Linkdef.h
+    #+begin_src c++
+    /* Linkdef.h */
+    #ifdef __CLING__
+    #pragma link off all globals;
+    #pragma link off all classes;
+    #pragma link off all functions;
+    #pragma link C++ nestedclasses;
+
+    #pragma link C++ class Outer+;
+    #pragma link C++ class Inner+;
+
+    #endif
+    #+end_src
+
+    #+name: Makefile
+    #+begin_src shell
+# Makefile
+CXXFLAGS=-std=c++14 -fPIC -I$(shell root-config --incdir)
+LDFLAGS=$(shell root-config --libs)
+CXX=g++
+
+all: libMyClass.so
+
+libMyClass.so: Outer.cc Inner.cc MyClassDict.cxx
+	$(CXX) -shared -o $@ $(CXXFLAGS) $(LDFLAGS) $^
+
+MyClassDict.cxx: Outer.h Inner.h Linkdef.h
+	rootcling -f $@ -rmf MyClassDict.rootmap -rml libMyClass.so $^
+
+.PHONY: clean
+clean:
+	rm -rf MyClassDict* libMyClass.so
+    #+end_src
+
+    #+name: Outer.h
+    #+begin_src C++
+/* Outer.h */
+#include "TString.h"
+#include <iostream>
+
+class Outer
+{
+  public:
+    Outer();
+  private:
+    TString _outer;
+};
+
+    #+end_src
+
+    #+name: Outer.cc
+    #+begin_src C++
+/* Outer.cc */
+#include "Outer.h"
+
+using std::cout;
+using std::endl;
+
+Outer::Outer (): _outer("outer")
+{
+  cout << _outer << endl;
+}
+    #+end_src
+
+    #+name: Inner.h
+    #+begin_src c++
+#include "TString.h"
+#include <iostream>
+/* Inner.h */
+class Inner
+{
+ public:
+  Inner();
+ private:
+  TString _inner;
+};
+    #+end_src
+
+    #+NAME: Inner.cc
+    #+begin_src c++
+/* Inner.cc */
+#include "Inner.h"
+
+using std::cout;
+using std::endl;
+
+Inner::Inner (): _inner("inner")
+{
+  cout << _inner << endl;
+}
+    #+end_src
