@@ -103,7 +103,7 @@
     2. Move to the end.
     3. =C-w= (kill-region) or =M-w= (Kill-ring-save)
     4. Move to the place you want to paste
-    5.=C-y= (yank), =M-y= yank more previous kills.
+    5. =C-y= (yank), =M-y= yank more previous kills.
 
 *** Undo  =C-/=, =C-_=, =C-x u=
 *** Completion
@@ -218,15 +218,7 @@ $emacsclient -e '(kill-emacs)' # or try below
 $emacsclient -e '(client-save-kill-emacs)'
    #+end_src
 
-* desktop
-** bookmark
-   'desktop-path' is searched to find a desktop file to load.
-   if you use Bookmark+,
-   then you have any number of desktops and use them as bookmarks,
-   jumping from one to another at anytime.
-   You create a desktop bookmark using =C-x r K=
-   (command 'bmkp-set-desktop-bookmark')
-* ivy and swiper
+* =ivy= and =swiper=
   [[https://oremacs.com/swiper/][IvyUserManual]]
 ** Started
    =M-x ivy-mode=
@@ -237,29 +229,111 @@ $emacsclient -e '(client-save-kill-emacs)'
     A lot of global key bindings are overloaded or undefined by prelude.
     Check later.
 *** Minibuffer key bindings
-* org mode
-** deadline
+* Org mode
+  Please consult this [[https://orgmode.org/orgguide.pdf][link]] (maybe outdated) and [[https://www.cnblogs.com/Open_Source/archive/2011/07/17/2108747.html][its translation]].
+** Deadline
    =C-c C-d=
-** link
-   =C-c C-l= or =[[link][description]]= or =[link]=,
-** add a new header
-   on cygwin, src_sh[:exports code]{C-<RET>}, otherwise, =M-<RET>=
+** Link
+   =C-c C-l= or =[[link][description]]= or =[link]=.
+
+   =org-store-link= will store a link to the current location. For example,
+   put the =point= under =(provide 'init-org)= in
+   =~/.emacs.d/lisp/init-org.el=. Run this command, you will find the following
+   message.
+   #+begin_example
+Stored: file:~/.emacs.d/lisp/init-org.el::(provide 'init-org)
+   #+end_example
+   
+   Please also see this [[https://orgmode.org/manual/Handling-Links.html][link]]. 
+** Outline and document structure
+   ~org-cycle~ is bound to =TAB=.
+*** Structure editing
+**** Keyboard with arrows
+     - =M-RET= :: Insert a new header with the same level as current.
+       On cygwin, src_org[:exports code]{C-<RET>}, otherwise,
+       =M-<RET>=.
+     - =M-S-RET= :: Insert a new =TODO= entry with same level as current
+       heading.
+     - =TAB= in new empty entry :: In a new entry with no text yet,
+       =TAB= cycles through reasonable levels.
+     - =M-LEFT/RIGHT= :: Promote or demote current heading by one level.
+     - =M-S-LEFT/RIGHT= :: Promote or demote the current heading with
+       its subtree by one level.
+     - =M-UP/DOWN= :: Swap the current heading and its subtree with
+       previous/next heading of same level.
+     - =M-S-UP/DOWN= :: Move the current heading upward or downward
+       without moving its subtree, i.e., the headings are swapped
+       without considering their levels.
+     - =C-c C-w= :: Refile the entry or region to a different location.
+     - =C-c n s/w= :: Narrow the buffer to the current subtree and widen
+       it again.
+
+**** Alternative keys for arrows
+     [[https://orgmode.org/manual/TTY-Keys.html][Using Org on a TTY]]
+*** Visibility of cycling
+    - =TAB= :: FOLDED->CHILDREN->SUBTREE cycle
+    - =S-TAB= or =C-u TAB= :: OVERVIEW->CONTENTS->SHOWALL cycle
+    - =C-u C-u C-u TAB= :: Show all, including drawers.
+
+    When =EMACS= first visits an =Org= file, the global state is set to
+    =OVERVIEW=. It can be configured via =org-startup-folded= or via the
+    keyword =startup=:
+    #+begin_src org
+    #+STARTUP: content
+    #+end_src
+*** Motion
+    - =C-c C-n= :: next heading
+    - =C-c C-p= :: previous heading
+    - =C-c C-f= :: next heading same level
+    - =C-c C-b= :: previous heading same level
+    - =C-c C-u= :: backward to higher level heading
+*** Sparse tree
+    Sparse tree shows selected information in an outline tree and hide
+    others.
+    - =C-c /= :: This prompts for an extra key to select a sparse-tree
+      creating command.
+    - =C-c / r= :: Occur. Prompts for a =regexp= and shows a sparse with all
+      matches. Each match is also highlighted; the highlights disappear
+      by pressing =C-c C-c=.
+
+*** Plain lists
+    [[https://orgmode.org/manual/Plain-Lists.html][Plain-Lists]]
+    - Unordered, start with '-', '+' or '*'
+    - Ordered, start with '1.' or '1)' or '[@20]'. Alphabets are
+      allowed, see more on the link.
+    - Description, used like
+      src_org[:exports code]{- Elijah Wood :: He plays Frodo}.
+    Items belonging to the same list must have the same indentation on the
+    first line. An item ends before the next line that is indented like its
+    bullet/number, or less. A list ends when all items are closed, or before
+    two blank lines.
+
+    The following commands act on items when point is in the first line of
+    an item (the line with the bullet number).
+    - =TAB= :: Items can be folded just like headline levels.
+    - =M-RET= :: Insert a new item at current level. With a prefix argument,
+      force a new heading.
+    - =M-S-RET= ::  Insert a new item with a checkbox.
+    - =M-S-UP/DOWN= :: Move the item including subitems up/down.
+    - =M-LEFT/RIGHT= :: Decrease/increase the indentation of an item, leaving
+      children alone.
+    - =M-S-LEFT/RIGHT= :: Decrease/increase the indentation of the item,
+      including subitems.
+    - =C-c C-c= :: If there is a checkbox in the item line, toggle the state
+      of the checkbox. Also verify bullets and indentation consistency in the
+      whole list.
+    - =C-c -= :: Cycle the entire list level through the different
+      itemize/enumerate bullets ('-','+','*','1.','1)').
+
 ** Code blocks
    [[https://orgmode.org/manual/Structure-of-Code-Blocks.html][CodeBlocks]],
-   you can also use ~~ and == for inline codes.
-** Structure templates
-   [[https://orgmode.org/manual/Structure-Templates.html#Structure-Templates][StructureTemplates]]
-   =C-c C-,=
-** Alternative keys for arrows
-   [[https://orgmode.org/manual/TTY-Keys.html][Using Org on a TTY]]
-
-** Bullet list
-   [[https://orgmode.org/manual/Plain-Lists.html][Plain-Lists]]
-   - Unordered, start with '-', '+' or '*'
-   - Ordered, start with '1.' or '1)' or '[@20]'. Alphabets are
-     allowed, see more on the link.
-   - Description, used like
-     src_org[:exports code]{- Elijah Wood :: He plays Frodo}.
+*** Inline
+    you can also use ~~ and == for inline codes.
+*** Structure templates
+    [[https://orgmode.org/manual/Structure-Templates.html#Structure-Templates][StructureTemplates]]
+    ~C-c C-,~
+*** Evaluating code blocks
+    [[https://orgmode.org/manual/Evaluating-Code-Blocks.html][link]]
 
 ** Export
 *** Commands
@@ -313,8 +387,6 @@ $emacsclient -e '(client-save-kill-emacs)'
    Paragraphs are separated by at least one empty line. Regarding formats:
    VERSE, QUOTE and CENTER,
    details can be found in [[https://orgmode.org/guide/Paragraphs.html#Paragraphs][Paragraphs]].
-** Evaluating code blocks
-   [[https://orgmode.org/manual/Evaluating-Code-Blocks.html][link]]
 * Compilation
 ** C++
 *** Simplest codes
@@ -329,5 +401,28 @@ $emacsclient -e '(client-save-kill-emacs)'
    - =tramp-cleanup-all-connections=
    - =tramp-cleanup-all-buffers=
 * Miscellaneous
+** Font Lock mode
+   Please check this [[https://www.emacswiki.org/emacs/FontLockMode][wiki]] link. In a nutshell, it is a minor mode helping
+   highlight the file according to the programming syntaxes.
 ** Insert the current date to the current buffer
    ~C-u M-! date~. See more in the [[https://www.emacswiki.org/emacs/InsertingTodaysDate][link]] and [[https://stackoverflow.com/questions/251908/how-can-i-insert-current-date-and-time-into-a-file-using-emacs][link]].
+** Define a new keybinidng
+   I read this [[https://stackoverflow.com/questions/906368/what-is-the-difference-between-global-set-key-and-define-key-global-map-in-e][link]]. Please consult the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Key-Bindings.html][guide]] for further information.
+   - =global-set-key= helps you define keybindings globally. The two examples
+     below serve the similar functionality.
+     #+begin_src org
+     (global-set-key "\C-cl" 'org-store-link)
+     (global-set-key (kbd "C-c l" 'org-store-link))
+     #+end_src
+   - =define-key=, I show an example here. It is taken from the [[https://github.com/purcell/emacs.d/blob/master/lisp/init-org.el][purcell-emacs]].
+     #+begin_src org
+     (define-key org-mode-map (kbd "C-M-<up>"))
+     #+end_src
+** Desktop
+*** bookmark
+    'desktop-path' is searched to find a desktop file to load.
+    if you use Bookmark+,
+    then you have any number of desktops and use them as bookmarks,
+    jumping from one to another at anytime.
+    You create a desktop bookmark using =C-x r K=
+    (command 'bmkp-set-desktop-bookmark')
