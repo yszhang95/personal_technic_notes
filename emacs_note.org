@@ -1,3 +1,4 @@
+#+STARTUP: OVERVIEW
 * Basic
 ** Files
 *** Find a file
@@ -15,7 +16,7 @@
       * =C-x k buffer <RET>=    Kill buffer buffer (kill-buffer).
       * =M-x kill-some-buffers= Offer to kill each buffer, one by one.
       * =M-x kill-matching-buffers= Offer to kill all buffers
-        matching a regular expression.
+	matching a regular expression.
 
 ** Commands
 *** Repeat counts
@@ -233,18 +234,6 @@ $emacsclient -e '(client-save-kill-emacs)'
   Please consult this [[https://orgmode.org/orgguide.pdf][link]] (maybe outdated) and [[https://www.cnblogs.com/Open_Source/archive/2011/07/17/2108747.html][its translation]].
 ** Deadline
    =C-c C-d=
-** Link
-   =C-c C-l= or =[[link][description]]= or =[link]=.
-
-   =org-store-link= will store a link to the current location. For example,
-   put the =point= under =(provide 'init-org)= in
-   =~/.emacs.d/lisp/init-org.el=. Run this command, you will find the following
-   message.
-   #+begin_example
-Stored: file:~/.emacs.d/lisp/init-org.el::(provide 'init-org)
-   #+end_example
-   
-   Please also see this [[https://orgmode.org/manual/Handling-Links.html][link]]. 
 ** Outline and document structure
    ~org-cycle~ is bound to =TAB=.
 *** Structure editing
@@ -325,6 +314,257 @@ Stored: file:~/.emacs.d/lisp/init-org.el::(provide 'init-org)
     - =C-c -= :: Cycle the entire list level through the different
       itemize/enumerate bullets ('-','+','*','1.','1)').
 
+** Table
+   An example:
+   #+begin_src org
+   | Name  | Phone | Age |
+   |-------+-------+-----|
+   | Peter |  1234 |  17 |
+   | Anna  |  4321 |  25 |
+   #+end_src
+   A table is re-aligned once you press =TAB=, =RET= or =C-c C-c= inside
+   the table.
+
+   Two quick ways to insert a new table. The first is
+   #+begin_src org
+   | Name  | Phone | Age |
+   |-
+   #+end_src
+   and then type =TAB=. The second is
+   #+begin_src org
+   | Name  | Phone | Age |
+   #+end_src
+   and then type =C-c RET=.
+
+*** Creation and conversion
+    - =C-c |= :: Convert the active region to table. =TAB= and =comma= would
+      serve as delimiters.
+
+*** Re-aligning and field motion
+    - =C-c C-c= :: Re-align the table without moving point.
+    - =TAB= :: Re-align the table and move to the next field. Creates a
+      new row if necessary.
+    - =S-TAB= :: Re-align and move to the previous field.
+    - =RET= :: Re-align the table and move down to the next row. Creates
+      a new row if necessary.
+    - =S-UP/DOWN/LEFT/RIGHT= :: Move a cell up/down/left/right by swapping
+      with adjacent cell.
+    - =M-LEFT/RIGHT= :: Move the current column left/right.
+    - =M-S-LEFT= :: Kill the current column.
+    - =M-S-RIGHT= :: Insert a new column to the left of point position.
+    - =M-UP,M-DOWN= :: Move the current row up/down.
+    - =M-S-UP= :: Kill the current row or horizontal line.
+    - =M-S-DOWN= :: Insert a new row above the current row. With a prefix
+      argument, the line is created below the current one.
+    - =C-c -= :: Insert a horizontal line below current row. With a prefix
+      argument, the line is created above the current line.
+    - =C-c RET= :: Insert a horizontal line below current row, and move the
+      point into the row below that line.
+    - =C-c ^= :: Sort the table lines in the region.
+
+** Hyperlinks
+*** Link
+    =C-c C-l= or =[[link][description]]= or =[link]=. To edit an existing link,
+    put the point upon it and type =C-c C-l=.
+    
+**** Handling links
+     Please also see this [[https://orgmode.org/manual/Handling-Links.html][link]].
+
+     =org-store-link= will store a link to the current location. For
+     example, put the =point= under =(provide 'init-org)= in
+     =~/.emacs.d/lisp/init-org.el=. Run this command, you will find
+     the following message.
+     #+begin_example
+     Stored: file:~/.emacs.d/lisp/init-org.el::(provide 'init-org)
+     #+end_example
+
+     - =C-c C-l= :: Insert a link. This prompts for a link to be
+       inserted into the buffer. You can just type a link, or use
+       history keys =UP= (or =M-p=) and =DOWN= (or =M-n=) to acess
+       stored links. You will be prompted for the description part of
+       the link.
+     - =C-c C-l= (with point on existing link) :: When point is on an
+       existing link, =C-c C-l= allows you to edit the link and description
+       parts of the link.
+     - =C-c C-o= :: Open link at point.
+     - =C-c &= :: Jump back to a recorded position. A position is recorded
+       by the commands following internal links, and by =C-c %=. Using this
+       command several times in direct succession moves through a ring of
+       previously recorded positions.
+
+**** Internal links
+     If the link is not URL-like, it is considered as an internal link.
+     Two popular styles:
+     - =[[#my-custom-id]]= :: Link the entry with the ~CUSTOM_ID~ property
+       ~my-custom-id~.
+     - =[[My Target]]= or =[[My Target][Find my target]]= :: Lead to a text
+       search in the current file for the corresponding target, which looks
+       like ~<<My Target>>~.
+
+**** External links
+     Please check this [[https://orgmode.org/manual/External-Links.html][link]].
+
+     External links are URL-like locator. They start with a short
+     identifying string followed by a colon. There can be no space
+     after the colon. Here are some examples:
+| ~http://www.astro.uva.nl/=dominik~        | on the web                       |
+| ~file:/home/dominik/images/jupiter.jpg~   | file (absolute path)             |
+| ~/home/dominik/images/jupiter.jpg~        | same as above                    |
+| ~file:papers/last.pdf~                    | file (relative path)             |
+| ~./papers/last.pdf~                       | same as above                    |
+| ~file:projects.org~                       | another Org file                 |
+| ~docview:papers/last.pdf::NNN~            | open in DocView mode at page NNN |
+| ~id:B7423F4D-2E8A-471B-8810-C40F074717E9~ | link to heading by ID            |
+| ~news:comp.emacs~                         | Usenet link                      |
+| ~mailto:adent@galaxy.net~                 | mail link                        |
+| ~mhe:folder#id~                           | MH-E message link                |
+| ~rmail:folder#id~                         | Rmail message link               |
+| ~gnus:group#id~                           | Gnus article link                |
+| ~bbdb:R.*Stallman~                        | BBDB link (with regexp)          |
+| ~irc:/irc.com/#emacs/bob~                 | IRC link                         |
+| ~info:org#Hyperlinks~                     | Info node link                   |
+
+** ~TODO~ items
+*** Basic functionality
+    Here is an example: ~*** TODO Write letter to Sam Fortune~.
+    Other useful commands are:
+    - =C-c C-t= :: Rotate the ~TODO~ state of the current item among
+      -> (unmarked) -> TODO -> DONE ->; The same rotation can also be
+      done "remotely" from the agenda buffer with the ~t~ command key.
+    - =S-RIGHT/LEFT= :: Select the following/preceding ~TODO~ state,
+      similar to cycling.
+    - =C-c / t= :: View ~TODO~ items in a /sparse tree/. Folds the entire
+      buffer, but shows all ~TODO~ items -- with not-DONE state -- and the 
+      headings hierarchy above them.
+    - =M-x org-agenda t= :: Show the global ~TODO~ list. Collects the
+      ~TODO~ items (with not-DONE states) from all agenda files into a
+      single buffer.
+    - =S-M-RET= :: Insert a new ~TODO~ entry below the current one.
+
+    Changing a ~TODO~ state can also trigger tag changes. See the docstring
+    of the option ~org-todo-state-tags-triggers~ for details.
+*** Multi-state workflow
+    You can use ~TODO~ keywords to indicate @emph{sequential} working
+    progress states:
+    #+begin_src org
+    (setq org-todo-keywords
+          '((sequence "TODO" "FEEDBACK" "VERIFY" "|" "DONE" "DELEGATED")))
+    #+end_src
+    The vertical bar seperates the ~TODO~ keywords (/states/
+    that /need action/) from the ~DONE~ states (which need
+    /no further action/). If you do not provide the seperator bar, the last
+    state is used as the ~DONE~ state. With this setup, the command
+    ~C-c C-t~ cycles an entry from ~TODO~ to ~FEEDBACK~, then to =VERIFY=,
+    and finally to ~DONE~ and ~DELEGATED~.
+
+    Sometimes you may want to use different sets of ~TODO~ keywords in
+    parallel. For example, you may want to have the basic ~TODO~ / ~DONE~,
+    but also a workflow for bug fixing. Your setup would then look like
+    this:
+    #+begin_src org
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "|" "DONE(d)")
+            (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
+	    (sequence "|" "CANCELED(c)")))
+    #+end_src
+    The keywords should all be different, this helps Org mode to keep track
+    of which subsequence should be used for a given entry. The example also
+    shows how to define keys for fast access of a particular state, by adding
+    a letter in parethesis after each keyword -- you will be prompted for
+    the key after ~C-c C-t~.
+
+    To define =TODO= keywords that are valid only in a single file, use
+    the following text anywhere in the file.
+    #+begin_src org
+    #+TODO: TODO(t) | DONE(d)
+    #+TODO: REPORT(r) BUG(b) KNOWNCAUSE(k) | FIXED (f)
+    #+TODO: | CANCELED(c)
+    #+end_src
+    After changing one of these lines, use =C-c C-c= with the cursor still
+    in the line to make the changes known to Org mode.
+*** Progress logging
+    To record a timestamp and a note when changing a ~TODO~ state, call
+    the command ~org-todo~ with a prefix argument.
+    - =C-u C-c C-t= :: Prompt for a note and record the time of
+      the ~TODO~ state change.
+**** Closing items
+     =(setq org-log-done 'time)= will help you record the time when an
+     item is closed.
+    
+     =(setq org-log-done 'note)= will prompt for a note to you.
+
+     Or you can use in-buffer setting: =#+STARTUP: logdone= 
+     ~#+STARTUP: logenotedone~.
+**** Tracking ~TODO~ state changes
+     After taking notes when you close ~TODO~ items, you want to get
+     the notes out of the way into a drawer. Customize the variable
+     ~org-log-into-drawer~ to get the behavior.
+
+     For state logging, Org mode expects configurations on a per-keyword
+     basis. This is achieved by adding special markers ~!~ (for a
+     timestamp) and ~@~ (for a note) in parentheses after each keyword.
+     For example:
+     #+begin_src org
+     #+TODO: TODO(t) WAIT(w@/!) | DONE(d!) CANCELED(c@)
+     #+end_src
+*** Priorities
+    A headline with ~priority cookie~ will look like:
+    #+begin_src org
+    *** TODO [#A] Write letter to Sam Fortune
+    #+end_src
+    Priorities are ordered from A to C. A is the highest and B is the default
+    if none is given.
+    - =C-c ,= Set the priority of the current headline.
+    - =S-UP/DOWN=, Increase/decrease the priority of the current headline.
+*** Breaking tasks down into subtasks
+    Append =[/]= or =[%]= to the ~TODO~ item will enable this feature. After
+    typing =C-c C-c= when the point under =[]=, you will have the cookie updated.
+    An example shown here.
+    #+begin_src org
+    * Organize Party [%]
+    ** TODO Call people [/]
+    *** TODO Peter
+    *** DONE Sarah
+    ** TODO Buy food
+    ** DONE Talk to neighbor
+    #+end_src
+
+   After =C-c C-c=, it will become:
+   #+begin_src org
+   * Organize Party [33%]
+   ** TODO Call people [1/2]
+   *** TODO Peter
+   *** DONE Sarah
+   ** TODO Buy food
+   ** DONE Talk to neighbor
+   #+end_src
+
+*** Checkboxes
+    Checkboxes are used in plain lists. They help you split a ~TODO~ item into
+    several steps. They are not included in the global ~TODO~ list.
+    Here is an example:
+    #+begin_src org
+    * TODO Organize party [/]
+      - [ ] call people [/]
+        - [ ] Peter
+	- [ ] Sarah
+      - [ ] order food
+    #+end_src
+    After typing =C-c C-c= when point under cookies,
+    #+begin_src org
+    * TODO Organize party [1/2]
+      - [-] call people [1/2]
+        - [ ] Peter
+	- [X] Sarah
+      - [X] order food
+    #+end_src
+
+    User commands are:
+    - =C-c C-c= :: Toggle checkbox status or -- with prefix argument -- checkbox
+      presence at point.
+    - =M-S-RET= :: Insert a new item with a checkbox when the point is already
+      in a plain list item.
+
 ** Code blocks
    [[https://orgmode.org/manual/Structure-of-Code-Blocks.html][CodeBlocks]],
 *** Inline
@@ -366,27 +606,27 @@ Stored: file:~/.emacs.d/lisp/init-org.el::(provide 'init-org)
        #+LATEX_CLASS_OPTIONS: [a4paper]
        #+LATEX_HEADER: \usepackage{xyz}
        * Headline 1
-         some text
+	 some text
        * Headline 2
-         some more text
+	 some more text
        #+end_src
     3. Quoting, [[https://orgmode.org/manual/Quoting-LaTeX-code.html#Quoting-LaTeX-code][link]]
        - Inserting in-line quoted with @ symbols: =Code embedded
-         in-line @@latex:any arbitrary LaTeX code@@ in a paragraph.=
+	 in-line @@latex:any arbitrary LaTeX code@@ in a paragraph.=
        - Inserting as one or more keyword lines in the Org file:
-         =#+LATEX: any arbitrary LaTeX code=
+	 =#+LATEX: any arbitrary LaTeX code=
        - Inserting as an export block in the Org file, where the
-         back-end exports any code between begin and end markers:
-         #+begin_src org
-         #+BEGIN_EXPORT latex
-           any arbitrary LaTeX code
-         #+END_EXPORT
-         #+end_src
+	 back-end exports any code between begin and end markers:
+	 #+begin_src org
+	 #+BEGIN_EXPORT latex
+	   any arbitrary LaTeX code
+	 #+END_EXPORT
+	 #+end_src
 
 ** Paragraphs
    Paragraphs are separated by at least one empty line. Regarding formats:
    VERSE, QUOTE and CENTER,
-   details can be found in [[https://orgmode.org/guide/Paragraphs.html#Paragraphs][Paragraphs]].
+   details can be found in [[https://orgmode.org/guide/Paragraphs.html#Paragraphs][Paragra
 * Compilation
 ** C++
 *** Simplest codes
