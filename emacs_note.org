@@ -232,8 +232,6 @@ $emacsclient -e '(client-save-kill-emacs)'
 *** Minibuffer key bindings
 * Org mode
   Please consult this [[https://orgmode.org/orgguide.pdf][link]] (maybe outdated) and [[https://www.cnblogs.com/Open_Source/archive/2011/07/17/2108747.html][its translation]].
-** Deadline
-   =C-c C-d=
 ** Outline and document structure
    ~org-cycle~ is bound to =TAB=.
 *** Structure editing
@@ -565,6 +563,433 @@ $emacsclient -e '(client-save-kill-emacs)'
     - =M-S-RET= :: Insert a new item with a checkbox when the point is already
       in a plain list item.
 
+** Tags
+   Tags are normal words containing letters, numbers, ~-~ and ~@~. And they must
+   be preceded by and followed by a single colon, e.g., ~:work:~. Several tags
+   can be specified, as in ~:work:urgen:~.
+   
+*** Tag inheritance
+    If a heading has a certain tag, all subheadings inherit the tag as well.
+    Here is an example:
+    #+begin_src org
+  * Meeting with the French group    :work:
+  ** Summary by Frank                :boss:notes:
+  *** TODO Prepare slides for him    :action:    
+    #+end_src
+
+    You can set tags inherited by all entries in a file:
+    #+begin_src org
+    #+FILETAGS: :Peter:Boss:Secret:
+    #+end_src
+
+*** Setting tags
+    Useful keybindings:
+    - =M-TAB= after a colon :: Offer completion on tags.
+    - =C-c C-q= :: Enter new tags for the ccurrent headline.
+    - =C-c C-c= :: When point is in a headline, this does the same as =C-c C-q=.
+
+    Org supports tag insertion based on a /list of tags/. By default this list
+    is constructed dynamically, containing all tags currently used in the
+    buffer. You may also globally specify a hard list of tags with the
+    variable =org-list-alist=. Finally you can set the default tags for a
+    given file using the =TAGS= keyword, like
+    #+begin_src org
+    #+TAGS: @work @home @tennisclub
+    #+TAGS: laptop car pc sailboat
+    #+end_src
+    Do not forget to type =C-c C-c= to make them take effects.
+
+    You can assign characters to most common tags by configuring
+    =org-tag-alist= in =init= file and make use of /fast tag selection/ technique.
+    Here is an example
+    : (setq org-tag-alist '(("@work" . ?w) ("@home" . ?h) ("laptop" . ?l)))
+    Or locally set up in the file you are editing
+    : #+TAGS: @work(w) @home(h) @tennisclub(t) laptop(l) pc(p)
+
+*** Tag groups
+    Tag group can be seen as the "broader term" for its set of tags. It can
+    be constructed via =[]= and ={}=.
+    Examples
+    : #+TAGS: [ GTD : Contrl Persp ]
+    or
+    : #+TAGS: { Context : @Home @Work }
+
+    When you search for a group tag, it returns matches for all members in
+    the group and its subgroups. In an agenda view, filtering by a group
+    tag displays or hide headlines tagged with at least one of the members
+    of the group or any of its subgroups.
+
+    If you want to ignore group tags temporarily, toggle group tags support
+    with =org-toggle-tags-groups=, bound to =C-c C-x q=.
+
+*** Tag searches
+    - =C-c / m= or =C-c \= :: Create a sparse tree with all headlines matching
+      a tags search. With a =C-u= prefix argument, ignore headlines that
+      are not a ~TODO~ line.
+    - =M-x org-agenda m= :: Createe a global list of tag matches from all
+      agenda files.
+    - =M-x org-agenda M= :: Create a global list of tag matches from all
+      agenda files, but check only ~TODO~ items and force checking subitems.
+
+    These commands all prompt for a match string which allows basic =Boolean=
+    logic like =+boss+urgent-project1=, to find entries with tags =boss= and
+    =urgent=, but not =project1=; =Kathy|Sally= to find entries which are tagged
+    like =Kathy= or =Sally=.
+
+** Properties
+   Properties begin with =:PROPERTIES:= and end with =:END:=. Here is an example
+   #+begin_src org
+   * CD Collection
+   ** Classic
+   *** Goldberg Variations
+       :PROPERTIES:
+       :TITLE:     Goldberg Variations
+       :Composer:  J. S. Bach
+       :Publisher: Deutsche Grammophon
+       :NDisks:
+       :END:
+   #+end_src
+   You may define the allowed values for a particular property =Xyz=
+   by setting a property =Xyz_ALL=. This special property is =inherited=, so
+   if you set it in a level 1 entry, it applies to the entire tree.
+   When allowed values are defined, setting the corresponding property
+   becomes easier and is less prone to typing errors. For the example
+   of the CD collection, we can pre-define publishers and the number of
+   disks in a box like this:
+   #+begin_src org
+   * CD collections
+     :PROPERTIES: 
+     :NDisks_ALL: 1 2 3 4
+     :Publisher_ALL: "Deutsche Grammophon" Philips EMI
+     :END:
+   #+end_src
+
+   If you want to set properties that can be inherited by any entry in a file,
+   use a line like
+   :#+PROPERTY: NDisks_ALL 1 2 3 4
+
+   Useful commands:
+   - =C-c C-x p= :: Set a property.
+   - =C-c C-c d= :: Remove a property.
+
+
+** Dates and times
+*** Timestamps
+    Please check this [[https://orgmode.org/manual/Timestamps.html][link]].
+*** Creating timestamps
+    Useful commands:
+    - =C-c .= :: Prompt for a date and insert a corresponding timestamp.
+      When point is at an existing timestamp in the buffer, the command
+      is used to modify this timestamp instead of inserting a new one.
+      When this command is used twice in succession, a time range is
+      inserted. With a prefix argument, it also adds the current time.
+    - =C-c != :: Like =C-c .=, but it insert an inactive timestamp that does
+      not cause an agenda entry.
+    - =S-LEFT/RIGHT= :: Change the date at point by one day.
+    - =S-UP/DOWN= :: On the beginning or enclosing bracket of a timestamp,
+      change its type. Within a timestamp, change the item under point.
+      Point can be on a year, month, day, hour or minute. When the
+      timestamp contains a time range like '15:30-16:30', modifying the
+      first time also shifts the second, shifting the time block with
+      constant length. To change the length, modify the second time.
+
+    When Org mode prompts for a date/time, it accepts any string containing
+    some date and/or time information, and intelligently interprets the
+    string, deriving defaults for unspecified information from the current
+    date and time. You can also select a date in the pop-up calendar.
+
+*** Deadlines and Scheduling
+    A timestamp may be preceded by special keywords to facilitate planning:
+    - =C-c C-d= :: Insert "DEADLINE" keyword along with a time stamp, in the
+      line following the headline.
+
+      On the deadline date, the task is listed in the agenda. In addtion, the
+      agenda for /today/ carries a warning about the approaching or missed
+      deadline, starting =org-deadline-warning-days= before the due date,
+      and continuing until the entry is marked as done.
+
+    - =C-c C-s= :: Insert "SCHEDULED" keyword along with a stamp, in the line
+      following the headline.
+
+      The headlin is listed under the given date. In addition, a reminder
+      that the scheduled date has passed is present in the compilation for
+      /today/, until the entry is marked as done, i.e., the task is
+      automatically forwarded until completed.
+
+    Repeaters can also be used in "DEADLINE" and "SCHEDULED", as in
+    "timestamp". Examples are below:
+    #+begin_src org
+    ** TODO Pay the rent
+       DEADLINE: <2005-10-01 Sat +1m>
+    #+end_src
+    It means the task repeats every one month (=1m=) from that time.
+
+*** Clocking work time
+    To clock the time you spend on the tasks in a project.
+    - =C-c C-x C-i= :: Start the clock on the current item (clock-in). This
+      inserts the 'CLOCK' keyword together with a timestamp. When called
+      with a =C-u= prefix argument, select the task from a list of recently
+      clocked tasks. See =M-x org-clock-in= and =M-x org-clock-in-last=. These
+      two functions are re-mapped to =C-c o i= and =C-c o l= (purcell emacs).
+    - =C-c C-x C-o= :: Stop the clock (clock-out). This inserts another
+      timestamp at the same location where the clock was last started.
+      It also directly computes the resulting time in inserts it after
+      the time range as ~=>HH:MM~. This functionality is also bound to
+      =C-c o o= (purcell emacs).
+    - =C-c C-x C-e= :: Update the effort estimate for the current clock task.
+    - =C-c C-x C-q= :: Cancel the current clock. This is useful if a clock
+      was started by mistake, or if you ended up working on something else.
+    - =C-c C-x j= :: Jump to the headline of the currently clocked in task.
+      With a =C-u= prefix argument, select the target task from a list of
+      recently clocked tasks. This functionality is bound to =C-c o j= (purcell
+      emacs).
+      
+** Capture, refile and archive
+*** Capture
+**** Setting up capture
+     An example of customizing the default target file:
+     : (setq org-default-notes-file (concat org-directory "~/notes.org"))
+     An example of customizing the keybinding of =org-capture=:
+     : (global-set-key (kbd "C-c c") 'org-capture) ;; used by purcell emacs
+**** Using capture
+     - =M-x org-capture= :: Start a capture process, placing you into a
+       narrowed indirect buffer to edit.
+     - =C-c C-c= :: Once you have finished entering information into the
+       capture buffer, =C-c C-c= returns you to the window configuration
+       before the capture process, so that you can resume your work
+       without further distraction.
+     - =C-c C-w= :: Finalize the capture process by refiling the note to a
+       different place.
+     - =C-c C-k= :: Abort the capture process and return to the previous state.
+**** Capture templates
+     Please check this [[https://orgmode.org/manual/Capture-templates.html][link]].
+
+     I took an example from purcell-emacs:
+     #+begin_src org
+(setq org-capture-templates
+      `(("t" "todo" entry (file "")  ; "" => `org-default-notes-file'
+         "* NEXT %?\n%U\n" :clock-resume t)
+        ("n" "note" entry (file "")
+         "* %? :NOTE:\n%U\n%a\n" :clock-resume t)
+        ))
+     #+end_src
+     Here are some tips:
+     | '%a'         | annotation, normally the link created with org-store-link   |
+     | '%i'         | initial content, the region when capture is called with C-u |
+     | '%t', '%T'   | timestamp, date only, or date and time                      |
+     | '%u', '%U'   | like above, but inactive timestamps                         |
+     | '%?'         | after completing the template, position point here          |
+     | clock-resume | Start the interrupted clock when finishing the capture.     |
+     Captured contents will be sent to =org-default-notes-file=.
+**** Refile and copy
+     Useful keybindings:
+     - =C-c C-w= :: Refile the entry or region at point. This command offers
+       possible locations for refiling the entry and lets you select one
+       with completion. The item (or all items in the region) is filed
+       below the target heading as a subitem.
+
+       By default, all level 1 headlines in the current buffer are considered
+       to be targets, but you can have more complex definitions across a
+       number of files. See the variable =org-refile-targets= for details.
+
+     - =C-u C-c C-w= :: Use the refile interface to jump to a heading.
+
+     - =C-u C-u- C-c C-w= :: Jump to the location where =org-refile= last
+       moved a tree to.
+
+     - =C-c M-w= :: Copying works like refiling, except that the original note
+       is not deleted.
+**** Archiving
+     You want to archive a project when you do not want it to contribute
+     the agenda since it is finished.
+
+     Useful commands:
+     - =C-c C-x C-a= :: Archive the current entry using the command specified
+       in the variable =org-archive-default-command=.
+     - =C-c C-x C-s= or short =C-c $= :: Archive the subtree at point position
+       to the location given by org-archive-location.
+
+     The default location is a file in the same directory as the current
+     file, with the name derived by appending =_archive= to the current
+     file name. You can also choose what heading to file archived items
+     under, with the possibility to add them to a datetree in a file. For
+     information and examples on how to specify the file and the heading,
+     see documentation string of the variable =org-archive-location=.
+
+     There is also an in-buffer option for setting this variable, for
+     example:
+     : #+ARCHIVE: %s_done::
+** Agenda Views
+*** Agenda files
+    The information to be shown is normally collected from all agenda files,
+    the files listed in the variable =org-agenda-files=.
+    - =C-c [= :: Add current file to the list of agenda files. The file is
+      added to the front of the list. If it was already in the list, it
+      is moved to the front. With a prefix argument, file is added/moved
+      to the end.
+    - =C-c ]= :: remove the current file from the list of agenda files.
+    - =C-'= and =C-,= :: Cycle through agenda file list, visting one file
+      after the other.
+*** The agenda dispatcher
+    The views are created through a dispatcher, accessible with
+    =M-x org-agenda=, or, better, bound to a global key (=C-c a= in purcell
+    emacs). It displays a menu from which an additional letter is required
+    to execute a command. The dispatcher offers the following default
+    commands:
+    - a :: Create the calendar-like agenda
+    - t or T :: Create a list of TODO items
+    - m or M :: Create a list of headlines matching a given expression
+    - s :: Create a list of entries selected by a boolean expression
+      of keywords and/or regular expressions that must or must not
+      occur in the entry.
+*** The weekly/daily agenda
+    - =M-x org-agenda a= :: Compile an agenda for the current week from
+      a list of Org files. The agenda shows the entries for each day.
+
+    Org mode understands the syntax of the diary and allows you to use
+    diary expression entries directly in Org files:
+    #+begin_src org
+    * Holidays
+      :PROPERTIES:
+      :CATEGORY: Holiday
+      :END:
+    %%(org-calendar-holiday)    ; special function for holiday names
+
+    * Birthday
+      :PROPERTIES:
+      :CATEGORY: Ann
+      :END:
+    %%(org-anniversary 1956 5 14) Arthur Dent is %d years old
+    %%(org-anniversary 1896 10 2) Mahatma Gandhi would %d years old
+    #+end_src
+
+    Or can interact with Emacs appointments notification facility. To add
+    the appointments of your agenda files, use the command =org-agenda-to-appt=.
+*** The global TODO list
+    Useful keybinds:
+    - =M-x org-agenda t= :: Show the global TODO list. This collects the TODO
+      items from all agenda files into a single buffer.
+    - =M-x org-agenda T= :: Like the above, but allows selection of a specific
+      TODO keyword.
+*** Matching tags and properties
+    You can select headlines with specific tags and properties and collect
+    them into an agenda buffer. The match syntax described here also applies
+    when creating sparse trees with =C-c / m=.
+    - =M-x org-agenda m= :: Produce a list of all headlines that match a
+      given set of tags. The command prompts for a selection criterion,
+      which is a boolean logic expression with tags, like
+      =+work+urgent-withboss= or =work|home=. If you often need a specific
+      search, define a custom command for it.
+    - M-x org-agenda M :: Like =m=, but only select headlines that are
+      also TODO items.
+
+    A search string can use Boolean operators =&= for AND and =|= for OR.
+    =&= binds more strongly than =|=. Parentheses are currently not implemented.
+    Each element in the search is either a tag, a regular expression matching
+    tags, or an expression like =PROPERTY OPERATOR VALUE= with a comparison
+    operator, accessing a property value. Each element may be preceded by
+    =-= to select against it, and =+= is syntactic sugar for positive selection.
+    The AND operator =&= is optional when =+= or =-= is present. Here are some
+    examples, using only tags.
+    - =+work-boss= :: Select headlines tagged =work=, but discard those also
+      tagged =boss=.
+    - =work|laptop= :: Selects lines tagged =work= or =laptop=.
+    - =work|laptop+night= :: Like before, but require =laptop= lines to
+      be tagged also =night=.
+*** Search view
+    - =M-x org-agenda s= or =M-x org-search-view= :: This is a special search
+      that lets you select entries by matching a substring or specific words
+      using a boolean logic.
+
+    Search view can also search for specific keywords in the entry, using
+    boolean logic. The search string =+computer+wifi-ethernet-{8\.11[bg]}=
+    matches note entries that contain the keywords =computer= and =wifi=, but
+    not the keyword =ethernet=, and which are also not matched by the regular
+    expression =8\.11[bg]=, meaning to exclude both =8.11b= and =8.11g=.
+
+    not that in addition to the agenda file, this command also searches
+    the files listed in =org-agenda-text-search-extra-files=.
+*** Commands in the agenda buffer.
+**** Motion
+     - =n= :: Next line (same as =DOWN= and =C-n=).
+     - =p= :: Previous line (same as =UP= and =C-p=).
+**** View/Go to Org file
+     - =SPC= :: Display the original location of the item in another window.
+       With a prefix argument, make sure that drawers staty folded.
+     - =TAB= :: Go to the original location of the item in another window.
+     - =RET= :: Go to the original location of the item and delete other window.
+**** Change display
+     - =o= :: Delete other windows.
+     - =v d= or short =d= ::  Switch to day view.
+     - =v w= or short =w= :: Switch to week view.
+     - =f= :: Go forward in time to display the /span/ following the current
+       one. For example, if the display covers a week, switch to the
+       following week.
+     - =b= :: Go backward in time to display earlier dates.
+     - =.= :: Go to today.
+     - =j= :: Prompt for a date and go there.
+     - =v l= or =v L= or short =l= :: Toggle Logbook mode. In Logbook mode,
+       entries that were marked as done while logging was on (see the
+       varaible =org-log-done=) are shown in the agenda, as are entries that
+       have been clocked on that day. When called with a =C-u= prefix argument,
+       show all possible logbook entries, including state changes.
+     - =r= / =g= :: Recreate the agenda buffer, for example to reflect the
+       changes after modification of the timestamps of items.
+     - =s= :: Save all Org buffers in the current Emacs session, and
+       also the locations of IDs.
+**** Remote editing
+     - =0--9= :: Digit argument
+     - =t= :: Change the TODO state of the item, both in the agenda and
+       in the original Org file.
+     - =C-k= :: Delete the current agenda item along with the entire subtree
+       belonging to it in the original Org file.
+     - =C-c C-w= :: Refile the entry at point.
+     - =a= :: Archive the subtree corresponding to the entry at point using
+       the default archiving command set in =org-archive-default-command=.
+     - =$= :: Archive the subtree corresponding to the current headline.
+     - =C-c C-s= :: Schedule this item. With a prefix argument, remove the
+       scheduling timestamp
+     - =C-c C-d= :: Set a deadline for this item. With a prefix argument,
+       remove the deadline.
+     - =S-RIGHT= :: Change the timestamp associated with the current line
+       by one day into the future.
+     - =S-LEFT= :: Change the timestamp associated with the current line by
+       one day into the past.
+     - =I= :: Start the clock on the current item.
+     - =O= :: Stop the previously started clock.
+     - =X= :: Cancel the currently running clock.
+     - =J= :: Jump to the running clock in another window.
+**** Quit and exit
+     - =q= :: Quit agenda, remove the agenda buffer.
+     - =x= :: Exit agenda, remove the agenda buffer and all buffers loaded
+       by Emacs for the compilation of the agenda.
+**** Custom agenda views
+     The first application of custom searches is the definition of keyboard
+     shortcuts for frequently used searches, either creating an agenda buffer,
+     or a sparse tree (the latter covering of course only the current buffer).
+
+     Custom commands are configured in the variable 
+     =org-agenda-custom-commands=. You can customize this variable, for
+     example by pressing =C= from the agenda dispatcher. You can also
+     directly set it with Emacs Lisp in the Emacs init file. The following
+     example contains all valid agenda views:
+     #+begin_src org
+     (setq org-agenda-custom-commands
+           '(("w" todo "WAITING")
+	     ("u" tags "+boss-urgent")
+	     ("v" tags-todo "+boss-urgent")))
+     #+end_src
+     The initial string in each entry defines the keys you have to press
+     after the dispatcher command in order to access the command. Usually
+     this is just a single character. The second parameter is the
+     search type, followed by the string or regular expression to be
+     used for the matching. The example above will therefore define:
+     - =w= :: as a global search for TODO entries with =WAITING= as
+       the TODO keyword.
+     - =u= :: as a global tags search for headlines tagged 'boss' but
+       not 'urgent'.
+     - =v= :: The same search, but limiting it to headlines that are also
+       TODO items.
 ** Code blocks
    [[https://orgmode.org/manual/Structure-of-Code-Blocks.html][CodeBlocks]],
 *** Inline
@@ -574,7 +999,6 @@ $emacsclient -e '(client-save-kill-emacs)'
     ~C-c C-,~
 *** Evaluating code blocks
     [[https://orgmode.org/manual/Evaluating-Code-Blocks.html][link]]
-
 ** Export
 *** Commands
     =C-c C-e= and then other options.
