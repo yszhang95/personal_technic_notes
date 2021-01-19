@@ -2,20 +2,20 @@
 * Basic
 ** Files
 *** Find a file
-    =C-x C-f=   Find a file
+    - =C-x C-f= ::  Find a file
 *** Save a file
-    =C-x C-s=   Save the file
+    - =C-x C-s= :: Save the file
 *** to end the Emacs session
     type =C-x C-c=.
 ** BUFFERS
 *** List, switch and save buffers
-    - =C-x C-b= list buffers
-    - =C-x b= switch to a buffer
-    - =C-x s= save some buffers
-    - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Buffer.html][Kill-Buffer]]
-      * =C-x k buffer <RET>=    Kill buffer buffer (kill-buffer).
-      * =M-x kill-some-buffers= Offer to kill each buffer, one by one.
-      * =M-x kill-matching-buffers= Offer to kill all buffers
+    - =C-x C-b= :: list buffers
+    - =C-x b= :: switch to a buffer
+    - =C-x s= :: save some buffers
+    - [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Kill-Buffer.html][Kill-Buffer]] ::
+      * =C-x k buffer <RET>= :: Kill buffer buffer (kill-buffer).
+      * =M-x kill-some-buffers= :: Offer to kill each buffer, one by one.
+      * =M-x kill-matching-buffers=  :: Offer to kill all buffers
 	matching a regular expression.
 
 ** Commands
@@ -34,16 +34,16 @@
     disabled command, answer the question with "n".
 
 *** Extending the command set
-    - =C-x=     Character eXtend.  Followed by one character.
-      * =C-x C-f=         Find file
-      * =C-x C-s=         Save file
-      * =C-x s=           Save some buffers
-      * =C-x C-b=         List buffers
-      * =C-x b=           Switch buffer
-      * =C-x C-c=         Quit Emacs
-      * =C-x 1=           Delete all but one window
-      * =C-x u=           Undo
-    - =M-x=     Named command eXtend.  Followed by a long name.
+    - =C-x= :: Character eXtend.  Followed by one character.
+      * =C-x C-f= :: Find file
+      * =C-x C-s= ::        Save file
+      * =C-x s=   ::        Save some buffers
+      * =C-x C-b= ::        List buffers
+      * =C-x b= ::          Switch buffer
+      * =C-x C-c= ::        Quit Emacs
+      * =C-x 1=  ::         Delete all but one window
+      * =C-x u=  ::         Undo
+    - =M-x= ::    Named command eXtend.  Followed by a long name.
       * =M-x replace-string=
 
 *** C-z
@@ -89,14 +89,14 @@
     shift key to type it.
 ** Edit
 *** <DEL>, "Backspace", C-d, M-d, M-<DEL>, c-k, M-k
-    - =<DEL>=        Delete the character just before the cursor
-    - =C-d=          Delete the next character after the cursor
+    - =<DEL>=    ::    Delete the character just before the cursor
+    - =C-d=      ::    Delete the next character after the cursor
 
-    - =M-<DEL>=      Kill the word immediately before the cursor
-    - =M-d=          Kill the next word after the cursor
+    - =M-<DEL>=  ::    Kill the word immediately before the cursor
+    - =M-d=      ::    Kill the next word after the cursor
 
-    - =C-k=          Kill from the cursor position to end of line
-    - =M-k=          Kill to the end of the current sentence
+    - =C-k=      ::    Kill from the cursor position to end of line
+    - =M-k=      ::    Kill to the end of the current sentence
 
 *** Cut, copy and paste
     [[https://www.emacswiki.org/emacs/CopyAndPaste][CopyAndPaste]]
@@ -109,7 +109,7 @@
 *** Undo  =C-/=, =C-_=, =C-x u=
 *** Completion
     Can be found in the manual Completion. It helps enter arguments.
-
+    
 *** Dired
     Dired makes an Emacs buffer containing a listing of a directory, and
     optionally some of its subdirectories as well. The Dired buffer is
@@ -119,14 +119,14 @@
      C-x d
 
 ** HELP
-   =C-h ?= or =M-x help= or =<F1>=
-   =C-h c= or =C-h k= and a command character or sequence
-   =C-h f= Describe a function.  You type in the name of the function.
-   =C-h v= displays the documentation of variables
-   =C-h i=        Read included Manuals (a.k.a. Info).
-   =C-h a=
-   =C-h r= read manuals
-
+   - =C-h ?= or =M-x help= or =<F1>=
+   - =C-h c= or =C-h k= and a command character or sequence
+   - =C-h f= Describe a function.  You type in the name of the function.
+   - =C-h v= displays the documentation of variables
+   - =C-h i=        Read included Manuals (a.k.a. Info).
+   - =C-h a=
+   - =C-h r= read manuals
+   
 ** Terms
 *** electric
     The <Return> key is special, in that pressing it may do more than
@@ -171,14 +171,14 @@
     e.g. auto fill,
     =M-x auto-fill-mode=
 *** Frames
-    - =C-x 2= which splits the screen into two windows
-    - =C-M-v= or =<ESC> C-v=, scroll down the other window
-    - =C-x o=  to switch between the windows
-    - =C-x 1= kill others except the one I am in
-    - =C-x 3= splits the screen into two, vertically
-    - Type =C-x 4 C-f= followed by the name of one of your files.
-      End with =<Return>=.  See the specified file appear in the bottom
-      window.  The cursor goes there, too.
+    - =C-x 2= :: which splits the screen into two windows
+    - =C-M-v= or =<ESC> C-v= :: scroll down the other window
+    - =C-x o= :: to switch between the windows
+    - =C-x 1= :: kill others except the one I am in
+    - =C-x 3= :: splits the screen into two, vertically
+    - ==C-x 4 C-f <file-name>= :: Type =C-x 4 C-f= followed by the name of
+      one of your files.  End with =<Return>=.  See the specified file
+      appear in the bottom window.  The cursor goes there, too.
 *** RECURSIVE EDITING LEVELS
     This is indicated by square brackets in the mode line,
     surrounding the parentheses around the major mode name.  For
@@ -189,7 +189,7 @@
     recursive editing level.
 
 *** Dired
-
+    
 * Emacs client
   [[https://www.emacswiki.org/emacs/EmacsClient][EmacsClient]]
 
@@ -444,7 +444,7 @@ $emacsclient -e '(client-save-kill-emacs)'
 *** Multi-state workflow
     You can use ~TODO~ keywords to indicate @emph{sequential} working
     progress states:
-    #+begin_src org
+    #+begin_src emacs-lisp
     (setq org-todo-keywords
           '((sequence "TODO" "FEEDBACK" "VERIFY" "|" "DONE" "DELEGATED")))
     #+end_src
@@ -459,7 +459,7 @@ $emacsclient -e '(client-save-kill-emacs)'
     parallel. For example, you may want to have the basic ~TODO~ / ~DONE~,
     but also a workflow for bug fixing. Your setup would then look like
     this:
-    #+begin_src org
+    #+begin_src emacs-lisp
     (setq org-todo-keywords
           '((sequence "TODO(t)" "|" "DONE(d)")
             (sequence "REPORT(r)" "BUG(b)" "KNOWNCAUSE(k)" "|" "FIXED(f)")
@@ -671,8 +671,7 @@ $emacsclient -e '(client-save-kill-emacs)'
    Useful commands:
    - =C-c C-x p= :: Set a property.
    - =C-c C-c d= :: Remove a property.
-
-
+     
 ** Dates and times
 *** Timestamps
     Please check this [[https://orgmode.org/manual/Timestamps.html][link]].
@@ -765,7 +764,7 @@ $emacsclient -e '(client-save-kill-emacs)'
      Please check this [[https://orgmode.org/manual/Capture-templates.html][link]].
 
      I took an example from purcell-emacs:
-     #+begin_src org
+     #+begin_src emacs-lisp
 (setq org-capture-templates
       `(("t" "todo" entry (file "")  ; "" => `org-default-notes-file'
          "* NEXT %?\n%U\n" :clock-resume t)
@@ -973,7 +972,7 @@ $emacsclient -e '(client-save-kill-emacs)'
      example by pressing =C= from the agenda dispatcher. You can also
      directly set it with Emacs Lisp in the Emacs init file. The following
      example contains all valid agenda views:
-     #+begin_src org
+     #+begin_src emacs-lisp
      (setq org-agenda-custom-commands
            '(("w" todo "WAITING")
 	     ("u" tags "+boss-urgent")
@@ -1074,12 +1073,12 @@ $emacsclient -e '(client-save-kill-emacs)'
    I read this [[https://stackoverflow.com/questions/906368/what-is-the-difference-between-global-set-key-and-define-key-global-map-in-e][link]]. Please consult the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Key-Bindings.html][guide]] for further information.
    - =global-set-key= helps you define keybindings globally. The two examples
      below serve the similar functionality.
-     #+begin_src org
+     #+begin_src emacs-lisp
      (global-set-key "\C-cl" 'org-store-link)
      (global-set-key (kbd "C-c l" 'org-store-link))
      #+end_src
    - =define-key=, I show an example here. It is taken from the [[https://github.com/purcell/emacs.d/blob/master/lisp/init-org.el][purcell-emacs]].
-     #+begin_src org
+     #+begin_src emacs-lisp
      (define-key org-mode-map (kbd "C-M-<up>"))
      #+end_src
 ** Desktop
