@@ -10,5 +10,13 @@
 (require-package 'pdf-tools)
 (require-package 'org-noter-pdftools)
 
+;;; org to twiki
+(require-package 'ox-tiddly)
+(require-package 'ox-twiki)
+
+;;; org gtd
+(setq org-default-notes-file "~/Dropbox/Org/TODO/inbox.org")
+(setq org-agenda-files "~/Dropbox/Org/TODO/inbox.org")
+
 (provide 'init-local)
 ;;; init-local.el ends here

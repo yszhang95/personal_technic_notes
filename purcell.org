@@ -1,0 +1,32 @@
+#+TITLE: Notes for Purcell-Emacs
+This is a note file to record the my understanding of
+[[https://github.com/purcell/emacs.d/][Purcell-Emacs-Config]]. It is organized by the file names
+under =lisp=.
+* init.el
+* init-isearch.el
+  There are serveral setups.
+  - =anzu= related :: It will display the /current match/ and /total
+    matches/ information in the mode-line. See this [[https://github.com/emacsorphanage/anzu][link]]. =M-%= and =C-M-%=
+    are remapped.
+  - Commands after executing =isearch= :: There are several new commands:
+    - =isearch-ocurr= :: bound to =C-c C-o=. It helps easily activate =occur=.
+      Please check this [[https://www.masteringemacs.org/article/searching-buffers-occur-mode][link]] and [[https://www.emacswiki.org/emacs/OccurMode][wiki]].
+    - =isearch-yank-symbol= :: bound to =C-M-w=. Enable
+      =SearchAtPoint=. Please check this [[http://www.emacswiki.org/emacs/SearchAtPoint][wiki]].
+    - =isearch-exit-other-end= :: bould to =C-<RET>=. Exit =isearch=, but
+      at the other end of the search string.
+    - =<DEL>= behavior :: Changing from =isearch-delete-char= (undo last
+      input) to =isearch-del-char= (delete the last character in the
+      search string)
+* Several functions inside configs
+** Package managements
+   - =maybe-require-package= :: Make things compatible. See this [[https://github.com/purcell/emacs.d/issues/457#issuecomment-308362027][response]].
+** Command control
+   - =with-eval-after-load= :: The format is =with-eval-after-load library body=
+   It intends to execute =body= after loading =library=. See [[https://stackoverflow.com/questions/21880139/what-is-with-eval-after-load-in-emacs-lisp][discussions]]
+   and [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Hooks-for-Loading.html][link]].
+** New functionalities
+   - =defun= :: define new functions. See the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Defining-Functions.html][manual]].
+   - =define-key= :: define new keybindings. See this [[https://www.masteringemacs.org/article/mastering-key-bindings-emacs][link]] and the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Changing-Key-Bindings.html][manual]].
+   - =global-set-key= :: Set key in =global-map=. Might be overriden by other
+     =keymap= with higher precedence.
