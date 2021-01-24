@@ -6,6 +6,31 @@
 (require-package 'color-theme-sanityinc-tomorrow)
 (setq-default custom-enabled-themes '(sanityinc-tomorrow-day))
 
+;;; ivy-bibtex
+(require-package 'ivy-bibtex)
+(setq
+ bibtex-completion-notes-path "~/Dropbox/References/bib"
+ bibtex-completion-bibliography "~/Dropbox/References/bib/References.bib"
+ bibtex-completion-pdf-field "file"
+ bibtex-completion-notes-template-multiple-files
+ (concat
+  "#+TITLE: ${title}\n"
+  "#+ROAM_KEY: cite:${=key=}\n"
+  "* TODO Notes\n"
+  ":PROPERTIES:\n"
+  ":Custom_ID: ${=key=}\n"
+  ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
+  ":AUTHOR: ${author-abbrev}\n"
+  ":JOURNAL: ${journaltitle}\n"
+  ":DATE: ${date}\n"
+  ":YEAR: ${year}\n"
+  ":DOI: ${doi}\n"
+  ":URL: ${url}\n"
+  ":END:\n\n"
+  )
+ )
+
+
 ;;; org-noter stuffs
 (require-package 'pdf-tools)
 (require-package 'org-noter-pdftools)
