@@ -13,7 +13,7 @@
  bibtex-completion-notes-path "~/Dropbox/Org/Notes/"
  bibtex-completion-bibliography "~/Dropbox/References/bib/References.bib"
  bibtex-completion-pdf-field "file"
- bibtex-completion-library-path '("~/Dropbox/References/paper/")
+ bibtex-completion-library-path '("~/Dropbox/References/zotero/")
  bibtex-completion-notes-template-multiple-files
  (concat
   "#+TITLE: ${title}\n"
