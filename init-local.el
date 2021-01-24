@@ -7,11 +7,13 @@
 (setq-default custom-enabled-themes '(sanityinc-tomorrow-day))
 
 ;;; ivy-bibtex
+;;; I use a lot of stuffs taken from https://rgoswami.me/posts/org-note-workflow/
 (require-package 'ivy-bibtex)
 (setq
- bibtex-completion-notes-path "~/Dropbox/References/bib"
+ bibtex-completion-notes-path "~/Dropbox/Org/Notes/"
  bibtex-completion-bibliography "~/Dropbox/References/bib/References.bib"
  bibtex-completion-pdf-field "file"
+ bibtex-completion-library-path '("~/Dropbox/References/paper/")
  bibtex-completion-notes-template-multiple-files
  (concat
   "#+TITLE: ${title}\n"
@@ -29,7 +31,6 @@
   ":END:\n\n"
   )
  )
-
 
 ;;; org-noter stuffs
 (require-package 'pdf-tools)
