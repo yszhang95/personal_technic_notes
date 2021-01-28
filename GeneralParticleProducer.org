@@ -1,6 +1,6 @@
 #+TITLE: This is the documentation for the general producer
 * General producer
-These are short notes for [[https://github.com/yszhang95/VertexCompositeAnalysis/tree/ParticleFitter_8_0_X][=ParticleProducer=]].
+These are short notes for [[https://github.com/stahlleiton/VertexCompositeAnalysis/tree/10_3_X][=ParticleProducer=]].
 ** General descriptions
    The =ParticleProducer= is a general =edm::EDProducer= to
    reconstruct any type of particles as long as proper daughter
@@ -567,7 +567,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      =userFloat("rVtxSig")=, =userFloat("angle3D")= and =userFloat("angle2D")=
      are saved.
 **** =void clear()=
-     #+begin_example
+     #+begin_src c++
   vertex_ = reco::Vertex();
   beamSpot2D_ = reco::Vertex();
   beamSpot_ = reco::BeamSpot();
@@ -578,7 +578,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
   vertexRefMap_.clear();
   particleRefMap_.clear();
   std::for_each(daughters_.begin(), daughters_.end(), [](ParticleDaughter &d){ d.clear(); });
-     #+end_example
+     #+end_src
 **** =template<class T> void clear(std::vector<T>& v)=
      ={ std::vector<T>().swap(v); };=
 * General tree producer
@@ -616,27 +616,642 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 
 *** Options
     #+CAPTION: This is the table of configurable parameters of general tree producer
-    | Name                 | Descriptions                                                                                                   | Type                     | Default values                         |
-    |----------------------+----------------------------------------------------------------------------------------------------------------+--------------------------+----------------------------------------|
-    | =beamSpot=           |                                                                                                                | =cms.InputTag=           | =offlineBeamSpot=                      |
-    | =primaryVertices=    |                                                                                                                | =cms.InputTag=           | =offlinePrimaryVertices=               |
-    | =recoParticles=      | The =pat::GenericParticleCollection= user want to save as tree                                                 | =cms.InputTag=           | =generalParticles=                     |
-    | =nTracksVMap=        | The =ValueMap= of number of offline tracks                                                                     | =cms.untracked.InputTag= | =generalParticles:nTracks=             |
-    | =triggerResults=     |                                                                                                                | =cms.untracked.InputTag= | =TriggerResults::HLT=                  |
-    | =triggerEvent=       |                                                                                                                | =cms.untracked.InputTag= | =hltTriggerSummaryAOD::HLT=            |
-    | =triggerInfo=        | Further documentation needed                                                                                   | =cms.untracked.VPSet=    |                                        |
-    | =matchInfo=          | trigger-reco matching information, further documentation needed                                                | =cms.untracked.VPSet=    |                                        |
-    | =eventFilterResults= |                                                                                                                | =cms.untracked.InputTag= | =TriggerResults=                       |
-    | =eventFilterNames=   |                                                                                                                | =cms.untracked.vstring=  | Please check corresponding branch      |
-    | =selectEvents=       |                                                                                                                | =cms.string=             | Please check corresponding branch      |
-    | =centralityBin=      |                                                                                                                | =cms.untrakced.InputTag= | =InputTag("centralityBin","HFtowers")= |
-    | =centrality=         |                                                                                                                | =cms.untracked.InputTag= | =hiCentrality=                         |
-    | =eventPlane=         |                                                                                                                | =cms.untracked.InputTag= | =hiEvtPlaneFlat=                       |
-    | =lumiInfo=           |                                                                                                                | =cms.untracked.InputTag= | =InputTag("lumiInfo", "brilcalc")=     |
-    | =lumiScalers=        |                                                                                                                | =cms.untracked.InputTag= | =scalersRawToDigi=                     |
-    | =lumiRecord=         |                                                                                                                | =cms.untracked.InputTag= | =onlineMetaDataDigis=                  |
-    | =saveTree=           | If =True= then save tree else save ntuple                                                                      | =cms.untracked.bool=     | =True=                                 |
-    | =addTrgObj=          |                                                                                                                | =cms.untracked.bool=     | =False=                                |
-    | =genParticles=       | Input tag for =reco::GenParticleCollection=. Work when dealing with MC samples                                 | =cms.untracked.InputTag= | =genParticles=                         |
-    | =genInfo=            | Further documentation needed                                                                                   | =cms.untracked.InputTag= | =generator=                            |
-    | =genPdgId=           | The vector saving =pdgId= of decay particles, their decay products and other particles users want to match gen | =cms.untracked.vuint32=  | left as empty                          |
+    <<ParticleAnalyzer::ConfigPars>>
+    | Name               | Descriptions                                                                                                 | Type                   | Default values                       |   |
+    |--------------------+--------------------------------------------------------------------------------------------------------------+------------------------+--------------------------------------+---|
+    | =beamSpot=           |                                                                                                              | =cms.InputTag=           | =offlineBeamSpot=                      |   |
+    | =primaryVertices=    |                                                                                                              | =cms.InputTag=           | =offlinePrimaryVertices=               |   |
+    | =recoParticles=      | The =pat::GenericParticleCollection= user want to save as tree                                                 | =cms.InputTag=           | =generalParticles=                     |   |
+    | =nTracksVMap=        | The =ValueMap= of number of offline tracks                                                                     | =cms.untracked.InputTag= | =generalParticles:nTracks=             |   |
+    | =triggerResults=     |                                                                                                              | =cms.untracked.InputTag= | =TriggerResults::HLT=                  |   |
+    | =triggerEvent=       |                                                                                                              | =cms.untracked.InputTag= | =hltTriggerSummaryAOD::HLT=            |   |
+    | =triggerInfo=        | Further documentation needed                                                                                 | =cms.untracked.VPSet=    |                                      |   |
+    | =matchInfo=          | trigger-reco matching information, further documentation needed                                              | =cms.untracked.VPSet=    |                                      |   |
+    | =eventFilterResults= |                                                                                                              | =cms.untracked.InputTag= | =TriggerResults=                       |   |
+    | =eventFilterNames=   |                                                                                                              | =cms.untracked.vstring=  | Please check corresponding branch    |   |
+    | =selectEvents=       |                                                                                                              | =cms.string=             | Please check corresponding branch    |   |
+    | =centralityBin=      |                                                                                                              | =cms.untrakced.InputTag= | =InputTag("centralityBin","HFtowers")= |   |
+    | =centrality=         |                                                                                                              | =cms.untracked.InputTag= | =hiCentrality=                         |   |
+    | =eventPlane=         |                                                                                                              | =cms.untracked.InputTag= | =hiEvtPlaneFlat=                       |   |
+    | =lumiInfo=           |                                                                                                              | =cms.untracked.InputTag= | =InputTag("lumiInfo", "brilcalc")=     |   |
+    | =lumiScalers=        |                                                                                                              | =cms.untracked.InputTag= | =scalersRawToDigi=                     |   |
+    | =lumiRecord=         |                                                                                                              | =cms.untracked.InputTag= | =onlineMetaDataDigis=                  |   |
+    | =saveTree=           | If =True= then save tree else save ntuple                                                                      | =cms.untracked.bool=     | =True=                                 |   |
+    | =addTrgObj=          |                                                                                                              | =cms.untracked.bool=     | =False=                                |   |
+    | =genParticles=       | Input tag for =reco::GenParticleCollection=. Work when dealing with MC samples                                 | =cms.untracked.InputTag= | =genParticles=                         |   |
+    | =genInfo=            | Further documentation needed                                                                                 | =cms.untracked.InputTag= | =generator=                            |   |
+    | =genPdgId=           | The vector saving =pdgId= of decay particles, their decay products and other particles users want to match gen | =cms.untracked.vuint32=  | left as empty                        |   |
+** Short descriptions
+   The tree producer will generate analyzing tree or ntuple with the minimal
+   setup and configurations. It will save the trigger info, event info, lumi
+   info and the particle info. It will make use of two containers, called
+   =Container= and =ParticleContainer=, and two helper classes, =TriggerInfo= and
+   =MatchInfo=. It will execute the following in order:
+   1. Take the elements in =triggerInfo=, and set up the token for trigger lumi
+      info for each element if it has, other set null. Lumi info for each
+      element will be saved in =tok_triggerLumiInfo_=, a one-to-one map to
+      =triggerInfo_=.
+   2. Create an entry ="trgObj"= in =addInfo_=. The value will be taken from the
+      configuration parameter ~addTrObj~ or be =false= if the parameter does not
+      exist.
+   3. Select events via =selectEvents_=, it is not null, read the corresponding
+      trigger results stored in =tok_filterResults_=.
+   4. Clear all containers for later usage, for instance, =genParticlesToKeep_=,
+      =genParticlesToMatch_=, =eventInfo_=, =triggerData_=, =triggerObjectMap_=,
+      =particleInfo_=.
+   5. Get the event data out via [[ParticleAnalyzer::getEventData][=getEventData=]] and =get= functions.
+** Class member functions and variables
+*** Member functions [0/13]
+**** TODO =virtual void ParticleAnalyzer::beginJob()=
+     <<ParticleAnalyzer::beginJob>>
+**** TODO =virtual void ParticleAnalyzer::beginRun(const edm::Run&, const edm::EventSetup&)=
+     <<ParticleAnalyzer::beginRun>>
+**** TODO =virtual void ParticleAnalyzer::analyze(const edm::Event&, const edm::EventSetup&)=
+     <<ParticleAnalyzer::analyze>>
+
+**** TODO =virtual void ParticleAnalyzer::getEventData(const edm::Event& iEvent, const edm::EventSetup& iSetup)=
+     <<ParticleAnalyzer::getEventData>>
+     This function will extract MC/data information from the =ADO= file.
+     It will do the following in order:
+     1. Check whether the input file is for MC samples via ~isRealData~
+        in =edm::Event=.
+     2. Get the magnetic field information.
+     3. Get the =Ntrkoffline= value map if it exists.
+     4. Extract the primary vertex from the PV collection.
+        1. The vertex need
+           to be =!isFake()= and is associated with at least two tracks.
+        2. If none of vertices satisfies the criteria above, the beamspot
+           is used instead.
+        3. The primary vertex is selected among the collection based on
+           sum over $p_T^2$ or multiplicity. The default option =vtxSortByTrkSize=
+           in the =GeneralParticleProducer= is true. Thus the vertex with
+           highest multiplicity is selected.
+     5. If MC samples are read, extract the generated particles' information.
+        - The generated primary vertex information is saved in
+          =genVertex_=.  It is determined as the vertex of the first
+          generate particle with status =isLastCopy() == true= (see more
+          comments in the [[https://cmssdt.cern.ch/lxr/source/DataFormats/HepMCCandidate/interface/GenParticle.h][link]], and an example is bremming electron
+          will exists before and after photon emission) and absolute
+          value of =pdgId= is less than or equal to 6 (quarks) or =pdgId=
+          equal to 21 (gluon).
+        - The container for generated particles is initialized via
+          [[initParticleInfo][=initParticleInfo=]].
+
+**** TODO =virtual void ParticleAnalyzer::getTriggerData(const edm::Event&, const edm::EventSetup&)=
+     <<ParticleAnalyzer::getTriggerData>>
+
+**** TODO =virtual void ParticleAnalyzer::fillEventInfo(const edm::Event&)=
+     <<ParticleAnalyzer::fillEventInfo>>
+
+**** TODO =virtual void ParticleAnalyzer::fillTriggerInfo(const edm::Event&)=
+     <<ParticleAnalyzer::fillTriggerInfo>>
+
+**** TODO =virtual void ParticleAnalyzer::fillLumiInfo(const edm::Event&)=
+     <<ParticleAnalyzer::fillLumiInfo>>
+
+**** TODO =virtual void ParticleAnalyzer::fillRecoParticleInfo(const edm::Event&)=
+     <<ParticleAnalyzer::fillRecoParticleInfoEventLevel>>
+
+**** TODO =virtual void ParticleAnalyzer::fillGenParticleInfo(const edm::Event&)=
+     <<ParticleAnalyzer::fillGenParticleInfoEventLevel>>
+
+**** TODO =virtual void ParticleAnalyzer::endJob()=
+     <<ParticleAnalyzer::endJob>>
+
+**** TODO =virtual void ParticleAnalyzer::initTree()=
+     <<ParticleAnalyzer::initTree>>
+
+**** TODO =virtual void ParticleAnalyzer::initNTuple()=
+     <<ParticleAnalyzer::initNTuple>>
+
+**** TODO =virtual void ParticleAnalyzer::addParticleToNtuple(const size_t&, const std::pair<int, int>&)=
+     <<ParticleAnalyzer::addParticleToNtuple>>
+
+**** TODO =virtual void fillNTuple()=
+     <<ParticleAnalyzer::fillNtuple>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillTriggerObjectInfo(const pat::TriggerObjectStandAlone&, const UShort_t&, const bool&, const UShort_t& candIdx=USHRT_MAX)=
+     <<fillTriggerObjectInfo>>
+     This function will fill the trigger object to [[ParticleAnalyzer::particleInfo_][=particleInfo_["trig"]​]]=.
+     It will make use of [[ParticleContainer::getIndex][=getIndex=]]r, or  via [[ParticleContainer::push][=push=]].
+     The index of the filled object will be returned;
+
+**** TODO =UShort_t ParticleAnalyzer::fillRecoParticleInfo(const pat::GenericParticle&, const UShort_t& momIdx=USHRT_MAX)= [0/1]
+     <<fillRecoParticleInfo>>
+
+***** TODO Need to check return type
+      Is =UShort= large enough for indexing?
+***** Descriptions
+      It will make use of [[ParticleContainer::getIndex][=getIndex=]].
+
+**** TODO =UShort_t ParticleAnalyzer::fillTrackInfo(const pat::GenericParticle&, const UShort_t&, const bool& force=false)=
+     <<fillTrackInfo>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillSourceInfo(const pat::GenericParticle&, const UShort_t&, const bool& force=false)=
+     <<fillSourceInfo>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillMuonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     <<fillMuonInfo>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillElectronInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     <<fillElectronInfo>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillPhotonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     <<fillPhotonInfo>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillJetInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     <<fillJetInfo>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillTauInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     <<fillTauInfo>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillPFCandidateInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     <<fillPFCandidateInfo>>
+
+**** TODO =UShort_t ParticleAnalyzer::fillGenParticleInfo(const reco::GenParticleRef&, const UShort_t& candIdx=USHRT_MAX, const bool& force=false)=
+     <<fillGenParticleInfo>>
+
+**** TODO =void ParticleAnalyzer::initParticleInfo(const std::string&, const int& pId=0)= [0/1]
+     <<initParticleInfo>>
+     This function helps user initialize the entries in container =particleInfo_=.
+     It has the following categories:
+     - "trig" :: It will save trigger objects, initialized by
+       [[fillTriggerObjectInfo][=fillTriggerObjectInfo=]].  The initialization will not be done if
+       =triggerData_= is empty or =addInfo_["trgObj"]= is =false=.
+     - "trk" :: It will save tracking information, initialized by
+       [[fillTrackInfo][=fillTrackInfo=]]. The initialization will not be done if
+       =addInfo_["track"]= is =false=.
+     - "gen" :: It will save information related to generated
+       particles, initialized by [[fillGenParticleInfo][=fillGenParticleInfo=]]. The
+       initialization will not be done if =isMC_= is =false=.
+     - [ ] "src" :: The initialization will not be done if ~addInfo_["source"]~ is =false=.
+     - "cand" :: It will save the reconstructed particles, initialized by [[fillRecoParticleInfo][=fillRecoParticleInfo=]].
+
+**** TODO =void ParticleAnalyzer::addTriggerObject(pat::GenericParticle&)=
+     <<ParticleAnalyzer::addTriggerObject>>
+
+**** TODO =bool ParticleAnalyzer::addTriggerObject(pat::GenericParticle&, const math::XYZTLorentzVector&, const TriggerIndexMap&, const std::string&, const std::string&, const int&)=
+     <<ParticleAnalyzer::addTriggerObjectLongVersion>>
+
+**** TODO =bool ParticleAnalyzer::addGenParticle(pat::GenericParticle&, const math::XYZTLorentzVector&, const reco::GenParticleRefVector&)=
+     <<ParticleAnalyzer::addGenParticle>>
+
+**** TODO =void ParticleAnalyzer::findGenDaughters(reco::GenParticleRefVector&, const reco::GenParticleRef&, const pat::GenericParticle&, const short& iter=0)=
+     <<ParticleAnalyzer::findGenDaughters>>
+
+**** TODO =reco::GenParticleRef ParticleAnalyzer::findGenDaughter(const reco::GenParticleRef&, const size_t&)=
+     <<ParticleAnalyzer::findGenDaughter>>
+
+**** TODO =reco::GenParticleRef ParticleAnalyzer::findGenMother(const reco::GenParticleRef)&=
+     <<ParticleAnalyzer::findGenMother>>
+
+**** Retrieve user int and float
+     <<ParticleAnalyzer::UserIntFloat>>
+     See codes (may be outdated) below:
+     #+begin_src c++
+     int   getInt  (const pat::GenericParticle& c, const std::string& n, const int&   d=-99  ) const { return (c.hasUserInt(n)   ? c.userInt(n)   : d); }
+     float getFloat(const pat::GenericParticle& c, const std::string& n, const float& d=-99.9) const { return (c.hasUserFloat(n) ? c.userFloat(n) : d); }
+     #+end_src
+
+**** Convert numbers to values with shorter length
+     <<ParticleAnalyzer::ConvertNumbers>>
+     See codes (may be outdated) below:
+     #+begin_src c++
+  template <class T> Char_t   getChar  (const T& n) const { if (!(n >= CHAR_MIN && n < CHAR_MAX )) { throw(cms::Exception("Overflow")<<"Invalid char: "  <<n); }; return Char_t(n);   }
+  template <class T> UChar_t  getUChar (const T& n) const { if (!(n >= 0        && n < UCHAR_MAX)) { throw(cms::Exception("Overflow")<<"Invalid uchar: " <<n); }; return UChar_t(n);  }
+  template <class T> Short_t  getShort (const T& n) const { if (!(n >= SHRT_MIN && n < SHRT_MAX )) { throw(cms::Exception("Overflow")<<"Invalid short: " <<n); }; return Short_t(n);  }
+  template <class T> UShort_t getUShort(const T& n) const { if (!(n >= 0        && n < USHRT_MAX)) { throw(cms::Exception("Overflow")<<"Invalid ushort: "<<n); }; return UShort_t(n); }
+  template <class T> Int_t    getInt   (const T& n) const { if (!(n >= INT_MIN  && n < INT_MAX  )) { throw(cms::Exception("Overflow")<<"Invalid int: "   <<n); }; return Int_t(n);    }
+  template <class T> UInt_t   getUInt  (const T& n) const { if (!(n >= 0        && n < UINT_MAX )) { throw(cms::Exception("Overflow")<<"Invalid uint: "  <<n); }; return UInt_t(n);   }
+     #+end_src
+
+**** Helper functions
+     <<ParticleAnalyzer::Helpers>>
+     - =contain= :: Check whether the the input collection has the input element:
+
+       src_c++[:exports code]{template <class T1, class T2> bool contain (const T1& v, const T2& o) const { return (std::find(v.begin(), v.end(), o)!=v.end()); }}
+
+     - =insert= :: Insert the input =GenParticle= to the input collection:
+
+       src_c++[:exports code]{void insert (reco::GenParticleRefVector& v, const reco::GenParticleRef& p) { if (p.isNonnull() && !contain(v, p)) { v.push_back(p); } }}
+
+     - =isCompatible= :: Check the if we can compare these two input candidates, in the sense that
+       - They are both stable; they have the same charge; they have the same =pdgId= (absolute value)
+       - Neither of them are stable; they have the same charge.
+
+       src_c++[:exports code]{bool isCompatible(const reco::Candidate& p1, const reco::Candidate& p2) const}
+
+     - =deltaPt= :: Return the relative difference of p_T, taking the square root of product of two input as the denominator:
+
+       src_c++[:exports code]{double deltaPt(const double& pT1, const double& pT2) const}
+
+     - =isMatched= :: Compare two Lorentz vectors (maybe not necessary to be Lorentz vector), depending on $\Delta R$ and $\Delta p_T$:
+
+       src_c++[:exports code]{bool isMatched(const math::XYZTLorentzVector& c1, const math::XYZTLorentzVector& c2, const double& maxDeltaR, const double& maxDeltaPtRel)}
+
+     - =isL1MuMatched= :: Compare the if one is matched the other, depending on $\Delta \eta$, $\Delta R$ and $\Delta \phi$:
+
+       src_c++[:exports code]{bool isL1MuMatched(const math::PtEtaPhiMLorentzVector& c, const math::XYZTLorentzVector& t, const double& maxDeltaR, const double& maxDeltaEta, const double& maxDeltaPhi)}
+
+     - =passGenStatus= :: Check whether pass the gen status, see codes (might be outdated) below:
+       #+begin_src c++
+  bool passGenStatus(const reco::GenParticleRef& p) const
+  {
+    return (p->status()==1 || p->statusFlags().isDecayedLeptonHadron());
+  }
+       #+end_src
+
+**** TODO =edm::ParameterSet ParticleAnalyzer::getConfiguration(const std::string&, const std::string&, const edm::Run&)=
+     <<ParticleAnalyzer::getConfigurationString>>
+
+**** TODO =edm::ParameterSet ParticleAnalyzer::getConfiguration(const edm::EDGetToken&, const edm::Run&)=
+     <<ParticleAnalyzer::getConfigurationToken>>
+
+**** TODO =void ParticleAnalyzer::loadConfiguration(const edm::ParameterSet&, const edm::Run&)=
+     <<ParticleAnalyzer::loadConfiguration>>
+
+*** =class ParticleAnalyzer::Container=
+    <<ParticleAnalyzer::Container>>
+    This is a container for each candidate.
+**** Getters
+     <<Container::Getters>>
+     These are fetters for different data types. [[Container::DataStorage][Member variables]] for =this=
+     container. See codes (might be outdated) below:
+     #+begin_src c++
+    // getters
+    std::map<std::string, bool     > boolM()   const { return boolM_;   };
+    std::map<std::string, Char_t   > charM()   const { return charM_;   };
+    std::map<std::string, short    > shortM()  const { return shortM_;  };
+    std::map<std::string, int      > intM()    const { return intM_;    };
+    std::map<std::string, UChar_t  > ucharM()  const { return ucharM_;  };
+    std::map<std::string, UShort_t > ushortM() const { return ushortM_; };
+    std::map<std::string, UInt_t   > uintM()   const { return uintM_;   };
+    std::map<std::string, float    > floatM()  const { return floatM_;  };
+    std::map<std::string, std::vector<bool>     > boolVM()   const { return boolVM_;   };
+    std::map<std::string, std::vector<Char_t>   > charVM()   const { return charVM_;   };
+    std::map<std::string, std::vector<short>    > shortVM()  const { return shortVM_;  };
+    std::map<std::string, std::vector<int>      > intVM()    const { return intVM_;    };
+    std::map<std::string, std::vector<UChar_t>  > ucharVM()  const { return ucharVM_;  };
+    std::map<std::string, std::vector<UShort_t> > ushortVM() const { return ushortVM_; };
+    std::map<std::string, std::vector<UInt_t>   > uintVM()   const { return uintVM_;   };
+    std::map<std::string, std::vector<float>    > floatVM()  const { return floatVM_;  };
+     #+END_SRC
+
+**** Setters
+     <<Container::Setters>>
+     These functions are for creating new entry =n= or modifying existing entry =n=
+     of each map. The name =add= may be confusing.
+     See code (might be outdated) below:
+     #+begin_src c++
+    template <class T>
+    void add(const std::string& n, const T&        v) = delete; // avoid implicit conversion
+    void add(const std::string& n, const bool&     v) { boolM_[n]   = v; };
+    void add(const std::string& n, const Char_t&   v) { charM_[n]   = v; };
+    void add(const std::string& n, const short&    v) { shortM_[n]  = v; };
+    void add(const std::string& n, const int&      v) { intM_[n]    = v; };
+    void add(const std::string& n, const UChar_t&  v) { ucharM_[n]  = v; };
+    void add(const std::string& n, const UShort_t& v) { ushortM_[n] = v; };
+    void add(const std::string& n, const UInt_t&   v) { uintM_[n]   = v; };
+    void add(const std::string& n, const float&    v) { floatM_[n]  = v; };
+    void add(const std::string& n, const double&   v) { floatM_[n]  = v; };
+    void add(const std::string& n, const std::vector<bool>&     v) { boolVM_[n]   = v; };
+    void add(const std::string& n, const std::vector<Char_t>&   v) { charVM_[n]   = v; };
+    void add(const std::string& n, const std::vector<short>&    v) { shortVM_[n]  = v; };
+    void add(const std::string& n, const std::vector<int>&      v) { intVM_[n]    = v; };
+    void add(const std::string& n, const std::vector<UChar_t>&  v) { ucharVM_[n]  = v; };
+    void add(const std::string& n, const std::vector<UShort_t>& v) { ushortVM_[n] = v; };
+    void add(const std::string& n, const std::vector<UInt_t>&   v) { uintVM_[n]   = v; };
+    void add(const std::string& n, const std::vector<float>&    v) { floatVM_[n]  = v; };
+     #+end_src
+
+**** =void  ParticleAnalyzer::Container::push=
+     <<Container::push>>
+     This function is overridden many times. The
+     basic functionality is to push the value =v= to the vector with the
+     same type which is also identified by the key =n=. If =c= is =true=,
+     then it will check whether =v= overflows. Please check the code
+     below (may be outdated).
+     #+begin_src c++
+     template <class T>
+     void push(const std::string& n, const T&        v, const bool& c=0) = delete; // avoid implicit conversion
+     void push(const std::string& n, const bool&     v, const bool& c=0) { boolVM_[n].push_back(v);  };
+     void push(const std::string& n, const Char_t&   v, const bool& c=0) { if(!c || v!=CHAR_MAX ) charVM_[n].push_back(v);   };
+     void push(const std::string& n, const short&    v, const bool& c=0) { if(!c || v!=SHRT_MAX ) shortVM_[n].push_back(v);  };
+     void push(const std::string& n, const int&      v, const bool& c=0) { if(!c || v!=INT_MAX  ) intVM_[n].push_back(v);    };
+     void push(const std::string& n, const UChar_t&  v, const bool& c=0) { if(!c || v!=UCHAR_MAX) ucharVM_[n].push_back(v);  };
+     void push(const std::string& n, const UShort_t& v, const bool& c=0) { if(!c || v!=USHRT_MAX) ushortVM_[n].push_back(v); };
+     void push(const std::string& n, const UInt_t&   v, const bool& c=0) { if(!c || v!=UINT_MAX ) uintVM_[n].push_back(v);   };
+     void push(const std::string& n, const float&    v, const bool& c=0) { floatVM_[n].push_back(v); };
+     void push(const std::string& n, const double&   v, const bool& c=0) { push(n, float(v), c); }
+     #+end_src
+**** ~void ParticleAnalyzer::Container::copyData(Container& data, const std::string& n="") const~
+     <<Container::copyData>>
+     The variables in =this= container will be copied to the input =data=.
+     Each name of the entry in maps of =data= will start with =n=, then the
+     name of corresponding entry in maps of =this=. Those vectors will be
+     split to different entry ending with /i/-th in =data=. Say, =intVM_= in
+     =this= will become a series of =intM_= in =data=.
+**** =void Particle::Container::clear()=
+     <<Container::clear>>
+     Make each entry in maps of =this= become meaningless. Boolean will be false;
+     signed numbers will be negative; unsigned numbers will be 0; vectors will
+     be empty.
+**** =template <class T> ParticleAnalyzer::Container::void erase(std::map<std::string, T>& c, const std::string& n)=
+     <<Container::eraseTemplate>>
+     If finding the entry naming after =n=, erase it from the input map =c=.
+**** =void ParticleAnalyzer::Container::erase(const std::string& n, const std::vector<std::string>& tv)=
+     <<Container::erase>>
+     Erase entries of maps of =this=. The erased entries names after
+     =n= in types of type in =tv=.
+**** ~void initTree(TTree& tree, const std::string& n="")~
+     <<Container::initTree>>
+     Initialize the input =tree= with branches corresponding to each entry
+     in maps of =this=. Each branch will start with the input =n= and then
+     the entry name in maps.
+**** Member variables for data storag
+     <<Container::DataStorage>>
+     These variables have the following naming convention. Every variable
+     ending with =M_= is a map between =string= and a c++ type. Every variable
+     ending with =VM_= is a map between =string= and a =vector=. In principle,
+     these variables are for saving information of each candidate.
+     See code (might be outdated) below:
+     #+begin_src c++
+    std::map<std::string, bool     > boolM_;
+    std::map<std::string, Char_t   > charM_;
+    std::map<std::string, short    > shortM_;
+    std::map<std::string, int      > intM_;
+    std::map<std::string, UChar_t  > ucharM_;
+    std::map<std::string, UShort_t > ushortM_;
+    std::map<std::string, UInt_t   > uintM_;
+    std::map<std::string, float    > floatM_;
+    std::map<std::string, std::vector<bool>     > boolVM_;
+    std::map<std::string, std::vector<Char_t>   > charVM_;
+    std::map<std::string, std::vector<short>    > shortVM_;
+    std::map<std::string, std::vector<int>      > intVM_;
+    std::map<std::string, std::vector<UChar_t>  > ucharVM_;
+    std::map<std::string, std::vector<UShort_t> > ushortVM_;
+    std::map<std::string, std::vector<UInt_t>   > uintVM_;
+    std::map<std::string, std::vector<float>    > floatVM_;
+     #+end_src
+*** =class ParticleAnalyzer::ParticleContainer=
+    <<ParticleAnalyzer::ParticleContainer>>
+    This is a container for a series of candidates. The initialized
+    number of candidates ([[ParticleContainer::size_][=size_=]]) is 0.
+**** =size_t size() const=
+     Return [[ParticleContainer::size_][size_]].
+**** =bool ParticleAnalyzer::ParticleContainer::getIndex(size_t& index, const reco::Candidate& cand) const=
+     <<ParticleContainer::getIndex>>
+     This function will modify the input =index= to:
+     - the size of the [[ParticleContainer::parM_][container]] if not finding any identical element
+       to =cand=, otherwise
+     - the index of the element in [[ParticleContainer::parM_][container]] identical to the input =cand=.
+     This function will return =false= if no element in the [[ParticleContainer::parM_][container]] is
+     identical to =cand=, otherwise return =true=.
+**** Getters
+     <<ParticleContainer::Getters>>
+     The /i/-th element of entry =n= in [[ParticleContainer::DataStorage][VM_]] will be returned. If =i= is larger
+     than the [[ParticleContainer::size_][size_]], return the default value =d=.
+     See codes (might be outdated) below:
+     #+begin_src c++
+    template <class T>
+    T        get(const size_t& i, const std::string& n, const T&        d) const = delete; // avoid implicit conversion
+    bool     get(const size_t& i, const std::string& n, const bool&     d) const { return (i < size_ ? boolVM_.at(n)[i]   : d); };
+    int      get(const size_t& i, const std::string& n, const Int_t&    d) const { return (i < size_ ? intVM_.at(n)[i]    : d); };
+    UChar_t  get(const size_t& i, const std::string& n, const UChar_t&  d) const { return (i < size_ ? ucharVM_.at(n)[i]  : d); };
+    UShort_t get(const size_t& i, const std::string& n, const UShort_t& d) const { return (i < size_ ? ushortVM_.at(n)[i] : d); };
+    std::vector<UShort_t> get(const size_t& i, const std::string& n, const std::vector<UShort_t>& d) const { return (i < size_ ? ushortVVM_.at(n)[i] : d); };
+     #+end_src
+**** Setters for =data_=
+     <<ParticleContainer::addToData>>
+     This function will set a value via [[Container::Setters][add]] to [[ParticleContainer::data_][data_]].:
+
+     src_c++[:exports code]{template <class T> void add(const std::string& n, const T& v) { data_.add(n, v); }}
+**** Setters for =VM_= or =data_=
+     <<ParticleContainer::Setter>>
+     This function will check whether the input =i= exceeds the [[ParticleContainer::size_][size_]]. If not,
+     it will set the /i/-th element of entry =n= in [[ParticleContainer::DataStorage][VM_]] to value =v=; otherwise,
+     it will set the entry =n= in [[ParticleContainer::data_][data_]] via [[ParticleContainer::addToData][add]].
+     See codes (might be outdated) below:
+     #+begin_src c++
+    template <class T>
+    void add(const size_t& i, const std::string& n, const T&        v) = delete; // avoid implicit conversion
+    void add(const size_t& i, const std::string& n, const bool&     v) { if (i < size_) { boolVM_[n][i]   = v; } else { add(n, v); } };
+    void add(const size_t& i, const std::string& n, const UShort_t& v) { if (i < size_) { ushortVM_[n][i] = v; } else { add(n, v); } };
+     #+end_src
+**** =void push(const size_t& i, const std::string& n, const T& v, const bool& c=0)=
+     <<ParticleContainer::push>>
+     If the =i= is smaller than [[ParticleContainer::size_][=size_=]], push the value to the /i/-th existing vector of the [[ParticleContainer::DataStorage][double vector]] via [[ParticleContainer::pushV][=pushV=]];
+     otherwise push a new entry to [[ParticleContainer::data_][=data_=]] via [[ParticleContainer::push-to-data_][=push=]].
+**** =template <class T> void ParticleAnalyzer::ParticleContainer::push(const std::string& n, const T& v, const bool& c=0)=
+     <<ParticleContainer::push-to-data_>>
+     It will push key and values to =data_= via [[Container::push][=push=]].
+**** =void ParticleAnalyzer::ParticleContainer::pushV=
+     <<ParticleContainer::pushV>>
+     This function is intended to push a value to the back of the /i/-th
+     element in the double vector, via [[ParticleContainer::pushBack][=pushBack=]]. It will not check whether =v=
+     overflows, unless =c= is set to =true=. It is overridden many
+     times. See codes (may be outdated) below:
+     #+begin_src c++
+     template <class T>
+     void pushV(const size_t& i, const std::string& n, const T&        v, const bool& c=0) = delete; // avoid implicit conversion
+     void pushV(const size_t& i, const std::string& n, const UChar_t&  v, const bool& c=0) { if(!c || v!=UCHAR_MAX) pushBack(ucharVVM_[n], i, n, v);  };
+     void pushV(const size_t& i, const std::string& n, const UShort_t& v, const bool& c=0) { if(!c || v!=USHRT_MAX) pushBack(ushortVVM_[n], i, n, v); };
+     void pushV(const size_t& i, const std::string& n, const UInt_t&   v, const bool& c=0) { if(!c || v!=UINT_MAX ) pushBack(uintVVM_[n], i, n, v);   };
+     void pushV(const size_t& i, const std::string& n, const float&    v, const bool& c=0) { pushBack(floatVVM_[n], i, n, v); };
+     void pushV(const size_t& i, const std::string& n, const double&   v, const bool& c=0) { pushV(i, n, float(v), c); };
+     #+end_src
+**** =template <class T> void ParticleAnalyzer::ParticleContainer::pushBack(std::vector<std::vector<T> >& c, const size_t& i, const std::string& n, const T& v)=
+     <<ParticleContainer::pushBack>>
+     Push the value =v= to the /i/-th element of the double vector =c=.
+**** =void ParticleAnalyzer::ParticleContainer::pushData(const reco::Candidate& cand)=
+     <<ParticleContainer::pushData>>
+     This function will append data saved in [[ParticleContainer::data_][=data_=]] to
+     [[ParticleContainer::DataStorage][variables for data storage]] associated with [[ParticleContainer::parM_][=parM_=]]. If the input =cand=
+     can be found in [[ParticleContainer::parM_][=parM_=]], an error will be thrown.
+**** ~void ParticleAnalyzer::ParticleContainer::copyData(Container& data, const size_t& i, const std::string& n="") const~
+     <<ParticleContainer::copyData>>
+     This function will copy /i/-th element from [[ParticleContainer::DataStorage][VM_ and VVM_]] to the input
+     =data= via [[Container::Setters][add]]. If the input =i= is larger than
+     [[ParticleContainer::size_][current size of the this container]], a default value will be set:
+     false for Boolean; -99 for signed numbers; 0 for unsigned numbers;
+     and no vector will be added in this case.
+     The name of each entry in maps of =data= will start
+     with =n=, and then the name of entries in [[ParticleContainer::DataStorage][VM_ and VVM_]]. For values
+     in [[ParticleContainer::DataStorage][VVM_]], the name of new entries ending with the index of each
+     element in [[ParticleContainer::DataStorage][VVM_]].
+**** =void ParticleAnalyzer::ParticleContainer::clear()=
+     <<ParticleContainer::clear>>
+     Clear information in =this= container. [[ParticleContainer::size_][size_]] will be 0; [[ParticleContainer::data_][data_]] will
+     be empty; [[ParticleContainer::parM_][parM_]] will be empty; [[ParticleContainer::DataStorage][VM_ and VVM_]] will be empty.
+**** ~void ParticleAnalyzer::initTree(TTree& tree, const std::string& n="")~
+     <<ParticleContainer::initTree>>
+     Initialize the input =tree= using [[ParticleContainer::DataStorage][VM_ and VVM_]]. The branches will read
+     values saved in [[ParticleContainer::DataStorage][VM_ and VVM_]] each time a entry of =tree= is filled. The
+     name of each branch will start will =n= and then name of keys in  [[ParticleContainer::DataStorage][maps]].
+
+**** A new type =Particle= and =ParticleAnalyzer::ParticleContainer::getPar(const reco::Candidate& cand) const=
+     <<ParticleContainer::Particle>>
+     Characterize the particle via its 3-momentum, mass, charge and pdgId. See codes (might be outdated) below:
+     #+begin_src c++
+     typedef std::tuple<float, float, float, float, char, int> Particle;
+
+     Particle getPar(const reco::Candidate& cand) const
+     {
+       return Particle(cand.pt(), cand.eta(), cand.phi(), cand.mass(), cand.charge(), cand.pdgId());
+     };
+     #+end_src
+**** =size_t ParticleAnalyzer::ParticleContainer::size_=
+     <<ParticleContainer::size_>>
+     It is the current number of particles in [[ParticleAnalyzer::ParticleContainer][ParticleContainer]].
+     It will increase by one each time [[ParticleContainer::pushData][=pushData=]] is executed successfully.
+**** =Container ParticleAnalyzer::ParticleContainer::data_=
+     <<ParticleContainer::data_>>
+     It is a container for each particle candidate. See [[ParticleAnalyzer::Container][=Container=]].
+**** =std::map<Particle, size_t> ParticleAnalyzer::ParticleContainer::parM_=
+     <<ParticleContainer::parM_>>
+     It is map between the particle (characterized by [[ParticleContainer::Particle][=Particle=]]) and
+     its index in the [[ParticleAnalyzer::ParticleContainer][=ParticleContainer=]].  Note, it is not for
+     [[ParticleAnalyzer::Container][=Container=]]. The index is the key to retrieve values in other
+     [[ParticleContainer::DataStorage][variables for data storage]]. =parM_= share the same index with
+     [[ParticleContainer::DataStorage][=VM_= and =VVM_= variables]].
+**** Member variables for data storage
+     <<ParticleContainer::DataStorage>>
+     These variables have the following naming convention.
+     Every variable ending with =VM_= is a map between =string= and =vector=.
+     Every variable ending with =VVM_= is a map between =string=
+     and =vector<vector>=. See code (might be outdated) below:
+     #+begin_src c++
+    std::map<std::string, std::vector<bool>     > boolVM_;
+    std::map<std::string, std::vector<Char_t>   > charVM_;
+    std::map<std::string, std::vector<short>    > shortVM_;
+    std::map<std::string, std::vector<int>      > intVM_;
+    std::map<std::string, std::vector<UChar_t>  > ucharVM_;
+    std::map<std::string, std::vector<UShort_t> > ushortVM_;
+    std::map<std::string, std::vector<UInt_t>   > uintVM_;
+    std::map<std::string, std::vector<float>    > floatVM_;
+    std::map<std::string, std::vector<std::vector<bool> >     > boolVVM_;
+    std::map<std::string, std::vector<std::vector<Char_t> >   > charVVM_;
+    std::map<std::string, std::vector<std::vector<short> >    > shortVVM_;
+    std::map<std::string, std::vector<std::vector<int> >      > intVVM_;
+    std::map<std::string, std::vector<std::vector<UChar_t> >  > ucharVVM_;
+    std::map<std::string, std::vector<std::vector<UShort_t> > > ushortVVM_;
+    std::map<std::string, std::vector<std::vector<UInt_t> >   > uintVVM_;
+    std::map<std::string, std::vector<std::vector<float> >    > floatVVM_;
+     #+end_src
+     The index of each =VM_= and the first index of each =VVM_=, together
+     with [[ParticleContainer::parM_][=parM_=]], share the same index, corresponding to each
+     candidate.
+*** TODO =class ParticleAnalyzer::TriggerInfo=
+    <<ParticleAnalyzer::TriggerInfo>>
+*** TODO =class ParticleAnalyzer::MatchInfo=
+    <<ParticleAnalyzer::MatchInfo>>
+*** Member variables for input tokens
+    See more in [[ParticleAnalyzer::ConfigPars][configuration parameters]]
+    and codes (might be outdated) below:
+    #+begin_src c++
+  // input tokens
+  const edm::EDGetTokenT<reco::BeamSpot> tok_offlineBS_;
+  const edm::EDGetTokenT<reco::VertexCollection> tok_offlinePV_;
+  const edm::EDGetTokenT<pat::GenericParticleCollection> tok_recParticle_;
+  const edm::EDGetTokenT<reco::GenParticleCollection> tok_genParticle_;
+  const edm::EDGetTokenT<GenEventInfoProduct> tok_genInfo_;
+  const edm::EDGetTokenT<LHEEventProduct> tok_lheInfo_;
+  const edm::EDGetTokenT<int> tok_centBin_;
+  const edm::EDGetTokenT<reco::Centrality> tok_centSrc_;
+  const edm::EDGetTokenT<reco::EvtPlaneCollection> tok_eventPlaneSrc_;
+  const edm::EDGetTokenT<edm::TriggerResults> tok_triggerResults_;
+  const edm::EDGetTokenT<trigger::TriggerEvent> tok_triggerEvent_;
+  const edm::EDGetTokenT<edm::TriggerResults> tok_filterResults_;
+  const edm::EDGetTokenT<LumiInfo> tok_lumiInfo_;
+  const edm::EDGetTokenT<LumiScalersCollection> tok_lumiScalers_;
+  const edm::EDGetTokenT<OnlineLuminosityRecord> tok_lumiRecord_;
+  std::vector< edm::EDGetTokenT<LumiInfo> > tok_triggerLumiInfo_;
+  const edm::EDGetTokenT<edm::ValueMap<int> > tok_nTracksVMap_;
+    #+end_src
+*** Member variables for input data [0/11]
+**** TODO =const std::vector<edm::ParameterSet> ParticleAnalyzer::triggerInfo_, ParticleAnalyzer::matchInfo_=
+     <<ParticleAnalyzer::TrigNMatch>>
+**** TODO =const std::vector<std::string> eventFilters_=
+     <<ParticleAnalyzer::eventFilters_>>
+**** TODO =const std::string selectEvents_=
+     <<ParticleAnalyzer::selectEvents_>>
+**** =const bool saveTree_=
+     <<ParticleAnalyzer::saveTree_>>
+     - =true= :: Save the event in =TTree= format. It will save space but user need
+       to retrieve the information via several types of indices.
+     - =false= :: Save the event in general =ntuple= format. It is easier to use.
+**** TODO =const int maxGenIter_=
+     <<ParticleAnalyzer::maxGenIter_>>
+**** TODO =const double maxGenDeltaR_, maxGenDeltaPtRel_=
+     <<ParticleAnalyzer::MaxGenDelta>>
+**** TODO =const std::vector<UInt_t> genPdgIdV_=
+     <<ParticleAnalyzer::genPdgIdV>>
+**** TODO =std::map<std::string, bool> ParticleAnalyzer::addInfo_=
+     <<ParticleAnalyzer::addInfo_>>
+**** TODO =std::set<int> sourceId_, genPdgId_=
+     <<ParticleAnalyzer::SrcNGenId>>
+**** TODO =std::vector<std::string> dedxInfo_=
+     <<ParticleAnalyzer::dedxInfo_>>
+**** TODO =HLTPrescaleProvider hltPrescaleProvider_=
+     <<ParticleAnalyzer::hltPrescaleProvider_>>
+**** TODO =std::vector<std::vector<int> > l1PrescaleTable_=
+     <<ParticleAnalyzer::l1PrescaleTable_>>
+*** Member variables for attributes [0/10]
+**** =edm::Service<TFileService> fileService_=
+     <<ParticleAnalyzer::fileService_>>
+     Used for [[https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideTFileService][file service]].
+**** =TTree* tree_, ntuple_=
+     <<ParticleAnalyzer::TreeNNtuple>>
+     Used for retrieving the tree and n-tuple.
+**** TODO =bool isMC_=
+     <<ParticleAnalyzer::isMC_>>
+**** TODO =bool , vtxSortByTrkSize_==
+     <<ParticleAnalyzer::vtxSortByTrkSize>>
+**** TODO =reco::Vertex vertex_=
+     <<ParticleAnalyzer::vertex_>>
+**** TODO =reco::Particle::Point genVertex_=
+     <<ParticleAnalyzer::genVertex_>>
+**** TODO =reco::VertexCollection vertices_=
+     <<ParticleAnalyzer::vertices_>>
+**** TODO =reco::GenParticleRefVector genParticlesToKeep__=
+     <<ParticleAnalyzer::genParticlesToKeep_>>
+**** TODO =reco::GenParticleRefVector genParticlesToMatch_=
+     <<ParticleAnalyzer::genParticlesToMatch_>>
+**** TODO =const MagneticField* magField_=
+     <<ParticleAnalyzer::magField_>>
+**** TODO =edm::ValueMap<int> nTracksVMap_=
+     <<ParticleAnalyzer::nTracksVMap_>>
+**** TODO =const std::set<int> SOURCEPDG_=
+     <<ParticleAnalyzer::SetSOURCEPDG>>
+     See codes (might be outdated) below:
+     #+begin_src c++
+     const std::set<int> SOURCEPDG_ = {0,1,2,3,4,5,6,11,13,15,22};
+     #+end_src
+*** Member variables for containers [0/3]
+**** TODO =Container eventInfo_, ntupleInfo_=
+     <<ParticleAnalyzer::TreeContainer>>
+**** TODO =TriggerContainer triggerData_=
+     <<ParticleAnalyzer::triggerData_>>
+     Se codes (may be outdated) below:
+     #+begin_src c++
+     typedef std::vector<TriggerInfo> TriggerContainer;
+     TriggerContainer triggerData_;
+     #+end_src
+**** TODO =MatchContainer matchData_=
+     <<ParticleAnalyzer::matchData_>>
+     See codes (may be outdated) below:
+     #+begin_src c++
+     typedef std::map<std::string, MatchInfo> MatchContainer;
+     MatchContainer matchData_;
+     #+end_src
+****  =particleInfo_=
+     <<ParticleAnalyzer::particleInfo_>>
+     This is a map between the names of different candidates
+     (trigger objects, reconstructed candidates, generated particles, etc.)
+     and their [[ParticleAnalyzer::ParticleContainer][containers]]. See codes (might be outdated) below:
+     #+begin_src c++
+     typedef std::map<std::string, ParticleContainer> ParticleContainerMap;
+     ParticleContainerMap particleInfo_;
+     #+end_src
+**** TODO =std::map<std::string, std::map<size_t, pat::TriggerObjectStandAlone> > triggerObjectMap_=
+     <<ParticleAnalyzer::triggerObjectMap_>>
