@@ -185,6 +185,7 @@ process.generalD0CandidatesNew.mva = cms.InputTag("generalTracks","MVAValues") #
 #+end_src
 
 *** Options
+    <<ParticleProducer::ConfigVars>>
     #+CAPTION: This is the table of configurable parameters.
     | Name              | Descriptions                                                                     | Type           | Default values           |
     |-------------------+----------------------------------------------------------------------------------+----------------+--------------------------|
@@ -615,32 +616,37 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
       #+END_EXAMPLE
 
 *** Options
+    Check sections for [[ParticleAnalyzer::Tokens][tokens]].
     #+CAPTION: This is the table of configurable parameters of general tree producer
     <<ParticleAnalyzer::ConfigPars>>
-    | Name               | Descriptions                                                                                                 | Type                   | Default values                       |   |
-    |--------------------+--------------------------------------------------------------------------------------------------------------+------------------------+--------------------------------------+---|
-    | =beamSpot=           |                                                                                                              | =cms.InputTag=           | =offlineBeamSpot=                      |   |
-    | =primaryVertices=    |                                                                                                              | =cms.InputTag=           | =offlinePrimaryVertices=               |   |
-    | =recoParticles=      | The =pat::GenericParticleCollection= user want to save as tree                                                 | =cms.InputTag=           | =generalParticles=                     |   |
-    | =nTracksVMap=        | The =ValueMap= of number of offline tracks                                                                     | =cms.untracked.InputTag= | =generalParticles:nTracks=             |   |
-    | =triggerResults=     |                                                                                                              | =cms.untracked.InputTag= | =TriggerResults::HLT=                  |   |
-    | =triggerEvent=       |                                                                                                              | =cms.untracked.InputTag= | =hltTriggerSummaryAOD::HLT=            |   |
-    | =triggerInfo=        | Further documentation needed                                                                                 | =cms.untracked.VPSet=    |                                      |   |
-    | =matchInfo=          | trigger-reco matching information, further documentation needed                                              | =cms.untracked.VPSet=    |                                      |   |
-    | =eventFilterResults= |                                                                                                              | =cms.untracked.InputTag= | =TriggerResults=                       |   |
-    | =eventFilterNames=   |                                                                                                              | =cms.untracked.vstring=  | Please check corresponding branch    |   |
-    | =selectEvents=       |                                                                                                              | =cms.string=             | Please check corresponding branch    |   |
-    | =centralityBin=      |                                                                                                              | =cms.untrakced.InputTag= | =InputTag("centralityBin","HFtowers")= |   |
-    | =centrality=         |                                                                                                              | =cms.untracked.InputTag= | =hiCentrality=                         |   |
-    | =eventPlane=         |                                                                                                              | =cms.untracked.InputTag= | =hiEvtPlaneFlat=                       |   |
-    | =lumiInfo=           |                                                                                                              | =cms.untracked.InputTag= | =InputTag("lumiInfo", "brilcalc")=     |   |
-    | =lumiScalers=        |                                                                                                              | =cms.untracked.InputTag= | =scalersRawToDigi=                     |   |
-    | =lumiRecord=         |                                                                                                              | =cms.untracked.InputTag= | =onlineMetaDataDigis=                  |   |
-    | =saveTree=           | If =True= then save tree else save ntuple                                                                      | =cms.untracked.bool=     | =True=                                 |   |
-    | =addTrgObj=          |                                                                                                              | =cms.untracked.bool=     | =False=                                |   |
-    | =genParticles=       | Input tag for =reco::GenParticleCollection=. Work when dealing with MC samples                                 | =cms.untracked.InputTag= | =genParticles=                         |   |
-    | =genInfo=            | Further documentation needed                                                                                 | =cms.untracked.InputTag= | =generator=                            |   |
-    | =genPdgId=           | The vector saving =pdgId= of decay particles, their decay products and other particles users want to match gen | =cms.untracked.vuint32=  | left as empty                        |   |
+    | Name               | Descriptions                                                                                                 | Type                   | Default values                       |
+    |--------------------+--------------------------------------------------------------------------------------------------------------+------------------------+--------------------------------------|
+    | =beamSpot=           |                                                                                                              | =cms.InputTag=           | =offlineBeamSpot=                      |
+    | =primaryVertices=    |                                                                                                              | =cms.InputTag=           | =offlinePrimaryVertices=               |
+    | =recoParticles=      | The =pat::GenericParticleCollection= user want to save as tree                                                 | =cms.InputTag=           | =generalParticles=                     |
+    | =nTracksVMap=        | The =ValueMap= of number of offline tracks                                                                     | =cms.untracked.InputTag= | =generalParticles:nTracks=             |
+    | =triggerResults=     |                                                                                                              | =cms.untracked.InputTag= | =TriggerResults::HLT=                  |
+    | =triggerEvent=       |                                                                                                              | =cms.untracked.InputTag= | =hltTriggerSummaryAOD::HLT=            |
+    | =triggerInfo=        | Further documentation needed                                                                                 | =cms.untracked.VPSet=    |                                      |
+    | =matchInfo=          | trigger-reco matching information, further documentation needed                                              | =cms.untracked.VPSet=    |                                      |
+    | =eventFilterResults= |                                                                                                              | =cms.untracked.InputTag= | =TriggerResults=                       |
+    | =eventFilterNames=   |                                                                                                              | =cms.untracked.vstring=  | Please check corresponding branch    |
+    | =selectEvents=       |                                                                                                              | =cms.string=             | Please check corresponding branch    |
+    | =centralityBin=      |                                                                                                              | =cms.untrakced.InputTag= | =InputTag("centralityBin","HFtowers")= |
+    | =centrality=         |                                                                                                              | =cms.untracked.InputTag= | =hiCentrality=                         |
+    | =eventPlane=         |                                                                                                              | =cms.untracked.InputTag= | =hiEvtPlaneFlat=                       |
+    | =lumiInfo=           |                                                                                                              | =cms.untracked.InputTag= | =InputTag("lumiInfo", "brilcalc")=     |
+    | =lumiScalers=        |                                                                                                              | =cms.untracked.InputTag= | =scalersRawToDigi=                     |
+    | =lumiRecord=         |                                                                                                              | =cms.untracked.InputTag= | =onlineMetaDataDigis=                  |
+    | =saveTree=           | If =True= then save tree else save ntuple                                                                      | =cms.untracked.bool=     | =True=                                 |
+    | =addTrgObj=          |                                                                                                              | =cms.untracked.bool=     | =False=                                |
+    | =genParticles=       | Input tag for =reco::GenParticleCollection=. Work when dealing with MC samples                                 | =cms.untracked.InputTag= | =genParticles=                         |
+    | =genInfo=            | Further documentation needed                                                                                 | =cms.untracked.InputTag= | =generator=                            |
+    | =genPdgId=           | The vector saving =pdgId= of decay particles, their decay products and other particles users want to match gen | =cms.untracked.vuint32=  | left as empty                        |
+    | =lhInfo=             |                                                                                                              | =cms.untracked.InputTag= | =externalLHEProducer=                  |
+    | =maxGenIter=         |                                                                                                              | =cms.untracked.int32=    | 0                                    |
+    | =maxGenDeltaR=       |                                                                                                              | =cms.untracked.double=   | 0.03                                 |
+    | =maxGenDeltaPtRel=   |                                                                                                              | =cms.untracked.double=   | 0.5                                  |
 ** Short descriptions
    The tree producer will generate analyzing tree or ntuple with the minimal
    setup and configurations. It will save the trigger info, event info, lumi
@@ -650,29 +656,74 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
    1. Take the elements in =triggerInfo=, and set up the token for trigger lumi
       info for each element if it has, other set null. Lumi info for each
       element will be saved in =tok_triggerLumiInfo_=, a one-to-one map to
-      =triggerInfo_=.
-   2. Create an entry ="trgObj"= in =addInfo_=. The value will be taken from the
-      configuration parameter ~addTrObj~ or be =false= if the parameter does not
-      exist.
-   3. Select events via =selectEvents_=, it is not null, read the corresponding
-      trigger results stored in =tok_filterResults_=.
-   4. Clear all containers for later usage, for instance, =genParticlesToKeep_=,
-      =genParticlesToMatch_=, =eventInfo_=, =triggerData_=, =triggerObjectMap_=,
-      =particleInfo_=.
-   5. Get the event data out via [[ParticleAnalyzer::getEventData][=getEventData=]] and =get= functions.
+      =triggerInfo_=. (See its constructor.)
+   2. Create an entry ="trgObj"= in [[ParticleAnalyzer::addInfo_][=addInfo_=]]. The value will be taken from the
+      configuration parameter[[ParticleAnalyzer::ConfigPars][ ~addTrgObj~]] or be =false= if the parameter does not
+      exist. (See its constructor.)
+   3. Get the trigger results out from [[ParticleAnalyzer::Tokens][tok_triggerResults_]] and save the
+      collection into trigger results label. (See [[ParticleAnalyzer::beginRun][beginRun]].)
+   4. Initialize the [[ParticleAnalyzer::hltPrescaleProvider_][hltPrescaleProvider_]] with the labels in last step.
+      (See [[ParticleAnalyzer::beginRun][beginRun]].)
+   5. Fill the [[ParticleAnalyzer::l1PrescaleTable_][l1PrescaleTable_]]. (See [[ParticleAnalyzer::beginRun][beginRun]].)
+   6. Get the configuration of reconstructed particles via [[ParticleAnalyzer::getConfigurationToken][getConfiguration]].
+      (See [[ParticleAnalyzer::beginRun][beginRun]].)
+   7. Extract the information from the configuration in last step via
+      [[ParticleAnalyzer::loadConfiguration][loadConfiguration]]. (See [[ParticleAnalyzer::beginRun][beginRun]].)
+   8. Select events via [[ParticleAnalyzer::selectEvents_][=selectEvents_=]], it is not null, read the corresponding
+      trigger results stored in [[ParticleAnalyzer::Tokens][=tok_filterResults_=]]. (See [[ParticleAnalyzer::analyze][analyze]].)
+   9. Clear all containers for later usage, for instance, [[ParticleAnalyzer::genParticlesToKeep_][=genParticlesToKeep_=]],
+      [[ParticleAnalyzer::genParticlesToMatch_][=genParticlesToMatch_=]], [[ParticleAnalyzer::eventInfo_][=eventInfo_=]], =triggerData_=, =triggerObjectMap_=,
+      =particleInfo_=. (See [[ParticleAnalyzer::analyze][analyze]].)
+   10. Get the event data out via [[ParticleAnalyzer::getEventData][=getEventData=]] and trigger data via
+       [[ParticleAnalyzer::getTriggerData][=getTriggerData=]]. (See [[ParticleAnalyzer::analyze][analyze]].)
+   11. Fill event information via [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]. (See [[ParticleAnalyzer::analyze][analyze]].)
+   12. Fill trigger information via [[ParticleAnalyzer::fillTriggerInfo][fillTriggerInfo]]. (See [[ParticleAnalyzer::analyze][analyze]].)
+   13. Fill lumi information via [[ParticleAnalyzer::fillLumiInfo][fillLumiInfo]]. (See [[ParticleAnalyzer::analyze][analyze]].)
+   14. Fill reconstructed particle information via
+       [[ParticleAnalyzer::fillRecoParticleInfoEventLevel][fillRecoParticleInfo]]. (See [[ParticleAnalyzer::analyze][analyze]].)
+   15. Fill generated particle information via [[ParticleAnalyzer::fillGenParticleInfoEventLevel][fillGenParticleInfo]].
+       (See [[ParticleAnalyzer::analyze][analyze]].)
+   16. Fill entry into output tree:
+       - If tree is wanted, initialize it via [[ParticleAnalyzer::initTree][initTree]]. And then fill it.
+       - If n-tuple is wanted, call [[ParticleAnalyzer::fillNTuple][fillNtuple]].
+
 ** Class member functions and variables
-*** Member functions [0/13]
-**** TODO =virtual void ParticleAnalyzer::beginJob()=
+*** Member functions [0/28]
+**** =virtual void ParticleAnalyzer::beginJob()=
      <<ParticleAnalyzer::beginJob>>
 **** TODO =virtual void ParticleAnalyzer::beginRun(const edm::Run&, const edm::EventSetup&)=
      <<ParticleAnalyzer::beginRun>>
-**** TODO =virtual void ParticleAnalyzer::analyze(const edm::Event&, const edm::EventSetup&)=
-     <<ParticleAnalyzer::analyze>>
+     This function perform the followings:
+     - Get the trigger results out from [[ParticleAnalyzer::Tokens][tok_triggerResults_]] and save the
+       collection into trigger results label.
+     - Initialize the [[ParticleAnalyzer::hltPrescaleProvider_][hltPrescaleProvider_]] with the labels in last step.
+     - Fill the [[ParticleAnalyzer::l1PrescaleTable_][l1PrescaleTable_]].
+     - Get the configuration of reconstructed particles via [[ParticleAnalyzer::getConfigurationToken][getConfiguration]].
+     - Extract the information from the configuration in last step via
+       [[ParticleAnalyzer::loadConfiguration][loadConfiguration]].
 
+**** =virtual void ParticleAnalyzer::analyze(const edm::Event&, const edm::EventSetup&)=
+     <<ParticleAnalyzer::analyze>>
+   1. Select events via [[ParticleAnalyzer::selectEvents_][=selectEvents_=]], it is not null, read the corresponding
+      trigger results stored in [[ParticleAnalyzer::Tokens][=tok_filterResults_=]].
+   2. Clear all containers for later usage, for instance, [[ParticleAnalyzer::genParticlesToKeep_][=genParticlesToKeep_=]],
+      [[ParticleAnalyzer::genParticlesToMatch_][=genParticlesToMatch_=]], [[ParticleAnalyzer::eventInfo_][=eventInfo_=]], =triggerData_=, =triggerObjectMap_=,
+      =particleInfo_=.
+   3. Get the event data out via [[ParticleAnalyzer::getEventData][=getEventData=]] and trigger data via
+      [[ParticleAnalyzer::getTriggerData][=getTriggerData=]].
+   4. Fill event information via [[ParticleAnalyzer::fillEventInfo][fillEventInfo]].
+   5. Fill trigger information via [[ParticleAnalyzer::fillTriggerInfo][fillTriggerInfo]].
+   6. Fill lumi information via [[ParticleAnalyzer::fillLumiInfo][fillLumiInfo]].
+   7. Fill reconstructed particle information via
+      [[ParticleAnalyzer::fillRecoParticleInfoEventLevel][fillRecoParticleInfo]].
+   8. Fill generated particle information via [[ParticleAnalyzer::fillGenParticleInfoEventLevel][fillGenParticleInfo]].
+   9. Fill entry into output tree:
+      - If tree is wanted, initialize it via [[ParticleAnalyzer::initTree][initTree]]. And then fill it.
+      - If n-tuple is wanted, call [[ParticleAnalyzer::fillNTuple][fillNtuple]].
 **** TODO =virtual void ParticleAnalyzer::getEventData(const edm::Event& iEvent, const edm::EventSetup& iSetup)=
      <<ParticleAnalyzer::getEventData>>
      This function will extract MC/data information from the =ADO= file.
-     It will do the following in order:
+     It will do the following in order: [0/0]
      1. Check whether the input file is for MC samples via ~isRealData~
         in =edm::Event=.
      2. Get the magnetic field information.
@@ -686,16 +737,31 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
            sum over $p_T^2$ or multiplicity. The default option =vtxSortByTrkSize=
            in the =GeneralParticleProducer= is true. Thus the vertex with
            highest multiplicity is selected.
-     5. If MC samples are read, extract the generated particles' information.
+     5. [0/1] If MC samples are read, extract the generated particles' information.
         - The generated primary vertex information is saved in
-          =genVertex_=.  It is determined as the vertex of the first
-          generate particle with status =isLastCopy() == true= (see more
+          [[ParticleAnalyzer::genVertex_][=genVertex_=]].  It is determined as the vertex of the first
+          generate particle with status ~isLastCopy() == true~ (see more
           comments in the [[https://cmssdt.cern.ch/lxr/source/DataFormats/HepMCCandidate/interface/GenParticle.h][link]], and an example is bremming electron
           will exists before and after photon emission) and absolute
           value of =pdgId= is less than or equal to 6 (quarks) or =pdgId=
           equal to 21 (gluon).
-        - The container for generated particles is initialized via
-          [[initParticleInfo][=initParticleInfo=]].
+        - [ ] The container for generated particles is initialized via
+          [[ParticleAnalyzer::initParticleInfo][=initParticleInfo=]] with input parameter ="gen"=.
+        - The multiplicity of the generated particles is calculated. The
+          result is saved in [[ParticleAnalyzer::eventInfo_][eventInfo_]], with the attribute ="Ntrkgen"=.
+        - Generated particles used for reco-gen matching will be put
+          to [[ParticleAnalyzer::genParticlesToMatch_][=genParticlesToMatch_=]]. The generated particles satisfying
+          the followings will be used:
+          * =isLastCopy()= is true; [[ParticleAnalyzer::Helpers][passGenStatus]] is true; the =pdgId= is
+            [[ParticleAnalyzer::Helpers][contain]]ed in [[ParticleAnalyzer::SrcNGenId][genPdgId_]] (absolute value).
+          * If the item above is satisfied, the analyzer will try to
+            find the mother particles for stable particles via [[ParticleAnalyzer::findGenMother][findGenMother]].
+            If the mother particle can be found and its =pdgId= can be found
+            in [[ParticleAnalyzer::SrcNGenId][genPdgId_]], the stable particle (~status()==1~, not the mother
+            particle) will be saved into [[ParticleAnalyzer::genParticlesToMatch_][genParticlesToMatch_]].
+        - Put the particles in [[ParticleAnalyzer::genParticlesToMatch_][genParticlesToMatch_]] and their mothers (obtained
+          via [[ParticleAnalyzer::findGenMother][findGenMother]]), daughters (via [[ParticleAnalyzer::findGenDaughter][findGenDaughter]]) into
+          [[ParticleAnalyzer::genParticlesToKeep_][genParticlesToKeep_]]. The insertion is done via [[ParticleAnalyzer::Helpers][insert]].
 
 **** TODO =virtual void ParticleAnalyzer::getTriggerData(const edm::Event&, const edm::EventSetup&)=
      <<ParticleAnalyzer::getTriggerData>>
@@ -711,6 +777,12 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 
 **** TODO =virtual void ParticleAnalyzer::fillRecoParticleInfo(const edm::Event&)=
      <<ParticleAnalyzer::fillRecoParticleInfoEventLevel>>
+     The reconstructed particles will be retrieved via [[ParticleAnalyzer::Tokens][tok_recParticle_]].
+     If succeeding, entries ="cand"= and ="trk"= will be initialized via
+     [[ParticleAnalyzer::initParticleInfo][initParticleInfo]]. And particles with IDs in [[ParticleAnalyzer::SrcNGenId][sourceId_]] will also
+     be initialized via [[ParticleAnalyzer::initParticleInfo][initParticleInfo]] with ="src"=. After initialization,
+     particles will be filled into [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]] via
+     [[ParticleAnalyzer::fillRecoParticleInfo][fillRecoParticleInfo]].
 
 **** TODO =virtual void ParticleAnalyzer::fillGenParticleInfo(const edm::Event&)=
      <<ParticleAnalyzer::fillGenParticleInfoEventLevel>>
@@ -718,74 +790,151 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 **** TODO =virtual void ParticleAnalyzer::endJob()=
      <<ParticleAnalyzer::endJob>>
 
-**** TODO =virtual void ParticleAnalyzer::initTree()=
+**** =virtual void ParticleAnalyzer::initTree()=
      <<ParticleAnalyzer::initTree>>
+     Initialize [[ParticleAnalyzer::TreeNNtuple][tree_]] via [[Container::initTree][initTree]] of  [[ParticleAnalyzer::eventInfo_][eventInfo_]] and [[ParticleContainer::initTree][initTree]]
+     of each entry in [[ParticleAnalyzer::particleInfo_][particleInfo_]]. The branches from [[ParticleAnalyzer::particleInfo_][particleInfo_]]
+     are named starting with the corresponding names of entries.
 
-**** TODO =virtual void ParticleAnalyzer::initNTuple()=
+**** =virtual void ParticleAnalyzer::initNTuple()=
      <<ParticleAnalyzer::initNTuple>>
+     The tree pointed by [[ParticleAnalyzer::TreeNNtuple][ntuple_]] will be initialized by [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]] via
+     [[Container::initTree][initTree]].
 
-**** TODO =virtual void ParticleAnalyzer::addParticleToNtuple(const size_t&, const std::pair<int, int>&)=
+**** =virtual void ParticleAnalyzer::addParticleToNtuple(const size_t& i, const std::pair<int, int>& dau)=
      <<ParticleAnalyzer::addParticleToNtuple>>
+     This function has two parameters:
+     - =i= :: It is the index of the
+       candidate (~status == 3~, see [[ParticleAnalyzer::fillNTuple][fillNTuple]]) in [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]].
+     - =dau= :: It is map between the generation of particles and the index
+       of the particle in the corresponding generation. The daughter of
+       the main entry will have generation 1. Generation-1 particles will
+       have the label ="dau"=; generation-2 particles (granddaughters) will
+       have the label ="gdau"=; generation-3 particles will have ~"ggdau"~
+       and so on.
+     After determining the label, candidate information will be retrieved
+     by =i=, by [[ParticleContainer::Getters][get]]. [[ParticleAnalyzer::particleInfo_][Other information in ~particleInfo_~]] for
+     =type= (={"trig", "gen",  "trk"}=) will by retrieved by =typeIdx= such
+     as ="trigIdx"=. And information for jet, electron,
+     muon, tau and photons are retrieved by ~"srcIdx"~. Here is a trick
+     that index need to be less than =USHRT_MAX=. The index used to retrieve
+     particle information other than ="cand"= is initialized by =UShort_t(-1)=.
 
-**** TODO =virtual void fillNTuple()=
-     <<ParticleAnalyzer::fillNtuple>>
+     Now, the index has been obtained. Information will be copied to
+     [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]] via [[ParticleContainer::copyData][copyData]].
+
+     The daughter information will be added via recursively call
+     [[ParticleAnalyzer::addParticleToNtuple][addParticleToNtuple]] with the generation added by one each time.
+
+**** =virtual void fillNTuple()=
+     <<ParticleAnalyzer::fillNTuple>>
+     Each entry in [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]] will be filled here. It will loop over all
+     candidates in [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]]. and then put every candidate with
+     ~status == 3~ (user-defined status. See ~GeneralParticleProducer~) into
+     [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]]. It will perform the followings:
+     1. Copy event information in [[ParticleAnalyzer::eventInfo_][eventInfo_]] to [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]] via [[Container::copyData][copyData]].
+     2. Copy particle information in [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]] to [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]]
+        via [[ParticleAnalyzer::addParticleToNtuple][addParticleToNtuple]].
+     3. Save information in [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]] to [[ParticleAnalyzer::TreeNNtuple][ntuple_]]. If [[ParticleAnalyzer::TreeNNtuple][ntuple_]] is not
+        initialized, erase the entries containing
+        ={"Idx", "cand_matchTRG", "cand_momMatch", "lheWeight"}= in
+         [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]] and then call [[ParticleAnalyzer::initNTuple][initNtuple]].
 
 **** TODO =UShort_t ParticleAnalyzer::fillTriggerObjectInfo(const pat::TriggerObjectStandAlone&, const UShort_t&, const bool&, const UShort_t& candIdx=USHRT_MAX)=
-     <<fillTriggerObjectInfo>>
-     This function will fill the trigger object to [[ParticleAnalyzer::particleInfo_][=particleInfo_["trig"]​]]=.
-     It will make use of [[ParticleContainer::getIndex][=getIndex=]]r, or  via [[ParticleContainer::push][=push=]].
+     <<ParticleAnalyzer::fillTriggerObjectInfo>>
+     This function will fill the trigger object to [[ParticleAnalyzer::particleInfo_][=particleInfo_["trig"]​=]].
+     It will make use of [[ParticleContainer::getIndex][=getIndex=]], or  via [[ParticleContainer::push][=push=]].
      The index of the filled object will be returned;
 
-**** TODO =UShort_t ParticleAnalyzer::fillRecoParticleInfo(const pat::GenericParticle&, const UShort_t& momIdx=USHRT_MAX)= [0/1]
-     <<fillRecoParticleInfo>>
-
+**** TODO =UShort_t ParticleAnalyzer::fillRecoParticleInfo(const pat::GenericParticle& cand, const UShort_t& momIdx=USHRT_MAX)= [0/1]
+     <<ParticleAnalyzer::fillRecoParticleInfo>>
 ***** TODO Need to check return type
       Is =UShort= large enough for indexing?
 ***** Descriptions
-      It will make use of [[ParticleContainer::getIndex][=getIndex=]].
+      There are two input parameters: =cand= for the candidate will be filled;
+      =momIdx= for the index of the mother particle of =cand=
+      in [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]]. =momIdx= is useful and meaningful when
+      filling the daughters of a candidate. You will see it later, in a
+      recursive call of this function.
+
+      In the initialization processes, a null =pat::GenericParticle=.
+
+      It will make use of [[ParticleContainer::getIndex][=getIndex=]] to check whether =cand= has already
+      been filled into [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]]. If the mother particle
+      with index =momIdx= matches the gen-particle, the entry for =momMatchGEN=
+      and =momMatchIdx= will be modified.
+
+      And if the input particle has been put into [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]],
+      the corresponding index will be returned and this function stops.
+      Otherwise the following content will be executed and the [[ParticleContainer::size_][size_]] will
+      be returned (it is also the index for this unrecorded particle).
+
+      If the particles has not been recorded, then information of the
+      input =cand= will be saved into  [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]] via [[ParticleContainer::addToData][add]] (the
+      setter of [[ParticleContainer::data_][data_]]). It will fill the followings:
+      - Kinematic variables :: These variables of the input =cand= will
+        be filled, such as momentum.
+      - Ntrkoffline :: It will be filled if [[ParticleAnalyzer::nTracksVMap_][nTracksVMap_]] is not empty.
+      - mva :: It will be filled if [[ParticleAnalyzer::addInfo_][addInfo_["mva"]​]] is true.
+      - Trigger related information :: When the [[ParticleAnalyzer::triggerData_][triggerData_]] is not empty,
+        trigger related information will be associated with the input =cand=
+        via [[ParticleAnalyzer::addTriggerObject][addTriggerObject]]. Entries =matchTRG%d= and =trigIdx= may be created.
+      - Track related information :: The corresponding track index in
+        [[ParticleAnalyzer::particleInfo_][particleInfo_["trk"]​]], obtained via [[ParticleAnalyzer::fillTrackInfo][fillTrackInfo]].
+      - Information from "source" :: The corresponding index in
+        [[ParticleAnalyzer::particleInfo_][particleInfo_["src"]​]], obtained via [[ParticleAnalyzer::fillSourceInfo][fillSourceInfo]].
+      - MC related information :: If the candidate does not have the
+        =pat::userInt("isGenMatched")=, add the gen-particle information
+        via [[ParticleAnalyzer::addGenParticle][addGenParticle]]. The =genIdx= is obtained by [[ParticleAnalyzer::fillGenParticleInfo][fillGenParticleInfo]].
+      - Daughter related information :: If no daughter found, empty vectors
+        are placed. If daughters are found, the corresponding index of each
+        daughter is obtained by [[ParticleAnalyzer::fillRecoParticleInfo][fillRecoParticleInfo]]. Note, daughter info
+        will be recursively retrieved.
 
 **** TODO =UShort_t ParticleAnalyzer::fillTrackInfo(const pat::GenericParticle&, const UShort_t&, const bool& force=false)=
-     <<fillTrackInfo>>
+     <<ParticleAnalyzer::fillTrackInfo>>
 
 **** TODO =UShort_t ParticleAnalyzer::fillSourceInfo(const pat::GenericParticle&, const UShort_t&, const bool& force=false)=
-     <<fillSourceInfo>>
+     <<ParticleAnalyzer::fillSourceInfo>>
 
 **** TODO =UShort_t ParticleAnalyzer::fillMuonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
-     <<fillMuonInfo>>
+     <<ParticleAnalyer::fillMuonInfo>>
 
 **** TODO =UShort_t ParticleAnalyzer::fillElectronInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
-     <<fillElectronInfo>>
+     <<ParticleAnalyzer::fillElectronInfo>>
 
 **** TODO =UShort_t ParticleAnalyzer::fillPhotonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
-     <<fillPhotonInfo>>
+     <<ParticleAnalyzer::fillPhotonInfo>>
 
 **** TODO =UShort_t ParticleAnalyzer::fillJetInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
-     <<fillJetInfo>>
+     <<ParticleAnalyzer::fillJetInfo>>
 
 **** TODO =UShort_t ParticleAnalyzer::fillTauInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
-     <<fillTauInfo>>
+     <<ParticleAnalyzer::fillTauInfo>>
 
 **** TODO =UShort_t ParticleAnalyzer::fillPFCandidateInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
-     <<fillPFCandidateInfo>>
+     <<ParticleAnalyzer::fillPFCandidateInfo>>
 
 **** TODO =UShort_t ParticleAnalyzer::fillGenParticleInfo(const reco::GenParticleRef&, const UShort_t& candIdx=USHRT_MAX, const bool& force=false)=
-     <<fillGenParticleInfo>>
+     <<ParticleAnalyzer::fillGenParticleInfo>>
 
 **** TODO =void ParticleAnalyzer::initParticleInfo(const std::string&, const int& pId=0)= [0/1]
-     <<initParticleInfo>>
+     <<ParticleAnalyzer::initParticleInfo>>
      This function helps user initialize the entries in container =particleInfo_=.
      It has the following categories:
      - "trig" :: It will save trigger objects, initialized by
-       [[fillTriggerObjectInfo][=fillTriggerObjectInfo=]].  The initialization will not be done if
-       =triggerData_= is empty or =addInfo_["trgObj"]= is =false=.
+       [[ParticleAnalyzer::fillTriggerObjectInfo][=fillTriggerObjectInfo=]]. The initialization will not be done if
+       =triggerData_= is empty or [[ParticleAnalyzer::addInfo_][=addInfo_["trgObj"]=]] is =false=.
      - "trk" :: It will save tracking information, initialized by
-       [[fillTrackInfo][=fillTrackInfo=]]. The initialization will not be done if
+       [[ParticleAnalyzer::fillTrackInfo][=fillTrackInfo=]]. The initialization will not be done if
        =addInfo_["track"]= is =false=.
      - "gen" :: It will save information related to generated
-       particles, initialized by [[fillGenParticleInfo][=fillGenParticleInfo=]]. The
+       particles, initialized by [[ParticleAnalyzer::fillGenParticleInfo][=fillGenParticleInfo=]]. The
        initialization will not be done if =isMC_= is =false=.
-     - [ ] "src" :: The initialization will not be done if ~addInfo_["source"]~ is =false=.
-     - "cand" :: It will save the reconstructed particles, initialized by [[fillRecoParticleInfo][=fillRecoParticleInfo=]].
+     - [ ] "src" :: The initialization will not be done if
+       [[ParticleAnalyzer::addInfo_][~addInfo_["source"]~]] is =false=.
+     - "cand" :: It will save the reconstructed particles, initialized
+       by [[ParticleAnalyzer::fillRecoParticleInfo][=fillRecoParticleInfo=]].
 
 **** TODO =void ParticleAnalyzer::addTriggerObject(pat::GenericParticle&)=
      <<ParticleAnalyzer::addTriggerObject>>
@@ -799,11 +948,26 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 **** TODO =void ParticleAnalyzer::findGenDaughters(reco::GenParticleRefVector&, const reco::GenParticleRef&, const pat::GenericParticle&, const short& iter=0)=
      <<ParticleAnalyzer::findGenDaughters>>
 
-**** TODO =reco::GenParticleRef ParticleAnalyzer::findGenDaughter(const reco::GenParticleRef&, const size_t&)=
+**** =reco::GenParticleRef ParticleAnalyzer::findGenDaughter(const reco::GenParticleRef& par, const size_t& idx)=
      <<ParticleAnalyzer::findGenDaughter>>
+     It will return the =idx=-th daughter of the input =par= via
+     =reco::GenParticle::daughterRef()=. If the daughter has its
+     daughter (granddaughter) with the *same* =pdgId=, the granddaughter
+     will be returned. Similar check also works for the granddaughter.
 
-**** TODO =reco::GenParticleRef ParticleAnalyzer::findGenMother(const reco::GenParticleRef)&=
+     This function will return an null reference if one of the following
+     satisfies:
+     - The input =par= is null.
+     - The number of daughterparticles of the input =par= is less than =idx=.
+
+**** =reco::GenParticleRef ParticleAnalyzer::findGenMother(const reco::GenParticleRef par)&=
      <<ParticleAnalyzer::findGenMother>>
+     Find the mother particle of the input particle. It will return an empty
+     =reco::GenParticleRef()= if one of the following satisfies:
+     - The input =par= is null.
+     - The number of mother particles of the input =par= is 0.
+     - The mother particle ultimately has the same =pdgId= as the input =par= after
+       a few iterations.
 
 **** Retrieve user int and float
      <<ParticleAnalyzer::UserIntFloat>>
@@ -861,14 +1025,42 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
   }
        #+end_src
 
-**** TODO =edm::ParameterSet ParticleAnalyzer::getConfiguration(const std::string&, const std::string&, const edm::Run&)=
+**** =edm::ParameterSet ParticleAnalyzer::getConfiguration(const std::string& module, const std::string& process, const edm::Run& iRun)=
      <<ParticleAnalyzer::getConfigurationString>>
+     This function will return the parameter set corresponding to module and
+     process via tools given by =cmssw=. Empty parameter set might be returned
+     depending on the input.
 
-**** TODO =edm::ParameterSet ParticleAnalyzer::getConfiguration(const edm::EDGetToken&, const edm::Run&)=
+**** =edm::ParameterSet ParticleAnalyzer::getConfiguration(const edm::EDGetToken&, const edm::Run&)=
      <<ParticleAnalyzer::getConfigurationToken>>
+     It will pass the label of the input token. And then it pass the label
+     and run to [[ParticleAnalyzer::getConfigurationString][getConfiguration]] and return the results from [[ParticleAnalyzer::getConfigurationString][getConfiguration]].
 
-**** TODO =void ParticleAnalyzer::loadConfiguration(const edm::ParameterSet&, const edm::Run&)=
+**** =void ParticleAnalyzer::loadConfiguration(const edm::ParameterSet&, const edm::Run&)=
      <<ParticleAnalyzer::loadConfiguration>>
+     The following variables might be initialized or modified, depedning on
+     the input and the times this function has been called.
+     - [[ParticleAnalyzer::vtxSortByTrkSize_][vtxSortByTrkSize_]] :: It will be set to the value in parameter set if
+       ="vtxSortByTrkSize"= existed. Otherwise it becomes =true=.
+     - [[ParticleAnalyzer::SrcNGenId][sourceId_]] :: The =pdgId= of parameter set (in provenance) will be
+       inserted to [[ParticleAnalyzer::SrcNGenId][sourceId_]] if =pdgId= exists and it is in [[ParticleAnalyzer::SetSOURCEPDG][SOURCEPDGID_]].
+     - Entries in [[ParticleAnalyzer::addInfo_][addInfo_]] :: They will be true unless the corresponding criteria
+       is satisfied:
+       + "source" :: The length is [[ParticleAnalyzer::SrcNGenId][sourceId_]] is positive.
+       + "track" :: The charge of the particle in [[ParticleProducer::ConfigVars][the input parameter set]] is
+         non-zero.
+       + "dEdxs" :: The [[ParticleProducer::ConfigVars][string vector naming after ="dEdxInputs"=]] exists
+         and the size of the vector is non-zero.
+       + "mva" :: The =edm::InputTag= ~mva~ (used for tracks) in [[ParticleProducer::ConfigVars][parameter set]]
+         exists and its label is not empty.
+       + "muonL1" :: The =pdgId= in the [[ParticleProducer::ConfigVars][parameter set]] needs to be 13. If the
+         parameter ="propToMuon"= does not exits, it is true. Otherwise it
+         is set to the value of ="propToMuon"= in the input configuration set.
+       The parameters above will keep true once the criteria satisfied. Before
+       they become true, there might be several times [[ParticleAnalyzer::loadConfiguration][loadConfiguration]] called
+       and the checks above will be evaluated each time.
+     This function will be recursively called by itself if ="source"=
+     and ="daughterInfo"= exist in the [[ParticleProducer::ConfigVars][input parameter set]].
 
 *** =class ParticleAnalyzer::Container=
     <<ParticleAnalyzer::Container>>
@@ -1141,11 +1333,90 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      The index of each =VM_= and the first index of each =VVM_=, together
      with [[ParticleContainer::parM_][=parM_=]], share the same index, corresponding to each
      candidate.
-*** TODO =class ParticleAnalyzer::TriggerInfo=
+*** TODO =class ParticleAnalyzer::TriggerInfo= [0/1]
     <<ParticleAnalyzer::TriggerInfo>>
-*** TODO =class ParticleAnalyzer::MatchInfo=
+    A =typedef= is used here:
+    src_c++[:exports code]{typedef std::map<std::string, std::vector<size_t> > TriggerIndexMap}.
+**** Getters
+     <<TriggerInfo::Getters>>
+     See codes (might be outdated) below:
+     #+begin_src c++
+    // getters
+    int                  triggerIndex()  const { return triggerIndex_;  }
+    int                  filterIndex()   const { return filterIndex_;   }
+    int                  minN()          const { return minN_;          }
+    bool                 validPrescale() const { return validPrescale_; }
+    UShort_t             hltPrescale()   const { return hltPrescale_;   }
+    UShort_t             l1Prescale()    const { return l1Prescale_;    }
+    UChar_t              hltPDs()        const { return hltPDs_;        }
+    std::string          triggerName()   const { return triggerName_;   }
+    std::string          filterName()    const { return filterName_;    }
+    std::array<bool,4>   triggerBit()    const { return triggerBit_;    }
+    bool                 triggerBit(const size_t& i) const { return (i<triggerBit_.size() ? triggerBit_[i] : false); }
+    TriggerIndexMap      filterObjects() const { return filterObjects_; }
+    bool                 validLumi()     const { return validLumi_;     }
+    float                recordLumi()    const { return recordLumi_;    }
+    float                totalLumi()     const { return totalLumi_;     }
+     #+end_src
+**** Setters
+     <<TriggerInfo::Setters>>
+     See codes (might be outdated) below.
+     #+begin_src c++
+    // setters
+    // triggerBit_ = bit; others are mapped by their names
+    void setInfo(const int& triggerIndex, const int& filterIndex,
+                 const std::string& triggerName, const std::string& filterName, const int& minN,
+                 const bool& validPrescale, const UShort_t& hltPrescale, const UShort_t& l1Prescale,
+                 const UChar_t& hltPDs, const std::array<bool,4>& bit, const TriggerIndexMap& filterObjects);
+    // validLumi_ = true; others are mapped by their names
+    void setLumiInfo(const double& recordLumi, const double& totalLumi);
+     #+end_src
+**** TODO Member variables
+     <<TriggerInfo::MemVars>>
+     I list the member variables here (might be outdated).
+     #+CAPTION: Member variables for =TriggerInfo=
+     | Name           | Type                | Descriptions | Default values |
+     |----------------+---------------------+--------------+----------------|
+     | =triggerIndex_=  | =int=                 |              |             -1 |
+     | =filterIndex_=   | =int=                 |              |             -1 |
+     | =triggerName_=   | =std::string=         |              |             "" |
+     | =filterName_=    | =std::string=         |              |             "" |
+     | =minN_=          | =int=                 |              |              0 |
+     | =validPrescale_= | =bool=                |              |              0 |
+     | =hltPrescale_=   | =UShort_t=            |              |              0 |
+     | =l1Prescale_=    | =UShort_t=            |              |              0 |
+     | =hltPDs_=        | =UChar_t=             |              |              0 |
+     | =triggerBit_=    | =std::array<bool, 4>= |              |             {} |
+     | =filterObjects_= | =TriggerIndexMap=     |              |             {} |
+     | =recordLumi_=    | =float=               |              |              0 |
+     | =totalLumi_=     | =float=               |              |              0 |
+     | =validLumi_=     | =bool=                |              |              0 |
+
+*** TODO =class ParticleAnalyzer::MatchInfo= [0/1]
     <<ParticleAnalyzer::MatchInfo>>
+
+**** TODO Member Variables and Getters
+     <<MatchInfo::MemVars>>
+     #+CAPTION: Member variables and Getters
+     | Name          | Type        | Descriptions | Default values | Getter                   |
+     |---------------+-------------+--------------+----------------+--------------------------|
+     | =collection_=   | =std::string= |              |             "" | =std::string collection()= |
+     | =maxDeltaR_=    | =double=      |              |              0 | =double maxDeltaR()=       |
+     | =maxDeltaPtRel= | =double=      |              |              0 | =double maxDeltaPtRel=     |
+     | =maxDeltaEta_=  | =double=      |              |              0 | =double maxDeltaEta()=     |
+     | =maxDeltaPhi_=  | =double=      |              |              0 | =double maxDeltaPhi()=     |
+
+**** Setters
+     <<MatchInfo::Setters>>
+     See codes (might be outdated) below:
+     #+begin_src c++
+    // setters
+    void setInfo(const std::string& collection, const double& maxDeltaR, const double& maxDeltaPtRel,
+                 const double& maxDeltaEta, const double& maxDeltaPhi)
+     #+end_src
+
 *** Member variables for input tokens
+    <<ParticleAnalyzer::Tokens>>
     See more in [[ParticleAnalyzer::ConfigPars][configuration parameters]]
     and codes (might be outdated) below:
     #+begin_src c++
@@ -1168,7 +1439,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
   std::vector< edm::EDGetTokenT<LumiInfo> > tok_triggerLumiInfo_;
   const edm::EDGetTokenT<edm::ValueMap<int> > tok_nTracksVMap_;
     #+end_src
-*** Member variables for input data [0/11]
+*** Member variables for input data [0/9]
 **** TODO =const std::vector<edm::ParameterSet> ParticleAnalyzer::triggerInfo_, ParticleAnalyzer::matchInfo_=
      <<ParticleAnalyzer::TrigNMatch>>
 **** TODO =const std::vector<std::string> eventFilters_=
@@ -1184,52 +1455,119 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      <<ParticleAnalyzer::maxGenIter_>>
 **** TODO =const double maxGenDeltaR_, maxGenDeltaPtRel_=
      <<ParticleAnalyzer::MaxGenDelta>>
-**** TODO =const std::vector<UInt_t> genPdgIdV_=
-     <<ParticleAnalyzer::genPdgIdV>>
-**** TODO =std::map<std::string, bool> ParticleAnalyzer::addInfo_=
+**** =const std::vector<UInt_t> genPdgIdV_=
+     <<ParticleAnalyzer::genPdgIdV_>>
+     Container for the input python parameter [[ParticleAnalyzer::ConfigPars][="genPdgId"=]]. Its content will
+     be further copied into [[ParticleAnalyzer::SrcNGenId][=genPdgId_=]].
+**** =std::map<std::string, bool> ParticleAnalyzer::addInfo_=
      <<ParticleAnalyzer::addInfo_>>
-**** TODO =std::set<int> sourceId_, genPdgId_=
+     Entries in [[ParticleAnalyzer::addInfo_][addInfo_]] will be true
+     unless the corresponding criteria is satisfied:
+     + "source" :: The length is [[ParticleAnalyzer::SrcNGenId][sourceId_]] is positive.
+     + "track" :: The charge of the particle in this parameter set
+       [[ParticleProducer::ConfigVars][in provenance]] is non-zero.
+     + "dEdxs" :: The string vector naming after ="dEdxInputs"=  [[ParticleProducer::ConfigVars][in provenance]]
+       exists and the size of the vector is non-zero.
+     + "mva" :: The =edm::InputTag= ~mva~ (used for tracks) in parameter set
+       [[ParticleProducer::ConfigVars][in provenance]] exists and its label is not empty.
+     + "muonL1" :: The =pdgId= in the parameter set [[ParticleProducer::ConfigVars][in provenance]] needs to be 13.
+       If the parameter ="propToMuon"= does not exits, it is true. Otherwise it
+       is set to the value of ="propToMuon"= in the input configuration set.
+     + "trgObj" :: Determined by ~addTrgObj~ in the [[ParticleAnalyzer::ConfigPars][configurations]].
+     The parameters above (except ="trgObj"=) will keep true once the
+     criteria satisfied. Before they become true, there might be
+     several times [[ParticleAnalyzer::loadConfiguration][loadConfiguration]] called and the checks above will
+     be evaluated each time.
+
+     Entries in =addInfo_= are used to determined whether fill related info
+     into corresponding entries in [[ParticleAnalyzer::particleInfo_][particleInfo_]].
+
+**** =std::set<int> sourceId_, genPdgId_=
      <<ParticleAnalyzer::SrcNGenId>>
+     - =sourceId_= :: The particle information with =pdgId= in this collection
+       will be filled into corresponding entry in [[ParticleAnalyzer::particleInfo_][particleInfo_]].
+     - =genPdgId_= :: Particles' =pdgId= used for reco-gen matching.
+       Particles with =genPdgId_= will be saved in [[ParticleAnalyzer::genParticlesToMatch_][=genParticlesToMatch_=]].
+       It contains the particles in [[ParticleAnalyzer::genPdgIdV_][genPdgIdV_]] and =pdgId= in parameter
+       set found in [[ParticleAnalyzer::loadConfiguration][loadConfiguration]].
 **** TODO =std::vector<std::string> dedxInfo_=
      <<ParticleAnalyzer::dedxInfo_>>
 **** TODO =HLTPrescaleProvider hltPrescaleProvider_=
      <<ParticleAnalyzer::hltPrescaleProvider_>>
 **** TODO =std::vector<std::vector<int> > l1PrescaleTable_=
      <<ParticleAnalyzer::l1PrescaleTable_>>
-*** Member variables for attributes [0/10]
+*** Member variables for attributes [0/1]
 **** =edm::Service<TFileService> fileService_=
      <<ParticleAnalyzer::fileService_>>
      Used for [[https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideTFileService][file service]].
 **** =TTree* tree_, ntuple_=
      <<ParticleAnalyzer::TreeNNtuple>>
      Used for retrieving the tree and n-tuple.
-**** TODO =bool isMC_=
+**** =bool isMC_=
      <<ParticleAnalyzer::isMC_>>
-**** TODO =bool , vtxSortByTrkSize_==
-     <<ParticleAnalyzer::vtxSortByTrkSize>>
-**** TODO =reco::Vertex vertex_=
+     Check whether the input samples is MC or not. Determined in [[ParticleAnalyzer::getEventData][getEventData]].
+**** =bool vtxSortByTrkSize_=
+     <<ParticleAnalyzer::vtxSortByTrkSize_>>
+     It determine whether the primary vertex collection will
+     be sorted by multiplicity. It is initialized by [[ParticleAnalyzer::loadConfiguration][loadConfiguration]].
+**** =reco::Vertex vertex_=
      <<ParticleAnalyzer::vertex_>>
-**** TODO =reco::Particle::Point genVertex_=
+     It denotes the primary vertex. The value is set in [[ParticleAnalyzer::getEventData][getEventData]].
+**** =reco::Particle::Point genVertex_=
      <<ParticleAnalyzer::genVertex_>>
-**** TODO =reco::VertexCollection vertices_=
+     It denotes the primary vertex among generated particles.
+     The value is set in [[ParticleAnalyzer::getEventData][getEventData]].
+**** =reco::VertexCollection vertices_=
      <<ParticleAnalyzer::vertices_>>
-**** TODO =reco::GenParticleRefVector genParticlesToKeep__=
+     This collection is to save the primary vertices satisfying criteria
+     described in [[ParticleAnalyzer::getEventData][getEventData]].
+**** =reco::GenParticleRefVector genParticlesToKeep__=
      <<ParticleAnalyzer::genParticlesToKeep_>>
-**** TODO =reco::GenParticleRefVector genParticlesToMatch_=
+     The variable used to save =genParticle= collection for reco-gen
+     matching.  It contains the particles in [[ParticleAnalyzer::genParticlesToMatch_][genParticlesToMatch_]] and
+     their mothers (obtained via [[ParticleAnalyzer::findGenMother][findGenMother]]), daughters (via
+     [[ParticleAnalyzer::findGenDaughter][findGenDaughter]]).
+
+**** =reco::GenParticleRefVector genParticlesToMatch_=
      <<ParticleAnalyzer::genParticlesToMatch_>>
-**** TODO =const MagneticField* magField_=
+     The variable used to save =genParticle= collection for reco-gen matching.
+     The generated particles satisfying the followings will be used:
+     - =isLastCopy()= is true; [[ParticleAnalyzer::Helpers][passGenStatus]] is true; the =pdgId= is
+       [[ParticleAnalyzer::Helpers][contain]]ed in [[ParticleAnalyzer::SrcNGenId][genPdgId_]] (absolute value).
+     - If the item above is satisfied, the analyzer will try to
+       find the mother particles for stable particles via [[ParticleAnalyzer::findGenMother][findGenMother]].
+       If the mother particle can be found and its =pdgId= can be found
+       in [[ParticleAnalyzer::SrcNGenId][genPdgId_]], the stable particle (~status()==1~, not the mother
+       particle) will be saved into [[ParticleAnalyzer::genParticlesToMatch_][genParticlesToMatch_]].
+**** =const MagneticField* magField_=
      <<ParticleAnalyzer::magField_>>
+     It denotes the magnetic field in experiment. Value is set
+     in [[ParticleAnalyzer::getEventData][getEventData]].
 **** TODO =edm::ValueMap<int> nTracksVMap_=
      <<ParticleAnalyzer::nTracksVMap_>>
-**** TODO =const std::set<int> SOURCEPDG_=
+     =edm::ValueMap= for =Ntrkoffline=.
+**** =const std::set<int> SOURCEPDG_=
      <<ParticleAnalyzer::SetSOURCEPDG>>
-     See codes (might be outdated) below:
+     It contains =pdgId= of =pfCandidate=, quarks jets, gluon jets, electrons,
+     muons, taus and photons. These particles need their own (extra) input
+     source, not limited to =GenericParticleCollection=. It is the superio
+     of [[ParticleAnalyzer::SrcNGenId][sourceId_]]. See codes (might be outdated) below:
      #+begin_src c++
      const std::set<int> SOURCEPDG_ = {0,1,2,3,4,5,6,11,13,15,22};
      #+end_src
-*** Member variables for containers [0/3]
-**** TODO =Container eventInfo_, ntupleInfo_=
-     <<ParticleAnalyzer::TreeContainer>>
+*** Member variables for containers [0/4]
+**** TODO =Container eventInfo_=
+     <<ParticleAnalyzer::eventInfo_>>
+     | Name    | Descriptions                        | Created by   |
+     |---------+-------------------------------------+--------------|
+     | Ntrkgen | Multiplicity of generated particles | [[ParticleAnalyzer::getEventData][getEventData]] |
+     |         |                                     |              |
+**** =Container ntupleInfo_=
+     <<ParticleAnalyzer::ntupleInfo_>>
+     It is a [[ParticleAnalyzer::Container][container]] to save candidate information, for ntuple production.
+     It can only hold one candidate's information. Each time before new
+     values are copied to [[ParticleAnalyzer::ntupleInfo_][ntupleInfo_]], [[Container::clear][clear]] need to be called.
+
 **** TODO =TriggerContainer triggerData_=
      <<ParticleAnalyzer::triggerData_>>
      Se codes (may be outdated) below:
@@ -1248,10 +1586,54 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      <<ParticleAnalyzer::particleInfo_>>
      This is a map between the names of different candidates
      (trigger objects, reconstructed candidates, generated particles, etc.)
-     and their [[ParticleAnalyzer::ParticleContainer][containers]]. See codes (might be outdated) below:
+     and their [[ParticleAnalyzer::ParticleContainer][containers]]. Possible entries are:
+     ~{"cand", "trk", "elec", "muon", "tau", "pho", "jet", "pf", "gen", "trig"}~.
+     See codes (might be outdated) below:
      #+begin_src c++
      typedef std::map<std::string, ParticleContainer> ParticleContainerMap;
      ParticleContainerMap particleInfo_;
      #+end_src
+
+     The key-value pairs in each entry are listed in the following tables:
+     #+CAPTION: particleInfo_["cand"]
+     | Name                     | Descriptions                                                                                                      |          Value holder if not accessible |
+     |--------------------------+-------------------------------------------------------------------------------------------------------------------+-----------------------------------------|
+     | =p=                        | momentum                                                                                                          |                                         |
+     | =y=                        | rapidity                                                                                                          |                                         |
+     | =eta=                      | eta                                                                                                               |                                         |
+     | =phi=                      | phi                                                                                                               |                                         |
+     | =mass=                     | mass                                                                                                              |                                         |
+     | =charge=                   | charge                                                                                                            |                                         |
+     | =pdgId=                    | pdgId                                                                                                             |                                         |
+     | =status=                   | status for the candidate, 1: stable, 2: intermediate, 3:target, see =GeneralParticleProducer=                       |                                         |
+     | =vtxChi2=                  | Chi2 normalized by the number of degrees of freedom                                                               |                                     -1. |
+     | =vtxProb=                  | Fit probability of the vertex reconstruction                                                                      |                                     -1. |
+     | =angle3D=                  | 3D pointing angle between the line segment from primary vertex to decay vertex and the momentum of decay particle |                                    -10. |
+     | =angle2D=                  |                                                                                                                   |                                    -10. |
+     | =dca=                      | DCA between two daughters, valid when number of daughters equals 2                                                |                                   -99.9 |
+     | =decayLength3D=            | 3D decay length w.r.t. the primary vertex                                                                         |                                   -99.9 |
+     | =decayLengthError3D=       | The error of =decayLength3D=                                                                                        |                                     -1. |
+     | =decayLength2D=            |                                                                                                                   |                                   -99.9 |
+     | =decayLengthError2D=       |                                                                                                                   |                                     -1. |
+     | =pseudoDecayLengthError3D= | The error of 3D pseudo-proper-decay-length, defined by decay-length-3D * cos(angle3D) *m/p                        |                                   -99.9 |
+     | =pseudodecaylengtherror2D= |                                                                                                                   |                                   -99.9 |
+     | =mva=                      |                                                                                                                   |                                   -99.9 |
+     | =Ntrkoffline=              | Will be filled when [[ParticleAnalyzer::nTracksVMap_][nTracksVMap_]] is not empty.                                                                    |                                       0 |
+     | ~matchTRG%d~               | ~%d~ means the index of element in [[ParticleAnalyzer::triggerData_][triggerData_]]. ~matchTRG~ will be true if the =triggerObjects= is not empty           | May not exist if [[ParticleAnalyzer::triggerData_][triggerData_]]. is empty |
+     | =trigIdx=                  | std::vector of indices of trigger objects info. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["trgObj"]​]] is true.                      |                       Empty std::vector |
+     | =trkIdx=                   | Index of the corresponding track. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["track"]​]] is true.                                                                                 |                                         |
+     | =srcIdx=                   | Index of the corresponding source. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["sourcej"]​]] is true.                                                                              |                                         |
+     | =genIdx=                   | Index of the corresponding generated particles if matched                                                         |                                         |
+     | =matchGEN=                 | reco-gen matching succeeds or not                                                                                 |                                         |
+     | =isSwap=                   | whether it is a swap candidate, namely the momentum matches but mass not                                          |                                         |
+     | =genPdgId=                 | ~pdgId~ of the generated particle                                                                                   |                                       0 |
+     | =momMatchGEN=              | whether the mother particle matches a generated particle                                                          |                                         |
+     | =momMatchIdx=              | The index of the mother particle which matches a generated particle                                               |                            =UShort_t(-1)= |
+     | =dauIdx=                   | A std::vector of the indices of daughter particles                                                                |                                   Empty |
+     | =pTDau=                    | A std::vector of daughter particle pT. The pT is the fit value.                                                   |                                         |
+     | =etaDau=                   | A std::vector of daughter particle eta. The eta is the fit value.                                                 |                                         |
+     | =phiDau=                   | A std::vector of daughter particle phi. The phi is the fit value.                                                 |                                         |
+     | =massDau=                  | A std::vector of daughter particle mas. The mass is the fit value.                                                |                                         |
+
 **** TODO =std::map<std::string, std::map<size_t, pat::TriggerObjectStandAlone> > triggerObjectMap_=
      <<ParticleAnalyzer::triggerObjectMap_>>
