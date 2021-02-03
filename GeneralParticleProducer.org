@@ -688,10 +688,10 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
        - If n-tuple is wanted, call [[ParticleAnalyzer::fillNTuple][fillNtuple]].
 
 ** Class member functions and variables
-*** Member functions [0/28]
+*** Member functions [0/22]
 **** =virtual void ParticleAnalyzer::beginJob()=
      <<ParticleAnalyzer::beginJob>>
-**** TODO =virtual void ParticleAnalyzer::beginRun(const edm::Run&, const edm::EventSetup&)=
+**** =virtual void ParticleAnalyzer::beginRun(const edm::Run&, const edm::EventSetup&)=
      <<ParticleAnalyzer::beginRun>>
      This function perform the followings:
      - Get the trigger results out from [[ParticleAnalyzer::Tokens][tok_triggerResults_]] and save the
@@ -720,7 +720,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
    9. Fill entry into output tree:
       - If tree is wanted, initialize it via [[ParticleAnalyzer::initTree][initTree]]. And then fill it.
       - If n-tuple is wanted, call [[ParticleAnalyzer::fillNTuple][fillNtuple]].
-**** TODO =virtual void ParticleAnalyzer::getEventData(const edm::Event& iEvent, const edm::EventSetup& iSetup)=
+**** =virtual void ParticleAnalyzer::getEventData(const edm::Event& iEvent, const edm::EventSetup& iSetup)=
      <<ParticleAnalyzer::getEventData>>
      This function will extract MC/data information from the =ADO= file.
      It will do the following in order: [0/0]
@@ -737,7 +737,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
            sum over $p_T^2$ or multiplicity. The default option =vtxSortByTrkSize=
            in the =GeneralParticleProducer= is true. Thus the vertex with
            highest multiplicity is selected.
-     5. [0/1] If MC samples are read, extract the generated particles' information.
+     5. If MC samples are read, extract the generated particles' information.
         - The generated primary vertex information is saved in
           [[ParticleAnalyzer::genVertex_][=genVertex_=]].  It is determined as the vertex of the first
           generate particle with status ~isLastCopy() == true~ (see more
@@ -745,7 +745,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
           will exists before and after photon emission) and absolute
           value of =pdgId= is less than or equal to 6 (quarks) or =pdgId=
           equal to 21 (gluon).
-        - [ ] The container for generated particles is initialized via
+        - The container for generated particles is initialized via
           [[ParticleAnalyzer::initParticleInfo][=initParticleInfo=]] with input parameter ="gen"=.
         - The multiplicity of the generated particles is calculated. The
           result is saved in [[ParticleAnalyzer::eventInfo_][eventInfo_]], with the attribute ="Ntrkgen"=.
@@ -766,8 +766,14 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 **** TODO =virtual void ParticleAnalyzer::getTriggerData(const edm::Event&, const edm::EventSetup&)=
      <<ParticleAnalyzer::getTriggerData>>
 
-**** TODO =virtual void ParticleAnalyzer::fillEventInfo(const edm::Event&)=
+**** =virtual void ParticleAnalyzer::fillEventInfo(const edm::Event&)=
      <<ParticleAnalyzer::fillEventInfo>>
+     This function will create entries in [[ParticleAnalyzer::eventInfo_][eventInfo_]]. It will do the following:
+     - Event ID and bun info.
+     - Primary vertex info.
+     - Event filter info obtained via [[ParticleAnalyzer::Tokens][tok_filterResults_]] and [[ParticleAnalyzer::eventFilters_][eventFilters_]].
+     - Centrality info will be added if [[ParticleAnalyzer::Tokens][tok_centSrc_]] is valid.
+     - Event plane info will be added if [[ParticleAnalyzer::Tokens][tok_eventPlaneSrc_]] is valid.
 
 **** TODO =virtual void ParticleAnalyzer::fillTriggerInfo(const edm::Event&)=
      <<ParticleAnalyzer::fillTriggerInfo>>
@@ -775,7 +781,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 **** TODO =virtual void ParticleAnalyzer::fillLumiInfo(const edm::Event&)=
      <<ParticleAnalyzer::fillLumiInfo>>
 
-**** TODO =virtual void ParticleAnalyzer::fillRecoParticleInfo(const edm::Event&)=
+**** =virtual void ParticleAnalyzer::fillRecoParticleInfo(const edm::Event&)=
      <<ParticleAnalyzer::fillRecoParticleInfoEventLevel>>
      The reconstructed particles will be retrieved via [[ParticleAnalyzer::Tokens][tok_recParticle_]].
      If succeeding, entries ="cand"= and ="trk"= will be initialized via
@@ -853,24 +859,24 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 ***** Descriptions
       There are two input parameters: =cand= for the candidate will be filled;
       =momIdx= for the index of the mother particle of =cand=
-      in [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]]. =momIdx= is useful and meaningful when
+      in [[particleInfo_::cand][particleInfo_["cand"]​]]. =momIdx= is useful and meaningful when
       filling the daughters of a candidate. You will see it later, in a
       recursive call of this function.
 
       In the initialization processes, a null =pat::GenericParticle=.
 
       It will make use of [[ParticleContainer::getIndex][=getIndex=]] to check whether =cand= has already
-      been filled into [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]]. If the mother particle
+      been filled into [[particleInfo_::cand][particleInfo_["cand"]​]]. If the mother particle
       with index =momIdx= matches the gen-particle, the entry for =momMatchGEN=
       and =momMatchIdx= will be modified.
 
-      And if the input particle has been put into [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]],
+      And if the input particle has been put into [[particleInfo_::cand][particleInfo_["cand"]​]],
       the corresponding index will be returned and this function stops.
       Otherwise the following content will be executed and the [[ParticleContainer::size_][size_]] will
       be returned (it is also the index for this unrecorded particle).
 
       If the particles has not been recorded, then information of the
-      input =cand= will be saved into  [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]] via [[ParticleContainer::addToData][add]] (the
+      input =cand= will be saved into  [[particleInfo_::cand][particleInfo_["cand"]​]] via [[ParticleContainer::addToData][add]] (the
       setter of [[ParticleContainer::data_][data_]]). It will fill the followings:
       - Kinematic variables :: These variables of the input =cand= will
         be filled, such as momentum.
@@ -880,7 +886,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
         trigger related information will be associated with the input =cand=
         via [[ParticleAnalyzer::addTriggerObject][addTriggerObject]]. Entries =matchTRG%d= and =trigIdx= may be created.
       - Track related information :: The corresponding track index in
-        [[ParticleAnalyzer::particleInfo_][particleInfo_["trk"]​]], obtained via [[ParticleAnalyzer::fillTrackInfo][fillTrackInfo]].
+        [[particleInfo_::trk][particleInfo_["trk"]​]], obtained via [[ParticleAnalyzer::fillTrackInfo][fillTrackInfo]].
       - Information from "source" :: The corresponding index in
         [[ParticleAnalyzer::particleInfo_][particleInfo_["src"]​]], obtained via [[ParticleAnalyzer::fillSourceInfo][fillSourceInfo]].
       - MC related information :: If the candidate does not have the
@@ -891,11 +897,49 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
         daughter is obtained by [[ParticleAnalyzer::fillRecoParticleInfo][fillRecoParticleInfo]]. Note, daughter info
         will be recursively retrieved.
 
-**** TODO =UShort_t ParticleAnalyzer::fillTrackInfo(const pat::GenericParticle&, const UShort_t&, const bool& force=false)=
+**** =UShort_t ParticleAnalyzer::fillTrackInfo(const pat::GenericParticle& cand, const UShort_t& candIdx, const bool& force=false)=
      <<ParticleAnalyzer::fillTrackInfo>>
+     There are three input parameters: =cand= for the candidate will be filled;
+     =candIdx= for the index of =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]]; =force= means
+     whether force the [[particleInfo_::trk][particleInfo_["trk"]​]] to create an entry, otherwise
+     the =USHRT_MAX= will be returned as the track index.
 
-**** TODO =UShort_t ParticleAnalyzer::fillSourceInfo(const pat::GenericParticle&, const UShort_t&, const bool& force=false)=
+     It will make use of [[ParticleContainer::getIndex][=getIndex=]] to check whether =cand= has already
+     been filled into [[particleInfo_::trk][particleInfo_["trk"]​]]. The =candIdx= for this
+     track entry in [[particleInfo_::trk][particleInfo_["trk"]​]] will be filled via [[ParticleContainer::push][push]].
+     If this candidate has been filled before, then an new element
+     will be appended to the back of the
+     [[particleInfo_::trk][particleInfo_["trk"].ushortVVM.at(candIdx).at("candIdx")]].
+
+     And if the input particle has been put into [[particleInfo_::cand][particleInfo_["cand"]​]],
+     the corresponding index in [[particleInfo_::trk][particleInfo_["trk"]​]] will be returned
+     and this function stops. Otherwise the following content will be
+     executed and the [[ParticleContainer::size_][size_]] of [[particleInfo_::trk][particleInfo_["trk"]​]] will be returned
+     (it is also the index for this unrecorded track info).
+
+     If the track info has not been recorded, then the track info related
+     to the input =cand= will be saved into [[particleInfo_::trk][particleInfo_["trk"]​]] via [[ParticleContainer::addToData][add]] (the
+     setter of [[ParticleContainer::data_][data_]]). It will fill the kinematic variables and quality
+     variables. See more in [[particleInfo_::trk][particleInfo_["trk"]​]].
+
+     For the initialization process, null =GenericParticle=, 0 and =true= are
+     used. It will force the [[particleInfo_::trk][particleInfo_["trk"]​]] to create entries
+     in [[particleInfo_::trk][table]] since 0 is greater than [[ParticleContainer::size_][size_]] before initialization. After
+     putting dummy values in [[particleInfo_::trk][particleInfo_["trk"]​]], the values will
+     be cleared via [[ParticleContainer::clear][clear]] in [[ParticleAnalyzer::initParticleInfo][initParticleInfo]].
+
+**** TODO =UShort_t ParticleAnalyzer::fillSourceInfo(const pat::GenericParticle& cand, const UShort_t& candIdx, const bool& force=false)=
      <<ParticleAnalyzer::fillSourceInfo>>
+
+***** TODO maybe bug
+      PDGID == 0 should be pfCandidate, not for jet
+***** Descriptions
+      There are three parameters: the input =cand=, the index for
+      =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
+      is forced to insert into container.
+
+      It will call =fillXXXXinfo= depending on =pdgId= (absolute value).
+      - <=6 :: call [[ParticleAnalyzer::fillJetInfo][fillJetInfo]].
 
 **** TODO =UShort_t ParticleAnalyzer::fillMuonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
      <<ParticleAnalyer::fillMuonInfo>>
@@ -906,8 +950,17 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 **** TODO =UShort_t ParticleAnalyzer::fillPhotonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
      <<ParticleAnalyzer::fillPhotonInfo>>
 
-**** TODO =UShort_t ParticleAnalyzer::fillJetInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+**** TODO =UShort_t ParticleAnalyzer::fillJetInfo(const pat::GenericParticle& cand, const UShort_t candIdx&, const bool& force=false)=
      <<ParticleAnalyzer::fillJetInfo>>
+     There are three parameters: the input =cand=, the index for
+     =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
+     is forced to insert into container.
+
+     If =force= is not enabled, =USHRT_MAX= will be returned. After enabling =force=,
+     this function will check whether there exists any =userData<pat::Jet>= in
+     =cand=. If not, =USHRT_MAX= will be returned. Otherwise, followings will
+     be evaluated.
+
 
 **** TODO =UShort_t ParticleAnalyzer::fillTauInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
      <<ParticleAnalyzer::fillTauInfo>>
@@ -935,6 +988,8 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
        [[ParticleAnalyzer::addInfo_][~addInfo_["source"]~]] is =false=.
      - "cand" :: It will save the reconstructed particles, initialized
        by [[ParticleAnalyzer::fillRecoParticleInfo][=fillRecoParticleInfo=]].
+
+     All the dummy values after =fillXXXXInfo= will be cleared via [[ParticleContainer::clear][clear]].
 
 **** TODO =void ParticleAnalyzer::addTriggerObject(pat::GenericParticle&)=
      <<ParticleAnalyzer::addTriggerObject>>
@@ -1439,13 +1494,15 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
   std::vector< edm::EDGetTokenT<LumiInfo> > tok_triggerLumiInfo_;
   const edm::EDGetTokenT<edm::ValueMap<int> > tok_nTracksVMap_;
     #+end_src
-*** Member variables for input data [0/9]
+*** Member variables for input data [0/6]
 **** TODO =const std::vector<edm::ParameterSet> ParticleAnalyzer::triggerInfo_, ParticleAnalyzer::matchInfo_=
      <<ParticleAnalyzer::TrigNMatch>>
-**** TODO =const std::vector<std::string> eventFilters_=
+**** =const std::vector<std::string> eventFilters_=
      <<ParticleAnalyzer::eventFilters_>>
-**** TODO =const std::string selectEvents_=
+     Event filter names will be saved in the [[ParticleAnalyzer::TreeNNtuple][tree]].
+**** =const std::string selectEvents_=
      <<ParticleAnalyzer::selectEvents_>>
+     Names of filters used in event selection, used by [[ParticleAnalyzer::analyze][analyze]].
 **** =const bool saveTree_=
      <<ParticleAnalyzer::saveTree_>>
      - =true= :: Save the event in =TTree= format. It will save space but user need
@@ -1558,10 +1615,34 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 *** Member variables for containers [0/4]
 **** TODO =Container eventInfo_=
      <<ParticleAnalyzer::eventInfo_>>
-     | Name    | Descriptions                        | Created by   |
-     |---------+-------------------------------------+--------------|
-     | Ntrkgen | Multiplicity of generated particles | [[ParticleAnalyzer::getEventData][getEventData]] |
-     |         |                                     |              |
+     #+CAPTION: Key-value pairs in =eventInfo_=
+     | Name                         | Descriptions                                                                                                                                            | Created by    |
+     |------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+---------------|
+     | Ntrkgen                      | Multiplicity of generated particles                                                                                                                     | [[ParticleAnalyzer::getEventData][getEventData]]  |
+     | =RunNb=                        | Run number                                                                                                                                              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =EventNb=                      | event number                                                                                                                                            | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =LSNb=                         | Lumi block number                                                                                                                                       | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =BXNb=                         | Number of valid bunch crossing                                                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =nPV=                          | number of valid [[ParticleAnalyzer::vertices_][vertices]] passing criteria                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | ~bestvtxX~, ~bestvtxY~, ~bestvtxZ~ | Positions of the [[ParticleAnalyzer::vertex_][primary vertex]]                                                                                                                         | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | ~evtSel~                       | Boolean array for filter results                                                                                                                        | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =HFsumETPlus=                  | Sum over ET in HF+                                                                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =HFsumETMinus=                 | Sum over ET in HF-                                                                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =Npixel=                       | Number of hits in silicon pixel                                                                                                                         | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =ZDCPlus=                      | Sum over energies in ZDC+                                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =ZDCMinus=                     | Sum over energies in ZDC-                                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =Ntrkoffline=                  | Ntrkoffline in centrality producer, there is also one from user-defined way in [[particleInfo_::cand][particleInfo_["cand"]​]]                                                    | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =centrality=                   | The bin number of corresponding centrality                                                                                                              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =ephfmAngle=                   | A vector of event plane angle by HF-, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                  | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =ephpAngle=                    | A vector of event plane angle by HF+, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                  | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =eptrackmidAngle=              | A vector of event plane angle by tracker, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =ephfmQ=                       | A vector of event plane Q-vector magnitude by HF-, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].     | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =ephfpQ=                       | A vector of event plane Q-vector magnitude by HF+, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].     | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =eptrackmidQ=                  | A vector of event plane Q-vector magnitude by tracker, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]]. | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =ephfmSumW=                    | The sum over weight of 2nd order event plane by HF-. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =ephfpSumW=                    | The sum over weight of 2nd order event plane by HF+. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | =eptrackmidSumW=               | The sum over weight of 2nd order event plane by tracker. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+
 **** =Container ntupleInfo_=
      <<ParticleAnalyzer::ntupleInfo_>>
      It is a [[ParticleAnalyzer::Container][container]] to save candidate information, for ntuple production.
@@ -1595,45 +1676,65 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      #+end_src
 
      The key-value pairs in each entry are listed in the following tables:
-     #+CAPTION: particleInfo_["cand"]
-     | Name                     | Descriptions                                                                                                      |          Value holder if not accessible |
-     |--------------------------+-------------------------------------------------------------------------------------------------------------------+-----------------------------------------|
-     | =p=                        | momentum                                                                                                          |                                         |
-     | =y=                        | rapidity                                                                                                          |                                         |
-     | =eta=                      | eta                                                                                                               |                                         |
-     | =phi=                      | phi                                                                                                               |                                         |
-     | =mass=                     | mass                                                                                                              |                                         |
-     | =charge=                   | charge                                                                                                            |                                         |
-     | =pdgId=                    | pdgId                                                                                                             |                                         |
-     | =status=                   | status for the candidate, 1: stable, 2: intermediate, 3:target, see =GeneralParticleProducer=                       |                                         |
-     | =vtxChi2=                  | Chi2 normalized by the number of degrees of freedom                                                               |                                     -1. |
-     | =vtxProb=                  | Fit probability of the vertex reconstruction                                                                      |                                     -1. |
-     | =angle3D=                  | 3D pointing angle between the line segment from primary vertex to decay vertex and the momentum of decay particle |                                    -10. |
-     | =angle2D=                  |                                                                                                                   |                                    -10. |
-     | =dca=                      | DCA between two daughters, valid when number of daughters equals 2                                                |                                   -99.9 |
-     | =decayLength3D=            | 3D decay length w.r.t. the primary vertex                                                                         |                                   -99.9 |
-     | =decayLengthError3D=       | The error of =decayLength3D=                                                                                        |                                     -1. |
-     | =decayLength2D=            |                                                                                                                   |                                   -99.9 |
-     | =decayLengthError2D=       |                                                                                                                   |                                     -1. |
-     | =pseudoDecayLengthError3D= | The error of 3D pseudo-proper-decay-length, defined by decay-length-3D * cos(angle3D) *m/p                        |                                   -99.9 |
-     | =pseudodecaylengtherror2D= |                                                                                                                   |                                   -99.9 |
-     | =mva=                      |                                                                                                                   |                                   -99.9 |
-     | =Ntrkoffline=              | Will be filled when [[ParticleAnalyzer::nTracksVMap_][nTracksVMap_]] is not empty.                                                                    |                                       0 |
-     | ~matchTRG%d~               | ~%d~ means the index of element in [[ParticleAnalyzer::triggerData_][triggerData_]]. ~matchTRG~ will be true if the =triggerObjects= is not empty           | May not exist if [[ParticleAnalyzer::triggerData_][triggerData_]]. is empty |
-     | =trigIdx=                  | std::vector of indices of trigger objects info. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["trgObj"]​]] is true.                      |                       Empty std::vector |
-     | =trkIdx=                   | Index of the corresponding track. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["track"]​]] is true.                                                                                 |                                         |
-     | =srcIdx=                   | Index of the corresponding source. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["sourcej"]​]] is true.                                                                              |                                         |
-     | =genIdx=                   | Index of the corresponding generated particles if matched                                                         |                                         |
-     | =matchGEN=                 | reco-gen matching succeeds or not                                                                                 |                                         |
-     | =isSwap=                   | whether it is a swap candidate, namely the momentum matches but mass not                                          |                                         |
-     | =genPdgId=                 | ~pdgId~ of the generated particle                                                                                   |                                       0 |
-     | =momMatchGEN=              | whether the mother particle matches a generated particle                                                          |                                         |
-     | =momMatchIdx=              | The index of the mother particle which matches a generated particle                                               |                            =UShort_t(-1)= |
-     | =dauIdx=                   | A std::vector of the indices of daughter particles                                                                |                                   Empty |
-     | =pTDau=                    | A std::vector of daughter particle pT. The pT is the fit value.                                                   |                                         |
-     | =etaDau=                   | A std::vector of daughter particle eta. The eta is the fit value.                                                 |                                         |
-     | =phiDau=                   | A std::vector of daughter particle phi. The phi is the fit value.                                                 |                                         |
-     | =massDau=                  | A std::vector of daughter particle mas. The mass is the fit value.                                                |                                         |
+     <<particleInfo_::cand>>
+     #+CAPTION: This table is for =particleInfo_["cand"]=.
+     | Name                     | Descriptions                                                                                                      | Value for place holder if not accessible |
+     |--------------------------+-------------------------------------------------------------------------------------------------------------------+------------------------------------------|
+     | =p=                        | momentum                                                                                                          |                                          |
+     | =y=                        | rapidity                                                                                                          |                                          |
+     | =eta=                      | eta                                                                                                               |                                          |
+     | =phi=                      | phi                                                                                                               |                                          |
+     | =mass=                     | mass                                                                                                              |                                          |
+     | =charge=                   | charge                                                                                                            |                                          |
+     | =pdgId=                    | pdgId                                                                                                             |                                          |
+     | =status=                   | status for the candidate, 1: stable, 2: intermediate, 3:target, see =GeneralParticleProducer=                       |                                          |
+     | =vtxChi2=                  | Chi2 normalized by the number of degrees of freedom                                                               |                                      -1. |
+     | =vtxProb=                  | Fit probability of the vertex reconstruction                                                                      |                                      -1. |
+     | =angle3D=                  | 3D pointing angle between the line segment from primary vertex to decay vertex and the momentum of decay particle |                                     -10. |
+     | =angle2D=                  |                                                                                                                   |                                     -10. |
+     | =dca=                      | DCA between two daughters, valid when number of daughters equals 2                                                |                                    -99.9 |
+     | =decayLength3D=            | 3D decay length w.r.t. the primary vertex                                                                         |                                    -99.9 |
+     | =decayLengthError3D=       | The error of =decayLength3D=                                                                                        |                                      -1. |
+     | =decayLength2D=            |                                                                                                                   |                                    -99.9 |
+     | =decayLengthError2D=       |                                                                                                                   |                                      -1. |
+     | =pseudoDecayLengthError3D= | The error of 3D pseudo-proper-decay-length, defined by decay-length-3D * cos(angle3D) *m/p                        |                                    -99.9 |
+     | =pseudodecaylengtherror2D= |                                                                                                                   |                                    -99.9 |
+     | =mva=                      |                                                                                                                   |                                    -99.9 |
+     | =Ntrkoffline=              | Will be filled when [[ParticleAnalyzer::nTracksVMap_][nTracksVMap_]] is not empty.                                                                    |                                        0 |
+     | ~matchTRG%d~               | ~%d~ means the index of element in [[ParticleAnalyzer::triggerData_][triggerData_]]. ~matchTRG~ will be true if the =triggerObjects= is not empty           |  May not exist if [[ParticleAnalyzer::triggerData_][triggerData_]]. is empty |
+     | =trigIdx=                  | std::vector of indices of trigger objects info. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["trgObj"]​]] is true.                      |                        Empty std::vector |
+     | =trkIdx=                   | Index of the corresponding track. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["track"]​]] is true.                                     |                                          |
+     | =srcIdx=                   | Index of the corresponding source. Only exists when [[ParticleAnalyzer::addInfo_][addInfo_["sourcej"]​]] is true.                                  |                                          |
+     | =genIdx=                   | Index of the corresponding generated particles if matched                                                         |                                          |
+     | =matchGEN=                 | reco-gen matching succeeds or not                                                                                 |                                          |
+     | =isSwap=                   | whether it is a swap candidate, namely the momentum matches but mass not                                          |                                          |
+     | =genPdgId=                 | ~pdgId~ of the generated particle                                                                                   |                                        0 |
+     | =momMatchGEN=              | whether the mother particle matches a generated particle                                                          |                                          |
+     | =momMatchIdx=              | The index of the mother particle which matches a generated particle                                               |                             =UShort_t(-1)= |
+     | =dauIdx=                   | A std::vector of the indices of daughter particles                                                                |                                    Empty |
+     | =pTDau=                    | A std::vector of daughter particle pT. The pT is the fit value.                                                   |                                          |
+     | =etaDau=                   | A std::vector of daughter particle eta. The eta is the fit value.                                                 |                                          |
+     | =phiDau=                   | A std::vector of daughter particle phi. The phi is the fit value.                                                 |                                          |
+     | =massDau=                  | A std::vector of daughter particle mas. The mass is the fit value.                                                |                                          |
+
+    <<particleInfo_::trk>>
+     #+CAPTION: particleInfo_["trk"]
+     | Name              | Descriptions                                                                            | Value for place holder if not accessible |
+     |-------------------+-----------------------------------------------------------------------------------------+------------------------------------------|
+     | =isHP=              | whether it is high purity track                                                         |                                          |
+     | =nChi2=             | Chi2 normalized by the number of degrees of freedom                                     |                                          |
+     | =pTErr=             | The error of the track pT                                                               |                                          |
+     | =nHit=              | The number of valid hits                                                                |                                          |
+     | =zDCASignificance=  | significance of DCA projected to z-direction w.r.t. the primary vertex                  |                                          |
+     | =xyDCASignificance= | significance of DCA projected to xy-plane w.r.t. the primary vertex                     |                                          |
+     | =dEdx_*=            | dEdx info for this track, =*= means the input tags for =dEdxs=, see =GeneralParticleProducer= |                                          |
+
+     <<particleInfo_::src::muon>>
+     #+CAPTION: Muon stuffs by partcielInfo_["src"]
+     | Name | Descriptions | Value for place holder if not accessible |
+     |------+--------------+------------------------------------------|
+     |      |              |                                          |
+
 
 **** TODO =std::map<std::string, std::map<size_t, pat::TriggerObjectStandAlone> > triggerObjectMap_=
      <<ParticleAnalyzer::triggerObjectMap_>>
