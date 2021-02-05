@@ -688,7 +688,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
        - If n-tuple is wanted, call [[ParticleAnalyzer::fillNTuple][fillNtuple]].
 
 ** Class member functions and variables
-*** Member functions [0/22]
+*** Member functions [0/9]
 **** =virtual void ParticleAnalyzer::beginJob()=
      <<ParticleAnalyzer::beginJob>>
 **** =virtual void ParticleAnalyzer::beginRun(const edm::Run&, const edm::EventSetup&)=
@@ -790,9 +790,13 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      particles will be filled into [[ParticleAnalyzer::particleInfo_][particleInfo_["cand"]​]] via
      [[ParticleAnalyzer::fillRecoParticleInfo][fillRecoParticleInfo]].
 
-**** TODO =virtual void ParticleAnalyzer::fillGenParticleInfo(const edm::Event&)=
+**** =virtual void ParticleAnalyzer::fillGenParticleInfo(const edm::Event&)=
      <<ParticleAnalyzer::fillGenParticleInfoEventLevel>>
+     It will fill the particles in [[ParticleAnalyzer::genParticlesToKeep_][genParticlesToKeep_]] to [[particleInfo_::gen][particleInfo_["gen"]​]]
+     via [[ParticleAnalyzer::fillGenParticleInfo][fillGenParticleInfo]]. Particles which have already been filled during
+     reco-gen matching won't be filled this time.
 
+     And the generator weight, LHE weights  will also be filled into [[ParticleAnalyzer::eventInfo_][eventInfo_]].
 **** TODO =virtual void ParticleAnalyzer::endJob()=
      <<ParticleAnalyzer::endJob>>
 
@@ -852,11 +856,8 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      It will make use of [[ParticleContainer::getIndex][=getIndex=]], or  via [[ParticleContainer::push][=push=]].
      The index of the filled object will be returned;
 
-**** TODO =UShort_t ParticleAnalyzer::fillRecoParticleInfo(const pat::GenericParticle& cand, const UShort_t& momIdx=USHRT_MAX)= [0/1]
+**** =UInt_t ParticleAnalyzer::fillRecoParticleInfo(const pat::GenericParticle& cand, const UShort_t& momIdx=USHRT_MAX)= [0/1]
      <<ParticleAnalyzer::fillRecoParticleInfo>>
-***** TODO Need to check return type
-      Is =UShort= large enough for indexing?
-***** Descriptions
       There are two input parameters: =cand= for the candidate will be filled;
       =momIdx= for the index of the mother particle of =cand=
       in [[particleInfo_::cand][particleInfo_["cand"]​]]. =momIdx= is useful and meaningful when
@@ -891,7 +892,8 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
         [[ParticleAnalyzer::particleInfo_][particleInfo_["src"]​]], obtained via [[ParticleAnalyzer::fillSourceInfo][fillSourceInfo]].
       - MC related information :: If the candidate does not have the
         =pat::userInt("isGenMatched")=, add the gen-particle information
-        via [[ParticleAnalyzer::addGenParticle][addGenParticle]]. The =genIdx= is obtained by [[ParticleAnalyzer::fillGenParticleInfo][fillGenParticleInfo]].
+        via [[ParticleAnalyzer::addGenParticle][addGenParticle]] with ~cand~, p4 of ~cand~ and [[ParticleAnalyzer::genParticlesToMatch_][genParticlesToMatch_]].
+        The =genIdx= is obtained by [[ParticleAnalyzer::fillGenParticleInfo][fillGenParticleInfo]].
       - Daughter related information :: If no daughter found, empty vectors
         are placed. If daughters are found, the corresponding index of each
         daughter is obtained by [[ParticleAnalyzer::fillRecoParticleInfo][fillRecoParticleInfo]]. Note, daughter info
@@ -924,31 +926,91 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 
      For the initialization process, null =GenericParticle=, 0 and =true= are
      used. It will force the [[particleInfo_::trk][particleInfo_["trk"]​]] to create entries
-     in [[particleInfo_::trk][table]] since 0 is greater than [[ParticleContainer::size_][size_]] before initialization. After
+     in [[particleInfo_::trk][table]] since 0 is not less than [[ParticleContainer::size_][size_]] before initialization. After
      putting dummy values in [[particleInfo_::trk][particleInfo_["trk"]​]], the values will
      be cleared via [[ParticleContainer::clear][clear]] in [[ParticleAnalyzer::initParticleInfo][initParticleInfo]].
 
-**** TODO =UShort_t ParticleAnalyzer::fillSourceInfo(const pat::GenericParticle& cand, const UShort_t& candIdx, const bool& force=false)=
+**** =UShort_t ParticleAnalyzer::fillSourceInfo(const pat::GenericParticle& cand, const UShort_t& candIdx, const bool& force=false)=
      <<ParticleAnalyzer::fillSourceInfo>>
 
-***** TODO maybe bug
-      PDGID == 0 should be pfCandidate, not for jet
-***** Descriptions
-      There are three parameters: the input =cand=, the index for
-      =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
-      is forced to insert into container.
+     There are three parameters: the input =cand=, the index for
+     =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
+     is forced to insert into container.
 
-      It will call =fillXXXXinfo= depending on =pdgId= (absolute value).
-      - <=6 :: call [[ParticleAnalyzer::fillJetInfo][fillJetInfo]].
+     It will call =fillXXXXinfo= depending on =pdgId= (absolute value).
+     - ==0 :: call [[ParticleAnalyzer::fillPFCandidateInfo][fillPFCandidateInfo]].
+     - <=6 :: call [[ParticleAnalyzer::fillJetInfo][fillJetInfo]].
+     - ==11 :: call [[ParticleAnalyzer::fillElectronInfo][fillElectronInfo]].
+     - ==13 :: call [[ParticleAnalyzer::fillMuonInfo][fillMuonInfo]].
+     - ==15 :: call [[ParticleAnalyzer::fillTauInfo][fillTauInfo]].
+     - Otherwise :: call [[ParticleAnalyzer::fillPFCandidateInfo][fillPFCandidateInfo]].
 
-**** TODO =UShort_t ParticleAnalyzer::fillMuonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
-     <<ParticleAnalyer::fillMuonInfo>>
+**** =UShort_t ParticleAnalyzer::fillMuonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     <<ParticleAnalyzer::fillMuonInfo>>
+     There are three parameters: the input =cand=, the index for
+     =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
+     is forced to insert into container.
 
-**** TODO =UShort_t ParticleAnalyzer::fillElectronInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     If =force= is not enabled, =USHRT_MAX= will be returned. After enabling =force=,
+     this function will check whether there exists any =userData<pat::Muon>=
+     in =cand=. If not, =USHRT_MAX= will be returned. Otherwise, followings will
+     be evaluate. And please also check the [[https://arxiv.org/abs/1804.04528][paper]].
+
+     It will fill several types of information of muon into [[particleInfo_::src::muon][paticleInfo_["muon"]​]].
+     When generating bit-wise selector, it will make use of [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/df/de3/classreco_1_1Muon.html#a7430160716a4c6350e00e8b1a91e21a5][Selector]]. And
+     it will also generate a bit-wise [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/da/d18/namespacemuon.html#a6e01871a45fb9366b629bc5aeb44ab15][selection types]] map, via $\sum_{i=0}^{29}2^i$.
+     And muon ID will also be filled.
+
+     For the initialization process, null =GenericParticle= with
+     electron candidate ~pdgId~ (13), 0 and =true= are
+     used. It will force the [[particleInfo_::src::muon][particleInfo_["muon"]​]] to create entries
+     in [[particleInfo_::src::muon][table]] since 0 is not less than [[ParticleContainer::size_][size_]] before initialization. After
+     putting dummy values in [[particleInfo_::src::muon][particleInfo_["muon"]​]], the values will
+     be cleared via [[ParticleContainer::clear][clear]] in [[ParticleAnalyzer::initParticleInfo][initParticleInfo]].
+
+**** =UShort_t ParticleAnalyzer::fillElectronInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
      <<ParticleAnalyzer::fillElectronInfo>>
+     There are three parameters: the input =cand=, the index for
+     =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
+     is forced to insert into container.
 
-**** TODO =UShort_t ParticleAnalyzer::fillPhotonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     If =force= is not enabled, =USHRT_MAX= will be returned. After enabling =force=,
+     this function will check whether there exists any =userData<pat::Electron>=
+     in =cand=. If not, =USHRT_MAX= will be returned. Otherwise, followings will
+     be evaluate. And please also check the [[https://arxiv.org/abs/1502.02701][paper]] and [[https://arxiv.org/pdf/2012.06888.pdf][paper]].
+
+     It will fill several types of information of electron
+     into [[particleInfo_::src::electron][paticleInfo_["elec"]​]].
+
+     For the initialization process, null =GenericParticle= with
+     electron candidate ~pdgId~ (11), 0 and =true= are
+     used. It will force the [[particleInfo_::src::electron][particleInfo_["elec"]​]] to create entries
+     in [[particleInfo_::src::electron][table]] since 0 is not less than [[ParticleContainer::size_][size_]] before initialization. After
+     putting dummy values in [[particleInfo_::src::electron][particleInfo_["elec"]​]], the values will
+     be cleared via [[ParticleContainer::clear][clear]] in [[ParticleAnalyzer::initParticleInfo][initParticleInfo]].
+
+**** =UShort_t ParticleAnalyzer::fillPhotonInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
      <<ParticleAnalyzer::fillPhotonInfo>>
+     There are three parameters: the input =cand=, the index for
+     =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
+     is forced to insert into container.
+
+     If =force= is not enabled, =USHRT_MAX= will be returned. After enabling =force=,
+     this function will check whether there exists any =userData<pat::Photon>=
+     or ~userData<pat::Conversion>~
+     in =cand=. If not, =USHRT_MAX= will be returned. Otherwise, followings will
+     be evaluate. And please also check the [[https://arxiv.org/pdf/2012.06888.pdf][paper]].
+
+     It will fill several types of information of photons or gamma conversions
+     into [[particleInfo_::src::photon][paticleInfo_["pho"]​]]. Photons are labeled by ~pdgId~ 22, while conversions
+     are -22.
+
+     For the initialization process, null =GenericParticle= with
+     photon (conversion) candidate ~pdgId~ 22(-22), 0 and =true= are
+     used. It will force the [[particleInfo_::src::photon][particleInfo_["pho"]​]] to create entries
+     in [[particleInfo_::src::photon][table]] since 0 is not less than [[ParticleContainer::size_][size_]] before initialization. After
+     putting dummy values in [[particleInfo_::src::photon][particleInfo_["pho"]​]], the values will
+     be cleared via [[ParticleContainer::clear][clear]] in [[ParticleAnalyzer::initParticleInfo][initParticleInfo]].
 
 **** TODO =UShort_t ParticleAnalyzer::fillJetInfo(const pat::GenericParticle& cand, const UShort_t candIdx&, const bool& force=false)=
      <<ParticleAnalyzer::fillJetInfo>>
@@ -961,17 +1023,74 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      =cand=. If not, =USHRT_MAX= will be returned. Otherwise, followings will
      be evaluated.
 
+     It will fill several types of information of jet into [[particleInfo_::src::jet][paticleInfo_["jet"]​]].
 
-**** TODO =UShort_t ParticleAnalyzer::fillTauInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     Among these information, please note =l2= is calculated via L2-corrected jet
+     pT over raw pT; =l3= is calculated via L3-corrected pT divided by
+     L2-corrected pT; B-tag is calculated by $\sum_{i} i^2$ The value of each
+     tag is not included. Please see more in [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/d6/d00/classpat_1_1Jet.html#ae999e09b8da114827cafcf9e339daa2a][getPairDiscri]] and [[https://github.com/cms-btv-pog/CMSPOS-BTaggingExercise/blob/solved/notebooks/Exercise1.ipynb][CMS-DAS]] by
+     BTV-POG.
+
+     For the initialization process, null =GenericParticle= with
+     jet =pdgId=, 0 and =true= are
+     used. It will force the [[particleInfo_::src::jet][particleInfo_["jet"]​]] to create entries
+     in [[particleInfo_::src::jet][table]] since 0 is not less than [[ParticleContainer::size_][size_]] before initialization. After
+     putting dummy values in [[particleInfo_::src::jet][particleInfo_["jet"]​]], the values will
+     be cleared via [[ParticleContainer::clear][clear]] in [[ParticleAnalyzer::initParticleInfo][initParticleInfo]].
+
+**** =UShort_t ParticleAnalyzer::fillTauInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
      <<ParticleAnalyzer::fillTauInfo>>
+     There are three parameters: the input =cand=, the index for
+     =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
+     is forced to insert into container.
 
-**** TODO =UShort_t ParticleAnalyzer::fillPFCandidateInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
+     If =force= is not enabled, =USHRT_MAX= will be returned. After enabling =force=,
+     this function will check whether there exists any =userData<pat::Tau>=
+     in =cand=. If not, =USHRT_MAX= will be returned. Otherwise, followings will
+     be evaluate. And please also check the [[https://arxiv.org/abs/1809.02816][paper]].
+
+     It will fill several types of information of tau
+     into [[particleInfo_::src::tau][paticleInfo_["tau"]​]].
+
+     For the initialization process, null =GenericParticle= with
+     electron candidate ~pdgId~ (15), 0 and =true= are
+     used. It will force the [[particleInfo_::src::tau][particleInfo_["tau"]​]] to create entries
+     in [[particleInfo_::src::tau][table]] since 0 is not less than [[ParticleContainer::size_][size_]] before initialization. After
+     putting dummy values in [[particleInfo_::src::tau][particleInfo_["tau"]​]], the values will
+     be cleared via [[ParticleContainer::clear][clear]] in [[ParticleAnalyzer::initParticleInfo][initParticleInfo]].
+
+**** =UShort_t ParticleAnalyzer::fillPFCandidateInfo(const pat::GenericParticle& cand, const UShort_t&, const bool& force=false)=
      <<ParticleAnalyzer::fillPFCandidateInfo>>
+     There are three parameters: the input =cand=, the index for
+     =cand= in [[particleInfo_::cand][particleInfo_["cand"]​]], and whether the candidate
+     is forced to insert into container.
 
-**** TODO =UShort_t ParticleAnalyzer::fillGenParticleInfo(const reco::GenParticleRef&, const UShort_t& candIdx=USHRT_MAX, const bool& force=false)=
+     If =force= is not enabled, =USHRT_MAX= will be returned. After enabling =force=,
+     this function will check whether there exists any
+     =userData<pat::PFCandidate>= in
+     =cand=. If not, =USHRT_MAX= will be returned. Otherwise, followings will
+     be evaluated.
+
+     It will fill several types of information of PF candidate
+     into [[particleInfo_::src::pf][paticleInfo_["pf"]​]]. See more in [[particleInfo_::src::pf][paticleInfo_["pf"]​]].
+
+     For the initialization process, null =GenericParticle= with
+     PF candidate =pdgId=, 0 and =true= are
+     used. It will force the [[particleInfo_::src::pf][particleInfo_["pf"]​]] to create entries
+     in [[particleInfo_::src::pf][table]] since 0 is not less than [[ParticleContainer::size_][size_]] before initialization. After
+     putting dummy values in [[particleInfo_::src::pf][particleInfo_["pf"]​]], the values will
+     be cleared via [[ParticleContainer::clear][clear]] in [[ParticleAnalyzer::initParticleInfo][initParticleInfo]].
+
+**** =UShort_t ParticleAnalyzer::fillGenParticleInfo(const reco::GenParticleRef& canR, const UShort_t& candIdx=USHRT_MAX, const bool& force=false)=
      <<ParticleAnalyzer::fillGenParticleInfo>>
+     There are three parameters: the reference to the gen-particle ~candR~, the
+     index of the reco-particle matching ~candR~, and whether the entry
+     will be forced to create.
 
-**** TODO =void ParticleAnalyzer::initParticleInfo(const std::string&, const int& pId=0)= [0/1]
+     It will fill several types of information of ~reco::GenParticle~
+     into [[particleInfo_::gen][paticleInfo_["gen"]​]]. See more in [[particleInfo_::gen][paticleInfo_["gen"]​]].
+
+**** =void ParticleAnalyzer::initParticleInfo(const std::string&, const int& pId=0)=
      <<ParticleAnalyzer::initParticleInfo>>
      This function helps user initialize the entries in container =particleInfo_=.
      It has the following categories:
@@ -984,7 +1103,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      - "gen" :: It will save information related to generated
        particles, initialized by [[ParticleAnalyzer::fillGenParticleInfo][=fillGenParticleInfo=]]. The
        initialization will not be done if =isMC_= is =false=.
-     - [ ] "src" :: The initialization will not be done if
+     - "src" :: The initialization will not be done if
        [[ParticleAnalyzer::addInfo_][~addInfo_["source"]~]] is =false=.
      - "cand" :: It will save the reconstructed particles, initialized
        by [[ParticleAnalyzer::fillRecoParticleInfo][=fillRecoParticleInfo=]].
@@ -997,11 +1116,74 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 **** TODO =bool ParticleAnalyzer::addTriggerObject(pat::GenericParticle&, const math::XYZTLorentzVector&, const TriggerIndexMap&, const std::string&, const std::string&, const int&)=
      <<ParticleAnalyzer::addTriggerObjectLongVersion>>
 
-**** TODO =bool ParticleAnalyzer::addGenParticle(pat::GenericParticle&, const math::XYZTLorentzVector&, const reco::GenParticleRefVector&)=
+**** TODO =bool ParticleAnalyzer::addGenParticle(pat::GenericParticle& cand, const math::XYZTLorentzVector& p4, const reco::GenParticleRefVector& genColl)=
      <<ParticleAnalyzer::addGenParticle>>
+     The return value will indicate whether a ~GenParticle~ will be added.
 
-**** TODO =void ParticleAnalyzer::findGenDaughters(reco::GenParticleRefVector&, const reco::GenParticleRef&, const pat::GenericParticle&, const short& iter=0)=
+     If the input ~genColl~ is empty or the status (user-defined) of ~cand~
+     is 0, this function will return false.
+
+     If ~cand.hasUserInt("isGenMatched")~ is true, then it will
+     return the whether the ~genParticle~ associated with ~cand~ can be find
+     in ~genColl~.
+
+     There won't be a ~userInt~ called "isGenMatched" if it is the first call
+     of this function. Then the following will be evaluated.
+
+     - Initialization :: There will be a ~userInt~ called "isGenMatched"
+       initialized with 1.
+     - Reco-gen matching :: In this step, [[ParticleAnalyzer::Helpers][compatible particles]] in ~genColl~
+       with ~cand~ will be used.
+       It evolves two categories:
+       - ~cand~ is a final state particle. Then ~cand~ will be directly compared
+         with particles in ~genColl~, using [[ParticleAnalyzer::Helpers][isMatched]], starting from
+         [[ParticleAnalyzer::MaxGenDelta][maxGenDeltaR_ and maxGenDeltaPtRel_]]. The particle in ~genColl~ having
+         the closet pT to ~cand~ will be taken as the matched gen-particle.
+         If the momenta matches but the mass does not, the particle is labeled
+         as ~swap~.
+       - ~cand~ is a unstable particle. Then the daughters of ~cand~ (if they
+         are final state particles) will be used to perform reco-gen matching.
+         The collection (~genDauColl~) of generated-level daughter particles
+         used in reco-gen matching is collected via [[ParticleAnalyzer::findGenDaughters][findGenDaughters]] with empty
+         collection to save ~genDauColl~, ~genPar~, daughter (~dau~) of ~cand~ and
+         ~maxGenIter~. And then calling [[ParticleAnalyzer::addGenParticle][addGenParticle]] will check whether
+         ~dau~ has a gen-matched particle in ~genDauColl~. If not, it is not
+         necessary to check the remaining daughter particles. Swapped info
+         is also obtained via the gen-matching result.
+
+     The non-ideal case: supposing we have {Ks{1}, pi+{1}, pi-{1}, Ks{2}, pi+{2}, pi-{2}}
+     in gen-level, and Ks(1) in reco-level. Ks(1) is identical Ks{2}. However, pi+(1) can
+     be matched onto both pi+{1} and pi+{2}.
+     At the beginning, particles above mentioned
+     will be passed into this function. Later, the second category is triggered. It will
+     try the following, creating a small collection {pi+{1}} and check whether it matching
+     pi+(1). Yes it matches, pi+(1) is associated with pi{1}, but pi-{1} does not match
+     pi-(1). Thus Ks{1} does not match Ks(1). The loop over the initial gen collection
+     goes to next step. pi-(1) matches pi+{2}. However, pi+(1) now is associated with
+     pi+{1}, not pi-{1}, the matching fails *!*
+
+**** =void ParticleAnalyzer::findGenDaughters(reco::GenParticleRefVector& genColl, const reco::GenParticleRef& genPar, const pat::GenericParticle& cand, const short& iter=0)=
      <<ParticleAnalyzer::findGenDaughters>>
+     This function has four parameters:
+     - ~genColl~ is used to save the matched gen-particles (daughters
+       of input ~genPar~). Its value might be modified by this function.
+     - ~genPar~ is the input gen-particle. Its daughter particles will be
+       compared with ~cand~, checking whether reco-gen matching succeeds.
+     - ~cand~ is the input reco-particle. It will be compared with daughters
+       of ~genPar~.
+     - ~iter~ is the maximum times of recursive call of [[ParticleAnalyzer::findGenDaughters][findGenDaughters]].
+
+     This function will behave like the following:
+     - Do nothing during ~iter~ is negative
+     - Loop over each daughter of ~genPar~. Put the gen-particle [[ParticleAnalyzer::Helpers][compataible]] with
+       ~cand~ into ~genColl~.
+     - Recursively call [[ParticleAnalyzer::findGenDaughters][findGenDaughters]], taking:
+       + ~genColl~ as ~genColl~
+       + ~genPar~ daughter particle as ~genPar~,
+       + ~cand~ as ~cand~
+       + ~iter-1~ as ~iter~
+     In other words, it will stop after search through a few generations. By
+     default it will stop for the first generation (~iter==0~).
 
 **** =reco::GenParticleRef ParticleAnalyzer::findGenDaughter(const reco::GenParticleRef& par, const size_t& idx)=
      <<ParticleAnalyzer::findGenDaughter>>
@@ -1494,7 +1676,7 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
   std::vector< edm::EDGetTokenT<LumiInfo> > tok_triggerLumiInfo_;
   const edm::EDGetTokenT<edm::ValueMap<int> > tok_nTracksVMap_;
     #+end_src
-*** Member variables for input data [0/6]
+*** Member variables for input data [0/5]
 **** TODO =const std::vector<edm::ParameterSet> ParticleAnalyzer::triggerInfo_, ParticleAnalyzer::matchInfo_=
      <<ParticleAnalyzer::TrigNMatch>>
 **** =const std::vector<std::string> eventFilters_=
@@ -1508,8 +1690,9 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      - =true= :: Save the event in =TTree= format. It will save space but user need
        to retrieve the information via several types of indices.
      - =false= :: Save the event in general =ntuple= format. It is easier to use.
-**** TODO =const int maxGenIter_=
+**** =const int maxGenIter_=
      <<ParticleAnalyzer::maxGenIter_>>
+     The max of generation used in [[ParticleAnalyzer::addGenParticle][addGenParticle]] in [[ParticleAnalyzer::fillGenParticleInfo][fillGenParticleInfo]].
 **** TODO =const double maxGenDeltaR_, maxGenDeltaPtRel_=
      <<ParticleAnalyzer::MaxGenDelta>>
 **** =const std::vector<UInt_t> genPdgIdV_=
@@ -1616,32 +1799,35 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
 **** TODO =Container eventInfo_=
      <<ParticleAnalyzer::eventInfo_>>
      #+CAPTION: Key-value pairs in =eventInfo_=
-     | Name                         | Descriptions                                                                                                                                            | Created by    |
-     |------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+---------------|
-     | Ntrkgen                      | Multiplicity of generated particles                                                                                                                     | [[ParticleAnalyzer::getEventData][getEventData]]  |
-     | =RunNb=                        | Run number                                                                                                                                              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =EventNb=                      | event number                                                                                                                                            | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =LSNb=                         | Lumi block number                                                                                                                                       | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =BXNb=                         | Number of valid bunch crossing                                                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =nPV=                          | number of valid [[ParticleAnalyzer::vertices_][vertices]] passing criteria                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | ~bestvtxX~, ~bestvtxY~, ~bestvtxZ~ | Positions of the [[ParticleAnalyzer::vertex_][primary vertex]]                                                                                                                         | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | ~evtSel~                       | Boolean array for filter results                                                                                                                        | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =HFsumETPlus=                  | Sum over ET in HF+                                                                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =HFsumETMinus=                 | Sum over ET in HF-                                                                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =Npixel=                       | Number of hits in silicon pixel                                                                                                                         | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =ZDCPlus=                      | Sum over energies in ZDC+                                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =ZDCMinus=                     | Sum over energies in ZDC-                                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =Ntrkoffline=                  | Ntrkoffline in centrality producer, there is also one from user-defined way in [[particleInfo_::cand][particleInfo_["cand"]​]]                                                    | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =centrality=                   | The bin number of corresponding centrality                                                                                                              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =ephfmAngle=                   | A vector of event plane angle by HF-, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                  | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =ephpAngle=                    | A vector of event plane angle by HF+, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                  | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =eptrackmidAngle=              | A vector of event plane angle by tracker, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =ephfmQ=                       | A vector of event plane Q-vector magnitude by HF-, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].     | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =ephfpQ=                       | A vector of event plane Q-vector magnitude by HF+, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].     | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =eptrackmidQ=                  | A vector of event plane Q-vector magnitude by tracker, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]]. | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =ephfmSumW=                    | The sum over weight of 2nd order event plane by HF-. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =ephfpSumW=                    | The sum over weight of 2nd order event plane by HF+. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
-     | =eptrackmidSumW=               | The sum over weight of 2nd order event plane by tracker. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]] |
+     | Name                         | Descriptions                                                                                                                                            | Created by          |
+     |------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------|
+     | Ntrkgen                      | Multiplicity of generated particles                                                                                                                     | [[ParticleAnalyzer::getEventData][getEventData]]        |
+     | =RunNb=                        | Run number                                                                                                                                              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =EventNb=                      | event number                                                                                                                                            | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =LSNb=                         | Lumi block number                                                                                                                                       | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =BXNb=                         | Number of valid bunch crossing                                                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =nPV=                          | number of valid [[ParticleAnalyzer::vertices_][vertices]] passing criteria                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | ~bestvtxX~, ~bestvtxY~, ~bestvtxZ~ | Positions of the [[ParticleAnalyzer::vertex_][primary vertex]]                                                                                                                         | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | ~evtSel~                       | Boolean array for filter results                                                                                                                        | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =HFsumETPlus=                  | Sum over ET in HF+                                                                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =HFsumETMinus=                 | Sum over ET in HF-                                                                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =Npixel=                       | Number of hits in silicon pixel                                                                                                                         | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =ZDCPlus=                      | Sum over energies in ZDC+                                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =ZDCMinus=                     | Sum over energies in ZDC-                                                                                                                               | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =Ntrkoffline=                  | Ntrkoffline in centrality producer, there is also one from user-defined way in [[particleInfo_::cand][particleInfo_["cand"]​]]                                                    | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =centrality=                   | The bin number of corresponding centrality                                                                                                              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =ephfmAngle=                   | A vector of event plane angle by HF-, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                  | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =ephpAngle=                    | A vector of event plane angle by HF+, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                  | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =eptrackmidAngle=              | A vector of event plane angle by tracker, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].              | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =ephfmQ=                       | A vector of event plane Q-vector magnitude by HF-, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].     | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =ephfpQ=                       | A vector of event plane Q-vector magnitude by HF+, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].     | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =eptrackmidQ=                  | A vector of event plane Q-vector magnitude by tracker, [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/DataFormats/HeavyIonEvent/interface/EvtPlane.h][re-centered and flattened]]: elements are 1st, 2nd, 3rd order event plane info in order, see [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]]. | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =ephfmSumW=                    | The sum over weight of 2nd order event plane by HF-. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =ephfpSumW=                    | The sum over weight of 2nd order event plane by HF+. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                          | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | =eptrackmidSumW=               | The sum over weight of 2nd order event plane by tracker. See [[https://github.com/CmsHI/cmssw/blob/forest_CMSSW_10_3_1/RecoHI/HiEvtPlaneAlgos/interface/HiEvtPlaneList.h][link]].                                                                                      | [[ParticleAnalyzer::fillEventInfo][fillEventInfo]]       |
+     | ~genWeight~                    | ~genInfo->weight()~ from ~tok_genInfo_~                                                                                                                     | [[ParticleAnalyzer::fillGenParticleInfoEventLevel][fillGenParticleInfo]] |
+     | ~pTHat~                        |                                                                                                                                                         | [[ParticleAnalyzer::fillGenParticleInfoEventLevel][fillGenParticleInfo]] |
+     | ~lheWeight~                    | A std::vector of ~genInfo->weight() *  w.wgt / lheInfo->originalXWGTUP()~ where ~w~ is an element in ~lheInfo->weights()~                                     | [[ParticleAnalyzer::fillGenParticleInfoEventLevel][fillGenParticleInfo]] |
 
 **** =Container ntupleInfo_=
      <<ParticleAnalyzer::ntupleInfo_>>
@@ -1717,24 +1903,153 @@ vertex_ = (priVertices_.empty() ? beamSpotVertex : priVertices_[0]);
      | =phiDau=                   | A std::vector of daughter particle phi. The phi is the fit value.                                                 |                                          |
      | =massDau=                  | A std::vector of daughter particle mas. The mass is the fit value.                                                |                                          |
 
+    <<particleInfo_::gen>>
+     #+CAPTION: =particleInfo_["gen"]=
+     | Name          | Descriptions                                                                                                      | Value for place holder if not accessible |
+     |---------------+-------------------------------------------------------------------------------------------------------------------+------------------------------------------|
+     | =candIdx=       | A vector of indices of candidates in [[particleInfo_::cand][particleInfo_["cand"]​]] associated with current gen-particle                   |                        Empty std::vector |
+     | =p=             | momentum                                                                                                          |                                          |
+     | =y=             | rapidity                                                                                                          |                                          |
+     | =eta=           | eta                                                                                                               |                                          |
+     | =phi=           | phi                                                                                                               |                                          |
+     | =mass=          | mass                                                                                                              |                                          |
+     | =charge=        | charge                                                                                                            |                                          |
+     | =pdgId=         | pdgId                                                                                                             |                                          |
+     | =status=        | status for the candidate, 1: stable, 2: intermediate, 3:target, see =GeneralParticleProducer=                       |                                          |
+     | ~statusBit~     | Bit-wise mapper determined by ~reco::GenParticle.statusFlags~, $\sum_{i}2^i$                                        |                                        0 |
+     | =angle3D=       | 3D pointing angle between the line segment from primary vertex to decay vertex and the momentum of decay particle |                                     -10. |
+     | =angle2D=       |                                                                                                                   |                                     -10. |
+     | =decayLength3D= | 3D decay length w.r.t. the primary vertex                                                                         |                                    -99.9 |
+     | ~decayLength2D~ |                                                                                                                   |                                          |
+     | ~dauIdx~        | A std::vector of indices of daughter particles in ~particleInfo_["gen"]~                                            |                                          |
+     | ~momIdx~        | A std::vector of indices of mother particle in ~particleInfo_["gen"]~                                               |                                          |
+
     <<particleInfo_::trk>>
-     #+CAPTION: particleInfo_["trk"]
-     | Name              | Descriptions                                                                            | Value for place holder if not accessible |
-     |-------------------+-----------------------------------------------------------------------------------------+------------------------------------------|
-     | =isHP=              | whether it is high purity track                                                         |                                          |
-     | =nChi2=             | Chi2 normalized by the number of degrees of freedom                                     |                                          |
-     | =pTErr=             | The error of the track pT                                                               |                                          |
-     | =nHit=              | The number of valid hits                                                                |                                          |
-     | =zDCASignificance=  | significance of DCA projected to z-direction w.r.t. the primary vertex                  |                                          |
-     | =xyDCASignificance= | significance of DCA projected to xy-plane w.r.t. the primary vertex                     |                                          |
-     | =dEdx_*=            | dEdx info for this track, =*= means the input tags for =dEdxs=, see =GeneralParticleProducer= |                                          |
+     #+CAPTION: =particleInfo_["trk"]=
+     | Name              | Descriptions                                                                             | Value for place holder if not accessible |
+     |-------------------+------------------------------------------------------------------------------------------+------------------------------------------|
+     | =candIdx=           | A vector of indices of candidates in [[particleInfo_::cand][particleInfo_["cand"]​]] associated with current track | Empty std::vector                        |
+     | =isHP=              | whether it is high purity track                                                          |                                          |
+     | =nChi2=             | Chi2 normalized by the number of degrees of freedom                                      |                                          |
+     | =pTErr=             | The error of the track pT                                                                |                                          |
+     | =nHit=              | The number of valid hits                                                                 |                                          |
+     | =zDCASignificance=  | significance of DCA projected to z-direction w.r.t. the primary vertex                   |                                          |
+     | =xyDCASignificance= | significance of DCA projected to xy-plane w.r.t. the primary vertex                      |                                          |
+     | =dEdx_*=            | dEdx info for this track, =*= means the input tags for =dEdxs=, see =GeneralParticleProducer=  |                                          |
 
      <<particleInfo_::src::muon>>
-     #+CAPTION: Muon stuffs by partcielInfo_["src"]
-     | Name | Descriptions | Value for place holder if not accessible |
-     |------+--------------+------------------------------------------|
-     |      |              |                                          |
+     #+CAPTION: Muon stuffs (=particleInfo_["muon"]=) by =partcielInfo_["src"]=
+     | Name            | Descriptions                                                                                                  | Value for place holder if not accessible |
+     |-----------------+---------------------------------------------------------------------------------------------------------------+------------------------------------------|
+     | ~candIdx~         | The candidate index for this electron in [[particleInfo_::cand][particleInfo_["cand"]​]].                                               |                                          |
+     | ~selector~        | A bit-wise selector, see [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/df/de3/classreco_1_1Muon.html#a7430160716a4c6350e00e8b1a91e21a5][link]]                                                                                 |                                        0 |
+     | ~selectionType~   | A bit-wise map of [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/da/d18/namespacemuon.html#a6e01871a45fb9366b629bc5aeb44ab15][selection types]], via $\sum_{i=0}^{29}2^i$                                                   |                                        0 |
+     | ~isGlobal~        | Whether it is global muon                                                                                     |                                          |
+     | ~isPF~            | Whether it is PF muon                                                                                         |                                          |
+     | ~glbTrkNChi2~     | The normalized chi2 of the global track                                                                       |                                     99.9 |
+     | ~nMuonHit~        | Number of valid hits in global track                                                                          |                                       -1 |
+     | ~nMatchedStation~ | Number of matched stations                                                                                    |                                          |
+     | ~nPixelHit~       | Number of valid pixel hits of inner track                                                                     |                                        1 |
+     | ~nTrackerLayer~   | Number of tracker layers with OK-ed measurements                                                              |                                       -1 |
+     | ~bestTrkdXY~      | DCA along XY plane of muon best track w.r.t. primary vertex associated with this muon (~pat::userData~)         |                                    -99.9 |
+     | ~bestTrkdZ~       | DCA along z-direction of muon best track w.r.t. primary vertex associated with this muon (~pat::userData~)      |                                       -1 |
+     | ~tightID~         | whether it is tight muon                                                                                      |                                          |
+     | ~isOneStTight~    | *?* require one well matched segment *?*                                                                          |                                          |
+     | ~nPixelLayer~     | Number of pixel layers with OK-ed  measurements                                                               |                                       -1 |
+     | ~dXY~             | DCA along XY plane of muon inner track w.r.t. primary vertex associated with this muon (~pat::userData~)        |                                          |
+     | ~dZ~              | DCA along z-direction of muon inner track w.r.t. primary vertex associated with this muon (~pat::userData~)     |                                          |
+     | ~softID~          | whether it is soft muon                                                                                       |                                          |
+     | ~isTracker~       | whether it is tracker muon                                                                                    |                                          |
+     | ~hybridSoftID~    | hybrid soft ID from HIN PAG                                                                                   |                                          |
+     | ~nMatches~        | Number of chambers with matched segments                                                                      |                                          |
+     | ~hadMax~          | maximal energy of HCAL tower in the 3x3 shape                                                                 |                                          |
+     | ~dX_seg~          | *?* Segment between chambers *?*                                                                                  |                                          |
+     | ~dY_seg~          |                                                                                                               |                                          |
+     | ~dXSig_seg~       |                                                                                                               |                                          |
+     | ~dYSig_seg~       |                                                                                                               |                                          |
+     | ~ddXdZ_seg~       |                                                                                                               |                                          |
+     | ~ddYdZ_seg~       |                                                                                                               |                                          |
+     | ~ddXdZSig_seg~    |                                                                                                               |                                          |
+     | ~ddYdZSig_seg~    |                                                                                                               |                                          |
+     | ~l1Eta~           | muon L1 info: eta, available when [[ParticleAnalyzer::triggerData_][triggerData_]] is not empty, [[ParticleAnalyzer::addInfo_][addInfo["trgObj"] and addInfo["muonL1"]​]] are true |                                    -99.9 |
 
+     <<particleInfo_::src::electron>>
+     #+CAPTION: Electron info (=particleInfo_["elec"]=) by =partcielInfo_["src"]=
+     | Name          | Descriptions                                                                                  | Value for place holder if not accessible   |
+     |---------------+-----------------------------------------------------------------------------------------------+--------------------------------------------|
+     | ~candIdx~       | The candidate index for this electron in [[particleInfo_::cand][particleInfo_["cand"]​]].                               |                                            |
+     | =sigmaIEtaIEta= | weighted cluster rms along eta and inside 5x5 (Xtal eta). See [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/d8/dac/GsfElectron_8h_source.html#l00388][link]].                           | A value created by empty =pat::Electron=     |
+     | =sigmaIPhiIPhi= | weighted cluster rms along phi and inside 5x5 (Xtal phi). See [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/d8/dac/GsfElectron_8h_source.html#l00388][link]].                           | A value created by empty =pat::Electron=     |
+     | =dEtaSeedAtVtx= | [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/d0/d6d/classreco_1_1GsfElectron.html#add96b85af419158636f44a64bda19c8b][deltaEtaSeedClusterTrackAtVtx]]                                                                 | ~std::numeric_limits<float>::max()~ or -99.9 |
+     | ~dEtaAtVtx~     | the supercluster eta - track eta position at calo extrapolated from innermost track state     | A value created by empty =pat::Electron=     |
+     | ~dPhiAtVtx~     | the supercluster phi - track phi position at calo extrapolated from the innermost track state | A value created by empty =pat::Electron=     |
+     | ~eOverPInv~     | ~1./electron.ecalEnergy() - 1./electron.trackMomentumAtVtx().R()~                               |                                            |
+     | =hOverEBc=      | HCal over ECal seed cluster energy, see [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/d8/dac/GsfElectron_8h_source.html#l00397][link]] and [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/d0/d6d/classreco_1_1GsfElectron.html#a62e508283fdde1247431eeac1912868e][hcalOverEcalBc]].                              |                                            |
+     | ~sCEta~         | Eta of super cluster centroid                                                                 | -99.9                                      |
+     | ~sCPhi~         | Phi of super cluster centroid                                                                 | -99.9                                      |
+     | ~ip3D~          | Impact parameter w.r.t. the primary vertex associated with the electron (saved as ~pat~)        | -99.9                                      |
+     | ~nLostHits~     | Number of lost hits of the electron GSF track.                                                | -1                                         |
+
+     <<particleInfo_::src::tau>>
+     #+CAPTION: Tau info (~particleInfo_["tau"]~) by ~particleInfo_["src"]~
+     | Name     | Descriptions                                                                     | Value for place holder if not accessible |
+     |----------+----------------------------------------------------------------------------------+------------------------------------------|
+     | ~candIdx~  | The candidate index for this electron in [[particleInfo_::cand][particleInfo_["cand"]​]].                  |                                          |
+     | ~selector~ | Determined by [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/d1/de9/classpat_1_1Tau.html#a225658aba1e5fda7951f5d0144a66b37][tau IDs]]. Each ID with float > 0.5 will be set a bit 1 otherwise 0. |                                          |
+     | ~isPF~     | Whether it is PF candidate                                                       |                                          |
+
+     <<particleInfo_::src::photon>>
+     #+CAPTION: Photon info (~particleInfo_["pho"]~) by ~particleInfo_["src"]~. Entries labeled by 22 are photon; while ones by -22 are gamma conversions.
+     | Name                   | Descriptions                                                                              | Value for place holder if not accessible |
+     |------------------------+-------------------------------------------------------------------------------------------+------------------------------------------|
+     | ~candIdx~                | The candidate index for this electron in [[particleInfo_::cand][particleInfo_["cand"]​]].                           |                                          |
+     | ~sigmaIEtaIEta~ (22)     |                                                                                           |                                    -99.9 |
+     | ~hoverE~ (22)            | the total hadronic over electromagnetic fraction                                          |                                    -99.9 |
+     | ~sCEta~ (22)             |                                                                                           |                                    -99.9 |
+     | ~sCPhi~ (22)             |                                                                                           |                                    -99.9 |
+     | ~swissCrx~ (22)          | SwissCross crystal ratio, see [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/de/d43/classreco_1_1HIPhotonIsolation.html#abc1cd6bf875ce1eff507b8db7af807f8][reco::HIPhotonIsolation::swissCrx]]                           |                                    -99.9 |
+     | ~seedTime~ (22)          | Ecal rechit seed time, see [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/de/d43/classreco_1_1HIPhotonIsolation.html#a729e20d7c9bbf40187d0b586740bc40a][reco::HIPhotonIsolation::seedTime]]                              |                                    -99.9 |
+     | ~trackIsoR3PtCut20~ (22) | Track-based isolation, pt>2.0GeV, R = 0.3, see [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/de/d43/classreco_1_1HIPhotonIsolation.html#ab24eba2764fb9fa805fabe0ed3848d52][reco::HIPhotonIsolation::trackIsoR3PtCut20]] |                                     99.9 |
+     | ~ecalClutsterIsoR3~ (22) | See [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/de/d43/classreco_1_1HIPhotonIsolation.html#a3a35da6e8454ed5873243e486c6b00d1][reco::HIPhotonIsolation::ecalClusterIsoR3]], Cluster-based isolation (ECAL) R = 0.3.    |                                     99.9 |
+     | ~hcalRechitIsoR3~ (22)   | See [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/de/d43/classreco_1_1HIPhotonIsolation.html#afb9486c92216e09fbc2da8da987d69bb][reco::HIPhotonIsolation::hcalRechitIsoR3]], Rechit-based isolation (HCAL) R = 0.3.      |                                     99.9 |
+     | ~nTracks~ (-22)          | Number of tracks= 0,1,2. See [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/da/d43/classreco_1_1Conversion.html#a531a06083329cc4dcfcd4a1f7a7dbb1a][link]].                                                        |                                          |
+     | ~quality~                | See [[https://cmsdoxygen.web.cern.ch/cmsdoxygen/CMSSW_10_3_3_patch1/doc/html/da/d43/classreco_1_1Conversion.html#a6d381dfeac07bf02ec70456e9e30dea4][conversion quality]]. The qualities will be mapped into a bit-wise selector             |                                        0 |
+
+     <<particleInfo_::src::jet>>
+     #+CAPTION: Jet information (~particleInfo_["jet"]~) by ~particleInfo_["src"]~
+     | Name          | Descriptions                                                                           |   Value for place holder if not accessible |
+     |---------------+----------------------------------------------------------------------------------------+--------------------------------------------|
+     | =candIdx=       | A vector of indices of candidates in [[particleInfo_::cand][particleInfo_["cand"]​]] associated with current jet |                          Empty std::vector |
+     | =rawPt=         | Raw pT of the jet                                                                      |        A value created by empty =pat::Jet()= |
+     | =l2=            | Correction factor                                                                      |            L2-corrected jet pT over raw pT |
+     | =l3=            | Correction factor (might be dummy value)                                               | L3-corrected Jet pT over L2-corrected ones |
+     | =area=          | Jet area                                                                               |        A value created by empty =pat::Jet()= |
+     | =pileup=        | Pileup                                                                                 |        A value created by empty =pat::Jet()= |
+     | =hadronFlavour= | hadron-based flavour of the jet                                                        |        A value created by empty =pat::Jet()= |
+     | =partonFlavour= | the parton-based flavour of the jet                                                    |        A value created by empty =pat::Jet()= |
+     | =isPF=          | Whether it is  PF jet                                                                  |        A value created by empty =pat::Jet()= |
+     | =CHF=           | charged hadron energy fraction                                                         |                                         -1 |
+     | =NHF=           | Neutral hadron energy fraction                                                         |                                         -1 |
+     | =CEF=           | Charged EM energy fraction                                                             |                                         -1 |
+     | =NEF=           | Neutral EM energy fraction                                                             |                                         -1 |
+     | =MUF=           | Muon energy fraction                                                                   |                                         -1 |
+     | =CHM=           | Charged hadron multiplicity                                                            |                                          0 |
+     | =NHM=           | Neutral hadron multiplicity                                                            |                                          0 |
+     | =CEM=           | Electron multiplicity                                                                  |                                          0 |
+     | =NEM=           | Photon multiplicity                                                                    |                                          0 |
+     | =MUM=           | Muon multiplicity                                                                      |                                          0 |
+     | =bTagging=      | Not really b-tag values, but [[ParticleAnalyzer::fillJetInfo][a bit-wise record]] that how many types of tag available    |                                          0 |
+
+     <<particleInfo_::src::pf>>
+     #+CAPTION: PFCandidate info (~particleInfo_["pf"]~) by ~particleInfo_["src"]~
+     | Name     | Descriptions                                                                                    | Value for place holder if not accessible   |
+     |----------+-------------------------------------------------------------------------------------------------+--------------------------------------------|
+     | =candIdx=  | A vector of indices of candidates in [[particleInfo_::cand][particleInfo_["cand"]​]] associated with current PF candidate | Empty std::vector                          |
+     | =id=       | Particle ID                                                                                     | A value created by empty =reco::PFCandidate= |
+     | =ecalE=    | ECal energy                                                                                     | A value created by empty =reco::PFCandidate= |
+     | =rawEcalE= | Raw ECal energy                                                                                 | A value created by empty =reco::PFCandidate= |
+     | =hcalE=    | HCal energy                                                                                     | A value created by empty =reco::PFCandidate= |
+     | =rawHcalE= | Raw HCal energy                                                                                 | A value created by empty =reco::PFCandidate= |
 
 **** TODO =std::map<std::string, std::map<size_t, pat::TriggerObjectStandAlone> > triggerObjectMap_=
      <<ParticleAnalyzer::triggerObjectMap_>>
