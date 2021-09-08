@@ -278,3 +278,6 @@ already install and you require the man pages,
 it will need to be reinstalled;
 so the man pages can be grabbed at install time.
     #+end_quote
+
+*** Upgrade from Fedora 33 to 34
+    Please consult this [[https://dev.to/bowmanjd/how-to-upgrade-fedora-in-place-on-windows-subsystem-for-linux-wsl-oh3][link]].
