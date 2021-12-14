@@ -8,3 +8,404 @@
    To replace the original string with the new in a specific range,
    try =perl -ne 's/this/that/g if (m/PatternA/..m/PatternB/)'=.
    I never try other cases without specificing a range.
+
+** String substitution                                                          :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-16 Tue 14:29]
+
+ Please use
+ : my $newstring = $oldstring =~ s/foo/bar/r;
+ ~/r~ option is necessary to keep the original one. See [[https://stackoverflow.com/questions/3440363/perl-use-s-replace-and-return-new-string][answer]] and
+ [[https://stackoverflow.com/questions/22836/how-do-i-perform-a-perl-substitution-on-a-string-while-keeping-the-original][answer]].
+** Redirect output from system commands in perl                                 :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-16 Tue 14:35]
+
+ Plain ~>~ only catch ~STDOUT~. Redirect ~STDERR~ to ~STDOUT~ needs ~2>&1~.
+ An example
+ : system("ls -lst > example.txt 2>&1");
+ This is a dangerous way. Safer ways are discussed in [[https://stackoverflow.com/questions/7799045/best-way-to-capture-output-from-system-command-to-a-text-file][answer]]
+ More info in [[https://stackoverflow.com/questions/818255/in-the-shell-what-does-21-mean][answer]],
+** Run system comands                                                           :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-16 Tue 15:49]
+
+ Make use of ~system~ command. See the [[https://perldoc.perl.org/functions/system][link]].
+** Return a value in subroutine                                                 :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-16 Tue 15:55]
+
+ Make use of ~return~ at the end of the subroutine. See the [[https://www.perltutorial.org/perl-subroutine/][link]] and
+ [[https://www.learn-perl.org/en/Subroutines][link]].
+** How to call subroutine in command line                                       :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-17 Wed 09:51]
+
+ I checked this [[https://stackoverflow.com/questions/23039028/calling-perl-subroutines-from-the-command-line][link]]. I choose the way using hash. You may want to
+ check others.
+
+ I quote the method here. The script is
+ #+BEGIN_src perl
+ #!/usr/bin/perl
+
+ use strict;
+ use warnings;
+ use 5.010;
+
+ sub fields {
+   say 'this is fields';
+ }
+
+ sub another {
+   say 'this is another subroutine';
+ }
+
+ my %functions = (
+   fields  => \&fields,
+   another => \&another,
+ );
+
+ my $function = shift;
+
+ if (exists n$functions{$function}) {
+   $functions{$function}->();
+ } else {
+   die "There is no function called $function available\n";
+ }
+ #+END_src
+
+ The usage is
+ #+begin_example
+ $ ./dispatch_tab fields
+ this is fields
+ $ ./dispatch_tab another
+ this is another subroutine
+ $ ./dispatch_tab xxx
+ There is no function called xxx available
+ #+end_example
+** How to check if a file is plain file                                         :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-17 Wed 23:33]
+
+ ~-f~ function is useful to check if a file is a plain file. See the
+ [[https://stackoverflow.com/questions/206320/how-do-i-distinguish-a-file-from-a-directory-in-perl][answer]] and [[https://perldoc.perl.org/perlfunc#-X-FILEHANDLE][link]]. A usage can be checked in the doc for [[https://perldoc.perl.org/functions/readdir][readdir]].
+ #+begin_src perl
+   opendir(my $dh, $some_dir) || die "Can't opendir $some_dir: $!";
+   my @dots = grep { /^\./ && -f "$some_dir/$_" } readdir($dh);
+   closedir $dh;
+ #+end_src
+** Push, pop, shift, unshift arrays                                             :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 00:23]
+
+ See the [[https://www.learn-perl.org/en/Arrays][link]].
+ - ~push(@array, element)~, add element or elements into the end of the
+   array
+ - ~$popped = pop(@array)~, delete and return the last element of the
+   array
+ - ~$shifted = shift(@array)~, delete and return the first element of the
+   array
+ - ~unshift(@array)~, add element or elements into the beginning of the
+   array
+** Break loop                                                                   :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 01:09]
+
+ You could use ~last~ statement to break the innermost loop. Other usage
+ can be found in the [[https://perldoc.perl.org/functions/last][link]]. And here is a related [[https://stackoverflow.com/questions/303216/how-do-i-break-out-of-a-loop-in-perl][question]] on
+ ~Stackoverflow~.
+** Pass arguments to subroutine                                                 :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 01:21]
+
+ See this [[https://www.perltutorial.org/passing-parameters-to-subroutine/][link]]. The first argument is ~$_[0]~ and the second is ~$[1]~. The
+ array need to be passed as reference. See this [[https://stackoverflow.com/questions/10729015/pass-array-and-scalar-to-a-perl-subroutine][question and answer]].
+** system                                                                       :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 16:19]
+
+ Please check the [[https://perldoc.perl.org/functions/system][link]].
+** Replace string                                                               :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 16:27]
+
+ We need the operator [[https://perldoc.pl/perlfunc#s///][s]].
+ An example:
+ #+begin_src perl
+   my $myvar = "abc";
+   print ("$myvar\n");
+   $myvar =~ s/a/A/; # this will modify the original string
+   print( $myvar =~ s/b/B/ ); # $myvar won't be printed.
+   print( $myvar =~ s/c/C/r ); # r option guarantee original one unchanged
+   $mynewvar = $myvar =~ s/c/C/r; # a new string saved in $mynewvar
+ #+end_src
+ Please note the difference between the return value with and without
+ option ~r~. Also see this [[https://stackoverflow.com/questions/3440363/perl-use-s-replace-and-return-new-string][answer]].
+** Ignore case sensitivity                                                      :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 16:52]
+
+ You can use ~i~ mdifier, an example ~/G[a-b].*/i~. Check this [[https://stackoverflow.com/questions/9655164/regex-ignore-case-sensitivity][answer]].
+** Boolean in perl                                                              :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 16:54]
+
+ I quote the [[https://stackoverflow.com/questions/1036347/how-do-i-use-boolean-variables-in-perl][answer]] here.
+ The following are false and others are true.
+ #+begin_example
+ 0
+ '0'
+ undef
+ ''  # Empty scalar
+ ()  # Empty list
+ ('')
+ #+end_example
+** Sort an array                                                                :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 17:08]
+
+ Make use of [[https://perldoc.perl.org/functions/sort][sort]].
+** Open a file                                                                  :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 17:09]
+
+ Make use of [[https://perldoc.perl.org/functions/open][open]]. It needs file handle, mode, and filename.
+ : open(filehandle,mode,filename)
+ You have three modes:
+ | mode   | operand |
+ |--------+---------|
+ | read   | ~<~       |
+ | write  | ~>~       |
+ | append | ~>>~      |
+ Also check this [[https://www.perltutorial.org/perl-open-file/][link]].
+** Read files                                                                   :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 17:12]
+
+ Check this [[https://www.perltutorial.org/perl-read-file/][link]].
+** Read multi-line                                                              :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 21:03]
+
+ You need to redefine the variable ~$/~ to ~undef~, which is dangerous.
+ Then ~<>~ will read the file in one chunk. See the [[https://stackoverflow.com/questions/1030787/multiline-search-replace-with-perl][discussions]].
+** undef                                                                        :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 21:06]
+
+ See this [[https://perldoc.perl.org/functions/undef][link]].
+** Replace characters in multiple lines                                         :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 21:07]
+
+ Use the modifier ~/s~. Check this [[https://stackoverflow.com/questions/6764350/extract-text-from-a-multiline-string-using-perl][link]].
+** Check if a variable is defined                                               :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 21:08]
+
+ You can make use of [[https://perldoc.perl.org/functions/defined][defined]].
+** Read a directory                                                             :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-18 Thu 21:11]
+
+ Make use of ~opendir~ and ~readdir~. See this [[https://perldoc.perl.org/functions/readdir][link]].
+** Unset an environment variable                                                :NOTE:
+   :PROPERTIES:
+   :GROUP:    bash
+   :END:
+ [2021-11-20 Sat 14:13]
+
+ Make use of =unset=. An example in this [[https://stackoverflow.com/questions/6877727/how-do-i-delete-an-exported-environment-variable][answer]]:
+ : unset GNUPLOT_DRIVE_DIR
+** Delete a file in magit                                                       :NOTE:
+   :PROPERTIES:
+   :GROUP:    git
+   :END:
+ [2021-11-20 Sat 14:42]
+
+ Please check this [[https://emacs.stackexchange.com/questions/24030/git-rm-from-magit][thread]]. You could make use of =delete-file= and
+ =vc-delete-file= for =git rm=, or =magit-file-untrack= for =git rm --cached=.
+** =ditaa= in org-mode                                                            :NOTE:
+   :PROPERTIES:
+   :GROUP:    org-mode
+   :END:
+ [2021-11-25 Thu 16:38]
+
+ Please check the related [[https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-ditaa.html][org-doc]]. Check more on the [[http://ditaa.sourceforge.net/#usage][homepage]] and
+ [[https://github.com/stathissideris/ditaa][github]]for =ditaa=.
+
+ You may find it is useful to read through the [[https://www.mail-archive.com/emacs-orgmode@gnu.org/msg139522.html][thread]]. After =org-9.5=,
+ =ditaa= is no longer shipped with org-mode. You need to install/copy
+ =ditaa= to proper location. On =fedora=, you also need to install
+ =java-11-openjdk=.
+** how to select lines without containing a pattern                             :NOTE:
+   :PROPERTIES:
+   :GROUP:    perl
+   :END:
+ [2021-11-25 Thu 16:45]
+
+ Please check this [[https://stackoverflow.com/questions/406230/regular-expression-to-match-a-line-that-doesnt-contain-a-word][answer]], using =(?!)=.
+** Supress error message                                                        :NOTE:
+   :PROPERTIES:
+   :GROUP:    shell
+   :END:
+ [2021-11-25 Thu 16:47]
+
+ Redirect the error message to ~/dev/null~, e.g.:
+ : rm something 2> /dev/null
+** User-defined functions in cling/rootcling                                    :NOTE:
+   :PROPERTIES:
+   :GROUP:    root
+   :END:
+ [2021-11-28 Sun 16:05]
+
+ Functions cannot be auto-loaded without c++ modules. However, [[https://root-forum.cern.ch/t/using-user-defined-function-in-cling/36049][one]]
+ mentioned that the putting the function inside a namespace or a class.
+ I cannot manage to do it via a namespace but a class.
+** Redirect =stdout=                                                              :NOTE:
+   :PROPERTIES:
+   :GROUP:    python
+   :END:
+ [2021-12-02 Thu 10:31]
+
+ If you want the effect:
+ : python foo.py > file
+ do
+ #+begin_src python
+   import sys
+   sys.stdout = open('file', 'w')
+   print('test')
+   sys.stdout.close()
+   # get the orignal stdout back
+   # option 1, create a local copy at the beginning
+   # and put it back at the end
+   # stdout = sys.stdout
+   # sys.stdout = stdout
+   # option 2
+   sys.stdout = sys.__stdout__
+ #+end_src
+
+ If you want to redirect the output from =subprocess.run=, use
+ : subprocess.run(['ls', '-lst'], stdout=open('myfile', 'w'))
+
+ Check the discusion in this [[https://stackoverflow.com/questions/4965159/how-to-redirect-output-with-subprocess-in-python][thread]] and this [[https://stackoverflow.com/questions/4675728/redirect-stdout-to-a-file-in-python][one]].
+** Directory manipulation                                                       :NOTE:
+   :PROPERTIES:
+   :GROUP:    python
+   :END:
+ [2021-12-02 Thu 10:37]
+
+ - Create a directory
+   #+begin_src python
+     from pathlib import Path
+     Path("/my/directory").mkdir(parents=True, exist_ok=True)
+     # old version
+     '''
+     import os
+     if not os.path.exists(directory):
+         os.makedirs(directory)
+     '''
+   #+end_src
+ - check if a directory exists
+   : os.path.exists('path')
+
+ See discussions in this [[https://stackoverflow.com/questions/273192/how-can-i-safely-create-a-nested-directory-in-python][link]]
+** Return true/false along one dimension                                        :NOTE:
+   :PROPERTIES:
+   :GROUP:    python
+   :END:
+ [2021-12-12 Sun 11:56]
+
+ See =numpy.ndarray.any= or =numpy.any=. See the [[https://numpy.org/doc/stable/reference/generated/numpy.ndarray.any.html][link]] and [[https://numpy.org/doc/stable/reference/generated/numpy.ndarray.any.html][details]].
+** Remove elements, rows, and something                                         :NOTE:
+   :PROPERTIES:
+   :GROUP:    python
+   :END:
+ [2021-12-12 Sun 12:00]
+
+ See this [[https://note.nkmk.me/en/python-numpy-nan-remove/][link]]. Make use of =numpy.any= and =numpy.isnan=.
+** How to plot =geopandas=                                                        :NOTE:
+   :PROPERTIES:
+   :GROUP:    geopandas
+   :END:
+ [2021-12-12 Sun 12:02]
+
+ Make use of =plot= and =matplotlib=. See this [[https://geopandas.org/en/stable/docs/user_guide/mapping.html][link]].
+** Join(concat) list of dataframes in geopandas                                 :NOTE:
+   :PROPERTIES:
+   :GROUP:    geopandas
+   :END:
+ [2021-12-12 Sun 12:03]
+
+ See this [[https://gis.stackexchange.com/questions/162659/joining-concat-list-of-similar-dataframes-in-geopandas][link]]. Make use of =pandas.concat= ([[https://pandas.pydata.org/docs/reference/api/pandas.concat.html][doc]]).
+** =KMeans=                                                                       :NOTE:
+   :PROPERTIES:
+   :GROUP:    sklearn
+   :END:
+ [2021-12-12 Sun 13:13]
+
+ [[https://stanford.edu/~cpiech/cs221/handouts/kmeans.html][Principles]] of =KMeans=. Here is its [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans.fit][scikit learn]].
+** =KMeans= and scikit learn                                                      :NOTE:
+   :PROPERTIES:
+   :GROUP:    geopandas
+   :END:
+ [2021-12-12 Sun 13:16]
+
+ I consult this [[https://samdotson1992.github.io/SuperGIS/blog/k-means-clustering/][page]]. It reads =shapely.geometry.Point=. For a
+ =shapely.geometry.Polygon=, I take its centroid as the point.  From the
+ [[https://stackoverflow.com/questions/53502002/how-to-calculate-the-center-of-gravity-with-shapely-in-python][page]] and [[https://stackoverflow.com/questions/56989956/creating-a-centroid-column-from-geometry-shape-field-produces-attributeerror-n][page]], I try
+ #+begin_src python
+   from shapely.geometry import Polygon
+
+   P = Polygon([[0, 0], [1, 0], [1, 1], [0, 1]])
+
+   print(P.centroid)
+   #POINT (0.5 0.5)
+ #+end_src
+ and
+ #+begin_src python
+   lga_df_points = lga_df.copy()
+   lga_df_points["geometry"] = lga_df_points["geometry"].centroid
+ #+end_src
