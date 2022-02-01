@@ -8,4 +8,4 @@
   : HepMC3-search-devel
   : python3-HepMC3-rootIO
   : python3-HepMC3-search
-  : python3-pythia8p
+  : python3-pythia8
