@@ -109,3 +109,14 @@ Inner::Inner (): _inner("inner")
   cout << _inner << endl;
 }
     #+end_src
+
+* Built-in functions
+** Efficiency plots                                                             :NOTE:
+   :PROPERTIES:
+   :GROUP:    root
+   :END:
+ [2021-11-11 Thu 16:47]
+
+ ~TH1::Divide~ can give errors accounting for binomial distributions if
+ you supply ~"B"~ option. However, it won't give error if ~#pass = #total~.
+ It is recommended to use ~TGraphAsymmErrors::Divide~ instead.

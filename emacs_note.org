@@ -219,17 +219,6 @@ $emacsclient -e '(kill-emacs)' # or try below
 $emacsclient -e '(client-save-kill-emacs)'
    #+end_src
 
-* =ivy= and =swiper=
-  [[https://oremacs.com/swiper/][IvyUserManual]]
-** Started
-   =M-x ivy-mode=
-** Key bindings
-*** Global key bindings
-    =C-c g= is overloaed by prelude as prelude-google
-    =C-c m= is undefined by prelude-emacs
-    A lot of global key bindings are overloaded or undefined by prelude.
-    Check later.
-*** Minibuffer key bindings
 * Org mode
   Please consult this [[https://orgmode.org/orgguide.pdf][link]] (maybe outdated) and [[https://www.cnblogs.com/Open_Source/archive/2011/07/17/2108747.html][its translation]].
 ** Outline and document structure
@@ -254,6 +243,9 @@ $emacsclient -e '(client-save-kill-emacs)'
      - =C-c C-w= :: Refile the entry or region to a different location.
      - =C-c n s/w= :: Narrow the buffer to the current subtree and widen
        it again.
+     - =C-C C-x C-w= :: kill the subtree. With a numeric prefix argument N, kill N sequential subtrees.
+     - =C-C C-x M-w= :: copy the subtree. With a numeric prefix argument N, kill N sequential subtrees.
+     - =C-c C-x C-y= :: paste the subtree.
 
 **** Alternative keys for arrows
      [[https://orgmode.org/manual/TTY-Keys.html][Using Org on a TTY]]
