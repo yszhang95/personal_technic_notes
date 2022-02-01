@@ -1,0 +1,11 @@
+* README
+  I copy the configuration from the [[https://github.com/root-project/root-docker/tree/master/fedora][link]].
+  And I add one line in =Dockerfile=:
+  : dnf install -y emacs &&\
+
+  I privately add a few additional packages in =packages=,
+  : HepMC3-rootIO-devel
+  : HepMC3-search-devel
+  : python3-HepMC3-rootIO
+  : python3-HepMC3-search
+  : python3-pythia8p

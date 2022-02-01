@@ -1,0 +1,37 @@
+* Docker
+** How to run
+   : docker run -it --rm --mount type=bind,source=/home/yousen,target=/home/yousen debian
+   Option =--rm= will ensure that the container will be deleted after
+   exiting the application. The option =--mount= will mount =source= as =target=.
+** How to build
+   If you have =Dockerfile= in current directory,
+   : docker build --tag tagname .
+** How to export
+   <<How-to-export-docker-image>>
+   Run
+   : docker image ls -a
+   This command give you IDs of images. Then
+   : docker image save -o out.tar ID
+   This command will save the image as a tar file which can be read
+   for both Docker and Singularity.
+* Singularity
+** Image
+   Sometimes, you could directly use
+   : singularity run docker://debian
+   : singularity run docker-archive://debian.tar
+   The first one will pull the image hosted on hub and the later will
+   pull the image from a tar file see [[how-to-export-docker-image]].
+
+   If you want to convert docker image to singularity image without
+   the above, you may want to consult the [[https://github.com/singularityhub/docker2singularity][link]].
+   : docker run -v /var/run/docker.sock:/var/run/docker.sock  -v /home/yousen:/output --privileged -it --rm singularityware/docker2singularity:v2.4 image-name
+   This command will create a singularity image under singularity
+   v2.4. The output will be under =/home/yousen= since option =-v= mount
+   =/home/yousen= on host as the =/output= in container. I am not sure
+   option =--privileged=, it may ensure the singularity can have proper
+   permission, because docker image run as root.
+** Run from an image
+   Do
+   : singularity run -B /storage:/data:ro image
+   This will mount =/storage= on host as =/data= in container with
+   read-only permission.

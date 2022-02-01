@@ -136,8 +136,9 @@
    :END:
  [2021-11-18 Thu 01:21]
 
- See this [[https://www.perltutorial.org/passing-parameters-to-subroutine/][link]]. The first argument is ~$_[0]~ and the second is ~$[1]~. The
- array need to be passed as reference. See this [[https://stackoverflow.com/questions/10729015/pass-array-and-scalar-to-a-perl-subroutine][question and answer]].
+ See this [[https://www.perltutorial.org/passing-parameters-to-subroutine/][link]]. The first argument is ~$_[0]~ and the second is
+ ~$_[1]~. The array need to be passed as reference. See this [[https://stackoverflow.com/questions/10729015/pass-array-and-scalar-to-a-perl-subroutine][question
+ and answer]].
 ** system                                                                       :NOTE:
    :PROPERTIES:
    :GROUP:    perl
