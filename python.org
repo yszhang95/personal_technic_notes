@@ -1,0 +1,109 @@
+* Miscellaneous
+** Redirect =stdout=                                                              :NOTE:
+   :PROPERTIES:
+   :GROUP:    python
+   :END:
+ [2021-12-02 Thu 10:31]
+
+ If you want the effect:
+ : python foo.py > file
+ do
+ #+begin_src python
+   import sys
+   sys.stdout = open('file', 'w')
+   print('test')
+   sys.stdout.close()
+   # get the orignal stdout back
+   # option 1, create a local copy at the beginning
+   # and put it back at the end
+   # stdout = sys.stdout
+   # sys.stdout = stdout
+   # option 2
+   sys.stdout = sys.__stdout__
+ #+end_src
+
+ If you want to redirect the output from =subprocess.run=, use
+ : subprocess.run(['ls', '-lst'], stdout=open('myfile', 'w'))
+
+ Check the discusion in this [[https://stackoverflow.com/questions/4965159/how-to-redirect-output-with-subprocess-in-python][thread]] and this [[https://stackoverflow.com/questions/4675728/redirect-stdout-to-a-file-in-python][one]].
+
+** Directory manipulation                                                       :NOTE:
+   :PROPERTIES:
+   :GROUP:    python
+   :END:
+ [2021-12-02 Thu 10:37]
+
+ - Create a directory
+   #+begin_src python
+     from pathlib import Path
+     Path("/my/directory").mkdir(parents=True, exist_ok=True)
+     # old version
+     '''
+     import os
+     if not os.path.exists(directory):
+         os.makedirs(directory)
+     '''
+   #+end_src
+ - check if a directory exists
+   : os.path.exists('path')
+
+ See discussions in this [[https://stackoverflow.com/questions/273192/how-can-i-safely-create-a-nested-directory-in-python][link]]
+** Return true/false along one dimension                                        :NOTE:
+   :PROPERTIES:
+   :GROUP:    python
+   :END:
+ [2021-12-12 Sun 11:56]
+
+ See =numpy.ndarray.any= or =numpy.any=. See the [[https://numpy.org/doc/stable/reference/generated/numpy.ndarray.any.html][link]] and [[https://numpy.org/doc/stable/reference/generated/numpy.ndarray.any.html][details]].
+
+** Remove elements, rows, and something                                         :NOTE:
+   :PROPERTIES:
+   :GROUP:    python
+   :END:
+ [2021-12-12 Sun 12:00]
+
+ See this [[https://note.nkmk.me/en/python-numpy-nan-remove/][link]]. Make use of =numpy.any= and =numpy.isnan=.
+** How to plot =geopandas=                                                        :NOTE:
+   :PROPERTIES:
+   :GROUP:    geopandas
+   :END:
+ [2021-12-12 Sun 12:02]
+
+ Make use of =plot= and =matplotlib=. See this [[https://geopandas.org/en/stable/docs/user_guide/mapping.html][link]].
+** Join(concat) list of dataframes in geopandas                                 :NOTE:
+   :PROPERTIES:
+   :GROUP:    geopandas
+   :END:
+ [2021-12-12 Sun 12:03]
+
+ See this [[https://gis.stackexchange.com/questions/162659/joining-concat-list-of-similar-dataframes-in-geopandas][link]]. Make use of =pandas.concat= ([[https://pandas.pydata.org/docs/reference/api/pandas.concat.html][doc]]).
+** =KMeans=                                                                       :NOTE:
+   :PROPERTIES:
+   :GROUP:    sklearn
+   :END:
+ [2021-12-12 Sun 13:13]
+
+ [[https://stanford.edu/~cpiech/cs221/handouts/kmeans.html][Principles]] of =KMeans=. Here is its [[https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html#sklearn.cluster.KMeans.fit][scikit learn]].
+
+** Polygon contains a point in geopandas                                        :NOTE:
+   :PROPERTIES:
+   :GROUP:    geopandas
+   :END:
+ [2021-12-12 Sun 13:16]
+
+ I consult this [[https://samdotson1992.github.io/SuperGIS/blog/k-means-clustering/][page]]. It reads =shapely.geometry.Point=. For a
+ =shapely.geometry.Polygon=, I take its centroid as the point.  From the
+ [[https://stackoverflow.com/questions/53502002/how-to-calculate-the-center-of-gravity-with-shapely-in-python][page]] and [[https://stackoverflow.com/questions/56989956/creating-a-centroid-column-from-geometry-shape-field-produces-attributeerror-n][page]], I try
+ #+begin_src python
+   from shapely.geometry import Polygon
+
+   P = Polygon([[0, 0], [1, 0], [1, 1], [0, 1]])
+
+   print(P.centroid)
+   #POINT (0.5 0.5)
+ #+end_src
+ and
+ #+begin_src python
+   lga_df_points = lga_df.copy()
+   lga_df_points["geometry"] = lga_df_points["geometry"].centroid
+ #+end_src

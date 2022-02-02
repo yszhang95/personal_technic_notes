@@ -1,7 +1,8 @@
 * README
   I copy the configuration from the [[https://github.com/root-project/root-docker/tree/master/fedora][link]].
-  And I add one line in =Dockerfile=:
+  And I add a couple of lines in =Dockerfile=:
   : dnf install -y emacs &&\
+  : dnf install -y ripgrep &&\
 
   I privately add a few additional packages in =packages=,
   : HepMC3-rootIO-devel

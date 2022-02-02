@@ -120,3 +120,13 @@ Inner::Inner (): _inner("inner")
  ~TH1::Divide~ can give errors accounting for binomial distributions if
  you supply ~"B"~ option. However, it won't give error if ~#pass = #total~.
  It is recommended to use ~TGraphAsymmErrors::Divide~ instead.
+
+** User-defined functions in cling/rootcling                                    :NOTE:
+   :PROPERTIES:
+   :GROUP:    root
+   :END:
+ [2021-11-28 Sun 16:05]
+
+ Functions cannot be auto-loaded without c++ modules. However, [[https://root-forum.cern.ch/t/using-user-defined-function-in-cling/36049][one]]
+ mentioned that the putting the function inside a namespace or a class.
+ I cannot manage to do it via a namespace but a class.
