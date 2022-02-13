@@ -281,3 +281,64 @@ so the man pages can be grabbed at install time.
 
 *** Upgrade from Fedora 33 to 34
     Please consult this [[https://dev.to/bowmanjd/how-to-upgrade-fedora-in-place-on-windows-subsystem-for-linux-wsl-oh3][link]].
+
+*** File permission
+    Please consult this [[https://github.com/Microsoft/WSL/issues/936][issue]]. I tried the [[https://github.com/Microsoft/WSL/issues/936#issuecomment-582904995][combination]] on this page.
+    It tells =WSL= not to automount the windows file system in a global
+    way but to mount each folder in specific ways via
+    : [automount]
+    : enabled = false
+    : mountFsTab = true
+    After this, you need to add the following to =/etc/fstab= (some discussions in
+    [[fstab-short-discussions]]):
+    : c: /C drvfs rw,noatime,uid=1000,gid=1000,umask=027,fmask=117,metadata 0 0
+    : //localhost/c$ /c drvfs ro,noatime,uid=1000,gid=1000,umask=027,fmask=007 0 0
+    : /C/Users /c/Users none bind 0 0
+    The original post may use =\t= but I am not sure. I have to replace
+    multiple whitespaces in his proposed solution by single
+    whiespace.
+    - The first line ask =WSL= to mount =C:= at =/C=, in read-and-write
+      mode. Files are considered as =640= permissions (see the
+      masks). You need to create =/C= at first.
+    - The second line ask the system to mount =//localhost/c$= at =/c=, in
+      read-only mode. The file mode is =750=. The =//localhost/c$= is in
+      syntax of network names (I am not sure if this is only for
+      Windows).
+    - Please notice the difference between the character cases.
+    - The third line ask the system bind (not re-mount) the =C:\Users=
+      directory from =/C= to =/c=.
+    - Please refer to the [[https://man7.org/linux/man-pages/man8/mount.8.html][mount manual]], the [[https://serverfault.com/questions/613179/how-do-i-do-mount-bind-in-etc-fstab][post]], the [[https://askubuntu.com/questions/1119456/how-to-create-a-persistent-mounting-point-in-ubuntu-app-on-windows-10][question]], and
+      windows [[https://docs.microsoft.com/en-us/windows/wsl/file-permissions#wsl-metadata-on-windows-files][doc]].
+    - Now we have =/C= and =/c/Users/= in =640= mode and directories
+      under =/c= except =/c/Users= in =750=.
+    - A final block is to replace capital =C= in =PATH= with =c= instead.
+      This make the windows executable outside =/c/Users/= are callable
+      in =WSL=. Recall that they are in mode =750=.
+
+    The fianl effect is:
+    - The files orinally created by Windows, will be seen in =640= or
+      =750=, as described above.
+    - Your newly created files via =WSL= will be seen as =644= if you use
+      =ls -l= in =WSL=,since the default =umask= value is =0022=. (Try
+      yourself. It may differ case by case). However, if you check the
+      file on =cygwin=, you will find the extra =executable= bit is
+      on. The file is in mode =755=.
+    - This is pretty urgly. But we do not have solutoins.
+    - Remeber to transfer your file via =git=, =scp= inside =WSL=. This will
+      prevent the file permission to be overriden before they are sent
+      to other devices.
+
+*** =fstab= and =mount= tips
+    <<fstab-short-discussions>>
+    I referred to this [[https://help.ubuntu.com/community/Fstab][webpage]]. Let us say you want to mount a
+    partition, you may want to try
+    : sudo mount -t drvfs C: /mnt/c -o metadata
+    This tells the system that the mounted partition is in format of
+    =drvfs= file system. The mount option is =metadata=, specified by =-o=.
+    The source point is =C:=, the c drive on Windows. The
+    target/destination is =/mnt/c=. It corresponds to the setup in
+    =/etc/fstab/= like:
+    : C: /mnt/c drvfs metadata 0 0
+    The syntax for =/etc/fstab= is:
+    : [Device] [Mount Point] [File System Type] [Options] [Dump] [Pass]
+    Please check the [[https://help.ubuntu.com/community/Fstab][webpage]] for further reference.
