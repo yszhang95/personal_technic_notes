@@ -284,11 +284,13 @@ so the man pages can be grabbed at install time.
 
 *** File permission
     Please consult this [[https://github.com/Microsoft/WSL/issues/936][issue]]. I tried the [[https://github.com/Microsoft/WSL/issues/936#issuecomment-582904995][combination]] on this page.
+
     It tells =WSL= not to automount the windows file system in a global
     way but to mount each folder in specific ways via
     : [automount]
     : enabled = false
     : mountFsTab = true
+
     After this, you need to add the following to =/etc/fstab= (some discussions in
     [[fstab-short-discussions]]):
     : c: /C drvfs rw,noatime,uid=1000,gid=1000,umask=027,fmask=117,metadata 0 0
@@ -311,7 +313,10 @@ so the man pages can be grabbed at install time.
       windows [[https://docs.microsoft.com/en-us/windows/wsl/file-permissions#wsl-metadata-on-windows-files][doc]].
     - Now we have =/C= and =/c/Users/= in =640= mode and directories
       under =/c= except =/c/Users= in =750=.
-    - A final block is to replace capital =C= in =PATH= with =c= instead.
+
+    A final block is
+    : export PATH="${PATH//\/C\//\/c\/}"
+    - This is to replace capital =C= in =PATH= with =c= instead.
       This make the windows executable outside =/c/Users/= are callable
       in =WSL=. Recall that they are in mode =750=.
 
