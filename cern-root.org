@@ -169,3 +169,17 @@ Inner::Inner (): _inner("inner")
      #endif
      #include "MyInclude.hpp"
    #+end_src
+
+   There was another method in the user-guide. It looks like:
+   #+begin_src c++
+     // check to see if the event class is in the dictionary
+     // if it is not load the definition in libEvent.so
+     if (!TClassTable::GetDict("Event")) {
+       gSystem->Load("$ROOTSYS/test/libEvent");
+     }
+   #+end_src
+   You can find it the chapter =TTree= and in old ROOT source code, for
+   example, the [[https://github.com/root-project/root/blob/v6-08-00-patches/tutorials/tree/tree4.C][6-08-00 patch]]. It does not work anymore. Now it is
+   replaced with =R__LOAD_LIBRARY= if you trace the changes under
+   different tags. ROOT team may need to update the user-guide in the
+   future. See the [[https://github.com/root-project/root/blob/master/tutorials/tree/tree4.C][GitHub Link]].
