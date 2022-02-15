@@ -147,3 +147,25 @@ Inner::Inner (): _inner("inner")
      (i.e. no move semantic) was very expansive.
 
    A solution to generate =C++= string can be found in the [[https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf][link]].
+
+** How to add include path and load the libraries
+   See the [[https://root-forum.cern.ch/t/problem-loading-customized-style-while-launching-root/18664/11][discussions]]. The inclue path need to be added and the
+   library needs to be added before the macro is loaded/executed.
+   One way to do is to create a =rootlogon.C= file:
+   #+begin_src c++
+     gInterpreter->AddIncludePath("path/to/dir");
+     gSystem->Load("libMyClass.so");
+   #+end_src
+   You could do it via the MACRO =R__ADD_INCLUDE_PATH=, and
+   =R__LOAD_LIBrARY=, if you do not want to create a =rootlogon.C=
+   file. See the doc for [[https://root.cern/doc/master/Rtypes_8h.html][Rtypes]]. These macros cannot be recognized by
+   =ACLiC=, so you have to hide them using =__CLING__=, (I do not know if
+   I need =__ROOTCLING__)=.
+   #+begin_src c++
+     // note, there is no "".
+     #if defined(__CLING__)
+     R__ADD_INCLUDE_PATH(/path/to/dir)
+     R__LOAD_LIBRARY(path/to/lib)
+     #endif
+     #include "MyInclude.hpp"
+   #+end_src
