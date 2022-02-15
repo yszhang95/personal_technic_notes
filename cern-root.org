@@ -130,3 +130,20 @@ Inner::Inner (): _inner("inner")
  Functions cannot be auto-loaded without c++ modules. However, [[https://root-forum.cern.ch/t/using-user-defined-function-in-cling/36049][one]]
  mentioned that the putting the function inside a namespace or a class.
  I cannot manage to do it via a namespace but a class.
+
+** How to generate string using =Form= and =Format=
+   Please check this [[https://root-forum.cern.ch/t/question-on-tstring-form/27587/3][link]]. I copied the response from Philippe below
+   and reinterpret a bit. In summary, it is recommended to use
+   =TString::Form= and =TString::Format=, rather than the two globally
+   defined functions, =::Form= and =::Format=.
+
+   - =TString::Form= modifies an existing =TString=
+   - =TString::Format= is a static function and it create a new =TString=.
+   - =::Form= and =::Format=, using these two, you need to make sure
+     that the result is not being passed to a function that itself
+     will call one of these two functions as it would ‘overwrite’ the
+     buffer while it is being used. These two functions date back to a
+     time when creating temporary object and especially copying them
+     (i.e. no move semantic) was very expansive.
+
+   A solution to generate =C++= string can be found in the [[https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf][link]].
