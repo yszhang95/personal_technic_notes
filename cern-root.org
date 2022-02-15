@@ -160,7 +160,7 @@ Inner::Inner (): _inner("inner")
    =R__LOAD_LIBrARY=, if you do not want to create a =rootlogon.C=
    file. See the doc for [[https://root.cern/doc/master/Rtypes_8h.html][Rtypes]]. These macros cannot be recognized by
    =ACLiC=, so you have to hide them using =__CLING__=, (I do not know if
-   I need =__ROOTCLING__)=.
+   I need =__ROOTCLING__=).
    #+begin_src c++
      // note, there is no "".
      #if defined(__CLING__)
