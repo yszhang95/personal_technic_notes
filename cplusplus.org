@@ -60,7 +60,7 @@ trim functions are copied from [[https://stackoverflow.com/questions/216823/what
    [[https://isocpp.org/blog/2019/06/quick-q-differences-between-stdmake-unique-and-stdunique-ptr-with-new][blog]]. They own the credits.
 
 ** Do not abuse =std::endl=
-   Use ='\n'= if you really want a new line. Please consult this [[https://kuhllib.com/2012/01/14/stop-excessive-use-of-stdendl/][post]].
+   Use ~'\n'~ if you really want a new line. Please consult this [[https://kuhllib.com/2012/01/14/stop-excessive-use-of-stdendl/][post]].
 
 ** Replace a character in =std::stirng=
    I checked this [[https://stackoverflow.com/a/2896627][answer]]. It only works if you want replace a
@@ -84,7 +84,7 @@ trim functions are copied from [[https://stackoverflow.com/questions/216823/what
 
 ** Format the =std::string=
    In principle, you could make use of =std::sprintf= and =std::snprintf=
-   before =C++20=. The ==snprintf= starts from =C++11=. You would like to
+   before =C++20=. The =snprintf= starts from =C++11=. You would like to
    refer to [[https://en.cppreference.com/w/cpp/io/c/fprintf][the reference]].
 
    It is also helpful to warp them up. I copied the code from the
