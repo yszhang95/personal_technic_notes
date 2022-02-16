@@ -1,5 +1,4 @@
 #+TITLE: Linux tips
-
 * LINUX
 ** Text manipulation on LINUX
 *** =sed=
@@ -56,19 +55,42 @@
      2~3~4~5 2E10
      3.4.5.6 3E-99
      #+end_example
-*** =fstab= and =mount= tips
-    I referred to this [[https://help.ubuntu.com/community/Fstab][webpage]]. Let us say you want to mount a
-    partition, you may want to try
-    : sudo mount -t drvfs C: /mnt/c -o metadata
-    This tells the system that the mounted partition is in format of
-    =drvfs= file system. The mount option is =metadata=, specified by =-o=.
-    The source point is =C:=, the c drive on Windows. The
-    target/destination is =/mnt/c=. It corresponds to the setup in
-    =/etc/fstab/= like:
-    : C: /mnt/c drvfs metadata 0 0
-    The syntax for =/etc/fstab= is:
-    : [Device] [Mount Point] [File System Type] [Options] [Dump] [Pass]
-    Please check the [[https://help.ubuntu.com/community/Fstab][webpage]] for further reference.
+** =fstab= and =mount= tips
+   I referred to this [[https://help.ubuntu.com/community/Fstab][webpage]]. Let us say you want to mount a
+   partition, you may want to try
+   : sudo mount -t drvfs C: /mnt/c -o metadata
+   This tells the system that the mounted partition is in format of
+   =drvfs= file system. The mount option is =metadata=, specified by =-o=.
+   The source point is =C:=, the c drive on Windows. The
+   target/destination is =/mnt/c=. It corresponds to the setup in
+   =/etc/fstab/= like:
+   : C: /mnt/c drvfs metadata 0 0
+   The syntax for =/etc/fstab= is:
+   : [Device] [Mount Point] [File System Type] [Options] [Dump] [Pass]
+   Please check the [[https://help.ubuntu.com/community/Fstab][webpage]] for further reference.
+** Locales
+   Here is a good [[https://www.ibm.com/docs/en/aix/7.1?topic=locales-understanding-locale-environment-variables][post]] from IBM for =locale=. It explains the meaning of
+   each variable. You could also refer to =Ubuntu= [[https://help.ubuntu.com/community/EnvironmentVariables#Locale_setting_variables][wiki]]. And you can
+   find [[https://www.gnu.org/software/gettext/manual/html_node/Locale-Environment-Variables.html][discussions]] from =GNU=. I copied the descriptions from [[https://wiki.archlinux.org/title/locale][wiki]] of
+   =ArchLinux=.
+   #+begin_quote
+   Locales are used by =glibc= and other locale-aware programs or
+   libraries for rendering text, correctly displaying regional
+   monetary values, time and date formats, alphabetic idiosyncrasies,
+   and other locale-specific standards.
+   #+end_quote
+
+   You could use =locale-gen= to generate locale files. You also need
+   the file =/etc/locale.gen=. Google more and you will know more. It is
+   recommended to use =UTF-8= character set according to =ArchLinux= [[https://wiki.archlinux.org/title/locale][wiki]].
+
+   You can use
+   : locale -a
+   to list all locales available on the system.
+
+   You may also want to check this [[https://superuser.com/questions/999133/differences-between-en-us-utf8-and-en-us-utf-8][post]]. It may be better to use
+   : export LANG=en_US.UTF-8
+   instead of =en_US.utf8=.
 
 * Windows subsystem (WSL)
 ** Fedora
