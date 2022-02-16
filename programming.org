@@ -262,4 +262,9 @@ print_message (version 2): Hello, world!
 print_message (version 1): Hello, world!
 print_message (version 1): Hello, world!
 print_message (version 2): Hello, world!
-    #+end_example    
+    #+end_example
+
+*** OOP and C-language
+    See discussions in this [[https://stackoverflow.com/questions/351733/how-would-one-write-object-oriented-code-in-c][thread]]. You could check the book mentioned
+    in one of answers, /Object-oriented Programming in ANSI-C/. The link
+    is [[www.cs.rit.edu/~ats/books/ooc.pdf][here]].

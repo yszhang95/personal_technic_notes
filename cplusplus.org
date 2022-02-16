@@ -121,3 +121,110 @@ trim functions are copied from [[https://stackoverflow.com/questions/216823/what
 ** Parameter pack and variadic template
    You could refer to the [[https://stackoverflow.com/a/19923558][answer]] and the [[https://en.cppreference.com/w/cpp/language/parameter_pack][link]]. I do not understand the
    details very much. An example is in [[*Format the =std::string=][Format the =std::string=]].
+
+** Which part of the constructor should be in header/source code
+   I quote the words from the [[https://en.cppreference.com/w/cpp/language/constructor][reference]].
+   #+begin_quote
+   The body of a function definition of any constructor, before the
+   opening brace of the compound statement, may include the /member
+   initializer list/, whose syntax is the colon character =:=, followed
+   by the /comma-separated list/ of one or more /member-initializers/.
+   #+end_quote
+
+   I also thank this short [[https://stackoverflow.com/a/15335287/12357991][answer]]. Thus the member initializer list
+   need to be included in /source code/ since it is part of the function
+   definition.
+
+   The default value of arguments should be put in header. I guess the
+   the default arguments (optional arguments?) are parts of function
+   declaration. I did not dived into the [[https://en.cppreference.com/w/cpp/language/function][reference]], the [[https://stackoverflow.com/questions/9260246/should-c-function-default-argument-values-be-specified-in-headers-or-cpp-sour][question]], and
+   the [[https://stackoverflow.com/questions/14902129/default-parameters-in-h-and-cpp-files][question]].
+
+
+** Infinity
+   Float number can be assigned as infinity. Please refer to the
+   [[https://en.cppreference.com/w/cpp/types/numeric_limits/infinity][reference]]. Note that not each type has inifinity.
+
+   I made test under root-v6.24.06 shipped with Fedora-35.
+
+   In root prompt, I tried
+   : root [] std::numeric_limits<double>::infinity() > 3E1000
+   : ROOT_prompt_3:1:43: warning: magnitude of floating-point constant too large for type 'double'; maximum is 1.7976931348623157E+308 [-Wliteral-range] std::numeric_limits<double>::infinity() > 3E1000
+   : (bool) false
+   : root [] std::numeric_limits<double>::infinity()
+   : (double) inf
+   : root [] std::numeric_limits<float>::infinity()
+   : (double) inff
+   : root [] std::numeric_limits<long double>::infinity()
+   : (double) infL
+   : root [] std::numeric_limits<int>::infinity()
+   : (double) 0
+
+   BTW, you could also try =std::stof= and etc.. In root prompt
+   : root [] stof("inf")
+   : (float) inff
+
+   But you cannot do similar for =std::stoi= and etc..
+
+   Please check the [[https://en.cppreference.com/w/cpp/string/basic_string/stol][reference]] and the [[https://en.cppreference.com/w/cpp/string/basic_string/stof][reference]].
+
+   Positive infinity is always larger than all values except itself and =NaN=.
+   I copied the [[https://stackoverflow.com/a/52817548][answer]] here:
+   According to [[https://www.gnu.org/software/libc/manual/html_node/Infinity-and-NaN.html][gnu-libc]]:
+   #+begin_quote
+   In comparison operations, positive infinity is larger than all
+   values except itself and NaN
+   #+end_quote
+
+   To check the infinity, use =std::isinf=. Check this [[https://en.cppreference.com/w/cpp/numeric/math/isinf][link]]. It mentions
+   an example, =exp(800)= is considered as =true=.
+
+** Convert characters in a string
+   Please check the library =cctype=. The link is [[https://en.cppreference.com/w/cpp/header/cctype][here]].
+
+   I take the function =std::tolower= as an example.
+
+   You would like to use =std::transform=. I copy this example from the
+   [[https://en.cppreference.com/w/cpp/string/byte/tolower][link]].
+   #+begin_src c++
+     std::string str_tolower(std::string s) {
+       std::transform(s.begin(), s.end(), s.begin(),
+                      // static_cast<int(*)(int)>(std::tolower)         // wrong
+                      // [](int c){ return std::tolower(c); }           // wrong
+                      // [](char c){ return std::tolower(c); }          // wrong
+                      [](unsigned char c){ return std::tolower(c); } // correct
+                      );
+       return s;
+     }
+   #+end_src
+   You need to always convert the type of characters to =unsigned char=
+   at first, otherwise the behavior is undefined, as described in the
+   =Notes= in the [[https://en.cppreference.com/w/cpp/string/byte/tolower][link]]. I quote the descriptions here:
+   #+begin_quote
+   Like all other functions from =<cctype>=, the behavior of
+   =std::tolower= is /undefined/ if the argument's value is neither
+   representable as =unsigned char= nor equal to =EOF=. To use these
+   functions safely with plain =char= (or =signed char=), the argument
+   should first be converted to =unsigned char=. Similarly, they should
+   /not/ be directly used with standard algorithms when the iterator's
+   value type is =char= or =signed char=. Instead, convert the value to
+   =unsigned char= first.
+   #+end_quote
+
+** std::transform
+   This function have several versions. Please check the [[https://en.cppreference.com/w/cpp/algorithm/transform][reference]].
+
+   I think there are two main categories:
+   - unary operations, first
+   - binary operations
+
+   I think I only use two versions.
+   - The arguments in order are first, last iterator of input range, first
+     iterator of the destination , unary operation.
+   - The arguments in order are first, last iteartor of input range,
+     first iterator of the second input range, first of the output
+     iterator, binary operation.
+
+   However, I do not know what will happen if the second input range
+   or the destination have smaller capacities than the first input
+   range. Is it /undefined/?

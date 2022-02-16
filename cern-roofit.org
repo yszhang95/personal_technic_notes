@@ -295,10 +295,26 @@ datasets.
  OutputFile("debug.txt"))= will redirect the =[#3] DEBUG:Tracing= to the
  =debug.txt=.
 
- However, I do *not* know
+ However, I do /not/ know
  - if it is safe to use the same name at the same time like the
    following:
    : addStream(DEBUG, OutputFile("debug.txt"))
    : addStream(WARNING, OutputFile("debug.txt"))
  - if it will redirect the message along with the higher level message
    together to the output file.
+
+** Options for plotting
+   - You can use =RooFit::Range= option in =RooDataSet.plotOn=. I tested
+     with =Range("name")= and =Range(low, high)=. The former one
+     will give:
+     : ERROR: unrecognized command: RangeWithName
+     The later one will give:
+     : ERROR: unrecognized command: Range
+** Generate binned data from unbinned one
+   Basically, you could try =binnedClone=. It will produce a
+   =RooDataHist=.  I guess the =RooDataHist= is in multi-dimension. This
+   might be the reason it will consume a lot of memory resources.
+
+   I usually use =createHistogram= to produce 1-D histogram. There are
+   several implementations. Try the one you want. After having the
+   histogram object, I create a correspond =RooDataHist=.
