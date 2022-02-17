@@ -56,6 +56,9 @@
      3.4.5.6 3E-99
      #+end_example
 ** tips about =fstab= and =mount=
+   :PROPERTIES:
+   :CUSTOM_ID: tips-for-fstab-and-mount
+   :END:
    I referred to this [[https://help.ubuntu.com/community/Fstab][webpage]]. Let us say you want to mount a
    partition, you may want to try
    : sudo mount -t drvfs C: /mnt/c -o metadata
@@ -330,7 +333,7 @@ so the man pages can be grabbed at install time.
     : mountFsTab = true
 
     After this, you need to add the following to =/etc/fstab= (some discussions in
-    [[*tips about =fstab= and =mount=]]):
+    [[#tips-for-fstab-and-mount][tips about =fstab= and =mount=]]):
     : c: /C drvfs rw,noatime,uid=10
     00,gid=1000,umask=027,fmask=117,metadata 0 0
     : //localhost/c$ /c drvfs ro,noatime,uid=1000,gid=1000,umask=027,fmask=007 0 0
