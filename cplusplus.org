@@ -215,7 +215,7 @@ trim functions are copied from [[https://stackoverflow.com/questions/216823/what
    This function have several versions. Please check the [[https://en.cppreference.com/w/cpp/algorithm/transform][reference]].
 
    I think there are two main categories:
-   - unary operations, first
+   - unary operations
    - binary operations
 
    I think I only use two versions.
