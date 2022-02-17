@@ -1,7 +1,7 @@
 #+TITLE: Linux tips
 * LINUX
 ** Text manipulation on LINUX
-*** =sed=
+*** The =sed=
 **** Print
      Try =/pattern/p=. Address can be used.
      #+begin_example
@@ -55,7 +55,7 @@
      2~3~4~5 2E10
      3.4.5.6 3E-99
      #+end_example
-** =fstab= and =mount= tips
+** tips about =fstab= and =mount=
    I referred to this [[https://help.ubuntu.com/community/Fstab][webpage]]. Let us say you want to mount a
    partition, you may want to try
    : sudo mount -t drvfs C: /mnt/c -o metadata
@@ -330,8 +330,9 @@ so the man pages can be grabbed at install time.
     : mountFsTab = true
 
     After this, you need to add the following to =/etc/fstab= (some discussions in
-    [[*=fstab= and =mount= tips]]):
-    : c: /C drvfs rw,noatime,uid=1000,gid=1000,umask=027,fmask=117,metadata 0 0
+    [[*tips about =fstab= and =mount=]]):
+    : c: /C drvfs rw,noatime,uid=10
+    00,gid=1000,umask=027,fmask=117,metadata 0 0
     : //localhost/c$ /c drvfs ro,noatime,uid=1000,gid=1000,umask=027,fmask=007 0 0
     : /C/Users /c/Users none bind 0 0
     The original post may use =\t= but I am not sure. I have to replace
@@ -396,3 +397,8 @@ so the man pages can be grabbed at install time.
     Please find the below:
     : C:\Users\[user]\AppData\Local\Packages\[distro]\LocalState\[distroPackageName]
     I refer to this [[https://docs.microsoft.com/en-us/windows/wsl/wsl2-mount-disk#mount-a-vhd-in-wsl][link]].
+
+*** locale
+    I did not find =locale-gen= via =dnf=. I tried to do the below:
+    : dnf install glibc-langpack-en
+    : export LNAG=en_US.UTF-8 # or en_US.utf8
