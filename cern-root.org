@@ -183,3 +183,120 @@ Inner::Inner (): _inner("inner")
    replaced with =R__LOAD_LIBRARY= if you trace the changes under
    different tags. ROOT team may need to update the user-guide in the
    future. See the [[https://github.com/root-project/root/blob/master/tutorials/tree/tree4.C][GitHub Link]].
+
+** Colors in =ROOT=
+   All descriptions are based one the [[https://root.cern.ch/doc/master/classTColor.html][link]]. Colors can be
+   characterized via RGB or HLS. HLS means, hue, light and saturation.
+   I know nothing about HLS so I do not want to use it. There are
+   several functions to manipulate HLS and make conversions between
+   HLS and RGB back and forth.
+
+*** How to create a new color
+    Colors are characterized by RGB attributes.  You have two ways to
+    define a new color:
+    - Modifying an existing color
+      : TColor *color = gROOT->GetColor(10);
+      : color->SetRGB(0.1, 0.2, 0.3);
+    - Create from a free color.
+      : Int_t ci = TColor::GetFreeColorIndex();
+      : TColor *color = new TColor(ci, 0.1, 0.2, 0.3);
+*** Classifications
+    I only discuss predefined colors.
+    - Basic colors, available through =TCanvas::DrawColorTable()=.
+    - Color wheel, can be created via =TColorWheel= and it can be
+      attached to a canvas via =SetCanvas=.
+    - Bright and drak colors. They are for pave and boxes. You could
+      create them via =TColor::GetColorDark= and =TColor::GetColorBright=.
+
+*** Views and options
+    Several things can be modified to get a new view besides changing
+    the color.
+    - Grayscale views.
+    - Color palette
+    - Transparency
+**** Grayscale
+     This is done via canvas. You could do it via =TCanvas::SetGrayscale()=.
+
+**** Color palette
+***** Customization
+      This is useful for display in case of higher dimensions. You
+      could define new palette in two ways:
+      - Make use of =gSytle->SetPalette=. This function take two
+        arguments, the number of colors in the palette and the array
+        which contains the indices of colors in the palette.
+      - A very complex palette can be created via
+        =TColor::CreateGradientColorTable=. It has the following
+        parameters in order (I copy from the official reference
+        documentations):
+        - Number: The number of end point colors that will form the
+          gradients. Must be at least 2.
+        - Stops: Where in the whole table the end point colors should
+          lie. Each entry must be on [0, 1], each entry must be greater
+          than the previous entry.
+        - Red: The end point color values. Each entry must be on [0, 1]
+        - Green: The end point color values. Each entry must be on [0, 1]
+        - Blue: The end point color values. Each entry must be on [0, 1]
+        - NColors: Total number of colors in the table. Must be at
+          least 1.
+        - alpha: the opacity factor, between 0 and 1. Default is no
+          transparency (1).
+        - setPalette: activate the newly created palette (true by
+          default). Otherwise you need to use the return value and
+          reconstruct the palette array and then call
+          =TColor::SetPalette=. Do this:
+          #+begin_src c++
+            Int_t MyPalette[100];
+            Double_t Red[]    = {0., 0.0, 1.0, 1.0, 1.0};
+            Double_t Green[]  = {0., 0.0, 0.0, 1.0, 1.0};
+            Double_t Blue[]   = {0., 1.0, 0.0, 0.0, 1.0};
+            Double_t Length[] = {0., .25, .50, .75, 1.0};
+            Int_t FI = TColor::CreateGradientColorTable(5, Length, Red, Green, Blue, 100);
+            for (int i=0;i<100;i++) MyPalette[i] = FI+i;
+          #+end_src
+        Return value is a positve value (the index of the first color
+        of the palette) on success and -1 on error. This method is
+        quite complicate. I do not suggest to use or you can copy
+        someone's setup. I copied from [[https://orcid.org/0000-0002-5397-252X][Andre Stahl]].
+        #+begin_src c++
+          void setPalette()
+          {
+            gStyle->SetPalette(55);
+            const Int_t NRGBs = 5;
+            const Int_t NCont = 255;
+            // const Int_t NCont = 16;
+            Double_t stops[NRGBs] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
+            Double_t red[NRGBs]   = { 0.00, 0.00, 0.87, 1.00, 0.51 };
+            Double_t green[NRGBs] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
+            Double_t blue[NRGBs]  = { 0.51, 1.00, 0.12, 0.00, 0.00 };
+            TColor::CreateGradientColorTable(NRGBs, stops, red, green, blue, NCont);
+            gStyle->SetNumberContours(NCont);
+          }
+        #+end_src
+
+      If you want to activate two palettes at the same time, try to read the tutorial codes
+      =multipalette=, via the [[https://root.cern.ch/doc/master/multipalette_8C.html][link]].
+***** Predefined palettes
+      I like predefined palettes. You could reset the palette via
+      =gStyle->SetPalette(num)=. These predefined color palettes are
+      classified into two categories according to one criteria: if it
+      is Color Vision Deficiency friendly. I take two examples heres:
+      - Friendly :: =kBird= (This is defualt one).
+      - Non friendly :: =kRainBow=
+**** Transparency
+     The transparency of colors is set through alpha component. The
+     value is from 0 (fully transparent) to 1 (fully opaque). There
+     are also several ways to do:
+     - Modify an existing one
+       #+begin_src c++
+         TColor *col26 = gROOT->GetColor(26);
+         col26->SetAlpha(0.01);
+       #+end_src
+     - Create a new one
+       #+begin_src c++
+         Int_t ci = 1756;
+         TColor *color = new TColor(ci, 0.1, 0.2, 0.3, "", 0.5); // alpha = 0.5
+       #+end_src
+       or
+       #+begin_src c++
+         Int_t trans_red = GetColorTransparent(kRed, 0.3);
+       #+end_src
