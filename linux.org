@@ -94,6 +94,17 @@
    You may also want to check this [[https://superuser.com/questions/999133/differences-between-en-us-utf8-and-en-us-utf-8][post]]. It may be better to use
    : export LANG=en_US.UTF-8
    instead of =en_US.utf8=.
+** How to save a frozen emacs from losing data
+   :PROPERTIES:
+   :CUSTOM_ID: save-frozen-emacs-wo-losing
+   :END:
+
+   I checked this [[https://emacs.stackexchange.com/a/21645][link]] and you can also check the [[https://emacs.stackexchange.com/questions/506/debugging-a-frozen-emacs][link]]. I tried the
+   method in the first link: send a =SIGUSR2= signal to emacs.
+   #+begin_src shell
+     pkill -SIGUSR2 emacs
+   #+end_src
+   And you need to do =M-x toggle-debug-on-quit= inside emacs.
 
 * Windows subsystem (WSL)
 ** Fedora

@@ -1081,3 +1081,5 @@ $emacsclient -e '(client-save-kill-emacs)'
     jumping from one to another at anytime.
     You create a desktop bookmark using =C-x r K=
     (command 'bmkp-set-desktop-bookmark')
+** Rescure a frozen emacs
+   Please check the corresponding section in =linux.org=.

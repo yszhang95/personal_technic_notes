@@ -1,37 +1,38 @@
-- [LINUX](#orgad140c8)
-  - [Text manipulation on LINUX](#org4faca78)
-    - [The `sed`](#org984865d)
+- [LINUX](#org6216cd9)
+  - [Text manipulation on LINUX](#org5a23a8c)
+    - [The `sed`](#org586ec92)
   - [tips about `fstab` and `mount`](#tips-for-fstab-and-mount)
-  - [Locales](#org4556e10)
-- [Windows subsystem (WSL)](#org80f28ba)
-  - [Fedora](#orgc705f76)
-    - [Installations](#org50aba19)
-    - [Some configurations after installations](#org1d7eb02)
-    - [Explore linux files using Widows explorer](#org980d3e4)
-    - [Windows terminal shortcuts](#org62f4730)
-    - [`X11` supports](#org62d436c)
-    - [Change the default shell](#orga805f61)
-    - [Terminals](#orgbfd3478)
-    - [`man` utilities](#org2454e2f)
-    - [Upgrade from Fedora 33 to 34](#org3a15b8f)
-    - [File permission](#org86bde75)
-    - [How to mount a virtual disk (VHD)](#org0b03f39)
-    - [The default `WSL` VHD path](#org313587e)
-    - [locale](#orgd1fe2ff)
+  - [Locales](#org9c2e625)
+  - [How to save a frozen emacs from losing data](#save-frozen-emacs-wo-losing)
+- [Windows subsystem (WSL)](#org6e8b0c6)
+  - [Fedora](#orgcd0a486)
+    - [Installations](#org640c1fb)
+    - [Some configurations after installations](#org4ab3198)
+    - [Explore linux files using Widows explorer](#orgc18b2f7)
+    - [Windows terminal shortcuts](#org87caf48)
+    - [`X11` supports](#org3c4de1a)
+    - [Change the default shell](#orgccf0caa)
+    - [Terminals](#orga148720)
+    - [`man` utilities](#org06b8223)
+    - [Upgrade from Fedora 33 to 34](#org2d1cbb8)
+    - [File permission](#org2ae1a7c)
+    - [How to mount a virtual disk (VHD)](#org9e63a96)
+    - [The default `WSL` VHD path](#org3c88e57)
+    - [locale](#org7392958)
 
 
 
-<a id="orgad140c8"></a>
+<a id="org6216cd9"></a>
 
 # LINUX
 
 
-<a id="org4faca78"></a>
+<a id="org5a23a8c"></a>
 
 ## Text manipulation on LINUX
 
 
-<a id="org984865d"></a>
+<a id="org586ec92"></a>
 
 ### The `sed`
 
@@ -41,7 +42,7 @@
     
         sed -n "/^#/p" input_file # -n help you supress the output
     
-    Suppose we have an example file the same as the one in [1.1.1.3](#org2233770). Run with command `sed -n '/1-/,/2-/p' example.txt`. and
+    Suppose we have an example file the same as the one in [1.1.1.3](#orgdd3faa2). Run with command `sed -n '/1-/,/2-/p' example.txt`. and
 
 2.  Replacement
 
@@ -54,11 +55,11 @@
     sed -E 's/([^E])-/\1 /g' example.txt # -E or -r means extended-regular-expressions
     ```
     
-    Suppose we have an example file the same as the one in [1.1.1.3](#org2233770). Run `sed -E '/^1/,/^2/s/^([0-9])-([0-9])-([0-9])-([0-9])/\1,\2,\3,\4/' example.txt`.
+    Suppose we have an example file the same as the one in [1.1.1.3](#orgdd3faa2). Run `sed -E '/^1/,/^2/s/^([0-9])-([0-9])-([0-9])-([0-9])/\1,\2,\3,\4/' example.txt`.
 
 3.  Scripts
 
-    <a id="org2233770"></a> A simple example of sequential replacement.Supposing that we have an example file `example.txt` having the following content,
+    <a id="orgdd3faa2"></a> A simple example of sequential replacement.Supposing that we have an example file `example.txt` having the following content,
     
         1-2-3-4 1E-10
         2-3-4-5 2E10
@@ -102,7 +103,7 @@ The syntax for `/etc/fstab` is:
 Please check the [webpage](https://help.ubuntu.com/community/Fstab) for further reference.
 
 
-<a id="org4556e10"></a>
+<a id="org9c2e625"></a>
 
 ## Locales
 
@@ -125,24 +126,37 @@ You may also want to check this [post](https://superuser.com/questions/999133/di
 instead of `en_US.utf8`.
 
 
-<a id="org80f28ba"></a>
+<a id="save-frozen-emacs-wo-losing"></a>
+
+## How to save a frozen emacs from losing data
+
+I checked this [link](https://emacs.stackexchange.com/a/21645) and you can also check the [link](https://emacs.stackexchange.com/questions/506/debugging-a-frozen-emacs). I tried the method in the first link: send a `SIGUSR2` signal to emacs.
+
+```shell
+pkill -SIGUSR2 emacs
+```
+
+And you need to do `M-x toggle-debug-on-quit` inside emacs.
+
+
+<a id="org6e8b0c6"></a>
 
 # Windows subsystem (WSL)
 
 
-<a id="orgc705f76"></a>
+<a id="orgcd0a486"></a>
 
 ## Fedora
 
 
-<a id="org50aba19"></a>
+<a id="org640c1fb"></a>
 
 ### Installations
 
 Please consult this [post](https://www.reddit.com/r/Fedora/comments/ii3tor/install_fedora_32_or_33_on_windows_10_wsl_2/) and this [link](https://dev.to/bowmanjd/install-fedora-on-windows-subsystem-for-linux-wsl-4b26).
 
 
-<a id="org1d7eb02"></a>
+<a id="org4ab3198"></a>
 
 ### Some configurations after installations
 
@@ -165,7 +179,7 @@ After setting up `fmask=111`. I found I could not create any symbolic link with 
     appendWindowsPath = false
 
 
-<a id="org980d3e4"></a>
+<a id="orgc18b2f7"></a>
 
 ### Explore linux files using Widows explorer
 
@@ -179,7 +193,7 @@ And then run `explorer.exe .`. See this [post](https://stackoverflow.com/questio
 Or use `PowerShell` to check `WSL` directory outside `Linux`. Then you do not have to edit `/etc/wsl.conf`. See this [post](https://github.com/microsoft/WSL/issues/4027#issuecomment-494969089). Run `dir //wsl$/<your-distro>`. To get `<your-distro>`, run `wsl -l` inside `PowerShell`.
 
 
-<a id="org62f4730"></a>
+<a id="org87caf48"></a>
 
 ### Windows terminal shortcuts
 
@@ -193,11 +207,11 @@ More actions please see [this link](https://docs.microsoft.com/en-us/windows/ter
 For the time being, the shortcut `C-c C-,` in `org-mode` does not work. I may give up `Windows Terminal`.
 
 
-<a id="org62d436c"></a>
+<a id="org3c4de1a"></a>
 
 ### `X11` supports
 
-<a id="org2e60153"></a> I followed this [link](https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2). Append this two lines into `.bashrc` or other similar files.
+<a id="org57896c2"></a> I followed this [link](https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2). Append this two lines into `.bashrc` or other similar files.
 
     export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0
     export LIBGL_ALWAYS_INDIRECT=1
@@ -205,7 +219,7 @@ For the time being, the shortcut `C-c C-,` in `org-mode` does not work. I may gi
 The suggested `X11` application is [VcXSrv](https://sourceforge.net/projects/vcxsrv/). You need to toggle the option `Disable access control` when you open it.
 
 
-<a id="orga805f61"></a>
+<a id="orgccf0caa"></a>
 
 ### Change the default shell
 
@@ -214,7 +228,7 @@ I did not find `chsh` which is supposed to switch shell in some other releases o
 I want to try `oh-my-zsh`. I installed `zsh` via `sudo dnf install zsh`. And I followed the [link](https://ohmyz.sh/#install) to download `oh-my-zsh`. I have not mastered it yet. You can read its [wiki](https://github.com/ohmyzsh/ohmyzsh/wiki).
 
 
-<a id="orgbfd3478"></a>
+<a id="orga148720"></a>
 
 ### Terminals
 
@@ -222,9 +236,9 @@ I can run `gnome-terminal` after running
 
     sudo dnf install gnome-terminal dbus dbus-x11
 
-After setting up the environment variable following [2.1.5](#org2e60153) (or try another way), `gnome-terminal` can work.
+After setting up the environment variable following [2.1.5](#org57896c2) (or try another way), `gnome-terminal` can work.
 
-If you do not write those two lines (see [2.1.5](#org2e60153)) into `.bashrc`. You may face errors like
+If you do not write those two lines (see [2.1.5](#org57896c2)) into `.bashrc`. You may face errors like
 
     libGL error: No matching fbConfigs or visuals found
     libGL error: failed to load driver: swrast
@@ -333,7 +347,7 @@ I cannot figure out why the first character in `zsh` would display in wrong way.
 I append this [theme](https://github.com/chriskempson/tomorrow-theme/blob/master/Xdefaults/Tomorrow) to the `.Xresources`.
 
 
-<a id="org2454e2f"></a>
+<a id="org06b8223"></a>
 
 ### `man` utilities
 
@@ -342,14 +356,14 @@ See this [link](https://ask.fedoraproject.org/t/wsl-2-and-man-pages/11337). I qu
 > Comment out or remove `tsflags=nodocs` from: `/etc/dnf/dnf.conf` Remove and reinstall `man & man-db` and `$ man man` now works as expected. Because the `rootfs` system is being borrowed from a container project, docs are turned off by default to save space. If you have any packages already install and you require the man pages, it will need to be reinstalled; so the man pages can be grabbed at install time.
 
 
-<a id="org3a15b8f"></a>
+<a id="org2d1cbb8"></a>
 
 ### Upgrade from Fedora 33 to 34
 
 Please consult this [link](https://dev.to/bowmanjd/how-to-upgrade-fedora-in-place-on-windows-subsystem-for-linux-wsl-oh3).
 
 
-<a id="org86bde75"></a>
+<a id="org2ae1a7c"></a>
 
 ### File permission
 
@@ -393,7 +407,7 @@ The fianl effect is:
 -   Remeber to transfer your file via `git`, `scp` inside `WSL`. This will prevent the file permission to be overriden before they are sent to other devices.
 
 
-<a id="org0b03f39"></a>
+<a id="org9e63a96"></a>
 
 ### How to mount a virtual disk (VHD)
 
@@ -419,7 +433,7 @@ You will find that the virtual disk is mounted at `/mnt/wsl/PhysicalDrive1`. To 
 Please explore more options in the [link](https://docs.microsoft.com/en-us/windows/wsl/wsl2-mount-disk), for example, how to mount a specific point, how to specify disk type&#x2026;
 
 
-<a id="org313587e"></a>
+<a id="org3c88e57"></a>
 
 ### The default `WSL` VHD path
 
@@ -430,7 +444,7 @@ Please find the below:
 I refer to this [link](https://docs.microsoft.com/en-us/windows/wsl/wsl2-mount-disk#mount-a-vhd-in-wsl).
 
 
-<a id="orgd1fe2ff"></a>
+<a id="org7392958"></a>
 
 ### locale
 
