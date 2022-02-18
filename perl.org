@@ -9,6 +9,7 @@
    try =perl -ne 's/this/that/g if (m/PatternA/..m/PatternB/)'=.
    I never try other cases without specificing a range.
 
+* General scripts
 ** String substitution                                                          :NOTE:
    :PROPERTIES:
    :GROUP:    perl

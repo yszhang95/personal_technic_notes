@@ -228,3 +228,36 @@ trim functions are copied from [[https://stackoverflow.com/questions/216823/what
    However, I do not know what will happen if the second input range
    or the destination have smaller capacities than the first input
    range. Is it /undefined/?
+
+** =try-catch= block
+   Please check the details in the [[https://en.cppreference.com/w/cpp/language/try_catch][reference]].
+
+   You could put as many as =catch= after =try=. There are three main
+   categories for =catch= arguments:
+   - named parameter, =const std::exception& e=.
+   - unmaed parameter, =const std::exception&)=.
+   - catch all handler, =(...)=.
+
+   The named/unmaed arguments can be base classes or derived
+   classes. Besides, the =std::exception= and its derived classes, you
+   could also use simple types, an example from the [[https://en.cppreference.com/w/cpp/language/try_catch][reference]]:
+   #+begin_src c++
+    try
+    {
+        std::cout << "Throwing an integer exception...\n";
+        throw 42;
+    }
+    catch (int i)
+    {
+        std::cout << " the integer exception was caught, with value: " << i << '\n';
+    }
+   #+end_src
+
+   There are a lot of details to be careful about. I mention a couple
+   of things here.
+   - If you put an abstract exception before a derived one, you may
+     not be able to catch the derived one anymore. The exception is
+     captured by the first catch.
+   - If you do not put =catch (...)=, you may miss this exception in
+     current =try-catch= block. How the exception will be handled are
+     documented in the doc for [[https://en.cppreference.com/w/cpp/language/throw][throw]].
