@@ -1085,11 +1085,78 @@ $emacsclient -e '(client-save-kill-emacs)'
 	   any arbitrary LaTeX code
 	 #+END_EXPORT
 	 #+end_src
+*** Publish a project of HTML
+    I learn these stuffs from this [[https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html][tutorial]].
+
+    Basically, you need to do two things:
+    - configure the command =org-publish= using =elisp=. This can be done
+      in =*scratch*= page, or in ORG buffer. Please consult this [[https://www.mail-archive.com/emacs-orgmode@gnu.org/msg110355.html][thread]]
+      for the later case.
+    - execute =org-publish= related commands to publish the project.
+
+    Let us say how to configure =org-publish=.
+    You need to write =elisp= code like:
+    #+begin_src elisp
+      (require 'ox-publish)
+      (setq org-publish-project-alist
+            '(
+
+             ;; ... all the components ...
+
+            ))
+    #+end_src
+    In the main body, you can add
+    #+begin_src elisp
+      ("org-notes"
+       :base-directory "~/org/"
+       :base-extension "org"
+       :publishing-directory "~/public_html/"
+       :recursive t
+       :publishing-function org-html-publish-to-html
+       :headline-levels 4             ; Just the default for this project.
+       :auto-preamble t
+       )
+    #+end_src
+    and
+    #+begin_src elisp
+      ("org-static"
+       :base-directory "~/org/"
+       :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+       :publishing-directory "~/public_html/"
+       :recursive t
+       :publishing-function org-publish-attachment
+       )
+    #+end_src
+    and
+    #+begin_src elisp
+      ("org" :components ("org-notes" "org-static")):components
+    #+end_src
+    This components will do
+    - export the files with extension =.org= under =~/org/= to HTMLs under
+      =~/public_html/= /recursively/, via =org-html-publish-to-html=.
+    - copy files with extensions of =css=, =js=, =png=, =jpg=, =gif=, =pdf=, =mp3=,
+      =ogg=, and =swf= under =~/org/= to the directory =~/public_html/=
+      /recursively/, via =org-publish-attachment=
+    - Make sure these two componenets are executed in one command.
+
+    There are also other setups. Please refer to the [[https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html][tutorial]].
 
 ** Paragraphs
    Paragraphs are separated by at least one empty line. Regarding formats:
    VERSE, QUOTE and CENTER,
-   details can be found in [[https://orgmode.org/guide/Paragraphs.html#Paragraphs][Paragra
+   details can be found in [[https://orgmode.org/guide/Paragraphs.html#Paragraphs][Paragraphs]].
+
+** Footnotes
+   Please refer to the [[https://orgmode.org/manual/Creating-Footnotes.html][reference]]. Several ways to create a footnote:
+   - in-place :: you do somethings like:
+     : [fn:NAME: a definition]
+     : [fn:: a definition]
+   - declaration and definition in different places:
+     : [fn:NAME]
+     : [fn:NAME: a definition]
+   The =NAME= can be a number or an unique name.
+
+   Please check other keybindings in the [[https://orgmode.org/manual/Creating-Footnotes.html][reference]].
 * Compilation
 ** C++
 *** Simplest codes
