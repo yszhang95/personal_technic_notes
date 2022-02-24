@@ -120,7 +120,18 @@ Inner::Inner (): _inner("inner")
  ~TH1::Divide~ can give errors accounting for binomial distributions if
  you supply ~"B"~ option. However, it won't give error if ~#pass = #total~.
  It is recommended to use ~TGraphAsymmErrors::Divide~ instead.
+** Calculate efficiency and its errors for a single bin
+   Let us say we have =#pass= and =#total=, we can make use of
+   =TEfficiency::ClopperPearson=. Please consult the discussion in this
+   [[https://root-forum.cern.ch/t/how-to-calculate-efficiency-error/38425][forum]].
 
+   #+begin_src c++
+     // N total
+     // k pass
+     double efficiency = double(k)/N;
+     double lower_error = efficiency - TEfficiency::ClopperPearson(N, k,  0.683,  false);
+     double upper_error = TEfficiency::ClopperPearson(N, k,  0.683,  true) - efficiency;
+   #+end_src
 ** User-defined functions in cling/rootcling                                    :NOTE:
    :PROPERTIES:
    :GROUP:    root

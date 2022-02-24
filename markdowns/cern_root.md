@@ -1,23 +1,24 @@
-- [Library generation](#org8c2de84)
-  - [Build your own shared library](#org47c6c2c)
-- [Built-in functions](#orge0001cd)
-  - [Efficiency plots](#orgc8251be)
-  - [User-defined functions in cling/rootcling](#orgcdbcb1d)
-  - [How to generate string using `Form` and `Format`](#orga89ff87)
-  - [How to add include path and load the libraries](#orgc0397e1)
-  - [Colors in `ROOT`](#orgeca18f1)
-    - [How to create a new color](#org9e5d889)
-    - [Classifications](#org96200d4)
-    - [Views and options](#org0f56988)
+- [Library generation](#org9cf1379)
+  - [Build your own shared library](#org1e42eca)
+- [Built-in functions](#orga65b462)
+  - [Efficiency plots](#org44f7854)
+  - [Calculate efficiency and its errors for a single bin](#org9b69363)
+  - [User-defined functions in cling/rootcling](#orgf625df0)
+  - [How to generate string using `Form` and `Format`](#orgc65a945)
+  - [How to add include path and load the libraries](#org11292e5)
+  - [Colors in `ROOT`](#org11a75e5)
+    - [How to create a new color](#orgfe37ed3)
+    - [Classifications](#orgc31b194)
+    - [Views and options](#org1358a8d)
 
 
 
-<a id="org8c2de84"></a>
+<a id="org9cf1379"></a>
 
 # Library generation
 
 
-<a id="org47c6c2c"></a>
+<a id="org1e42eca"></a>
 
 ## Build your own shared library
 
@@ -121,12 +122,12 @@ Inner::Inner (): _inner("inner")
 ```
 
 
-<a id="orge0001cd"></a>
+<a id="orga65b462"></a>
 
 # Built-in functions
 
 
-<a id="orgc8251be"></a>
+<a id="org44f7854"></a>
 
 ## Efficiency plots     :NOTE:
 
@@ -135,7 +136,22 @@ Inner::Inner (): _inner("inner")
 `TH1::Divide` can give errors accounting for binomial distributions if you supply `"B"` option. However, it won't give error if `#pass = #total`. It is recommended to use `TGraphAsymmErrors::Divide` instead.
 
 
-<a id="orgcdbcb1d"></a>
+<a id="org9b69363"></a>
+
+## Calculate efficiency and its errors for a single bin
+
+Let us say we have `#pass` and `#total`, we can make use of `TEfficiency::ClopperPearson`. Please consult the discussion in this [forum](https://root-forum.cern.ch/t/how-to-calculate-efficiency-error/38425).
+
+```c++
+// N total
+// k pass
+double efficiency = double(k)/N;
+double lower_error = efficiency - TEfficiency::ClopperPearson(N, k,  0.683,  false);
+double upper_error = TEfficiency::ClopperPearson(N, k,  0.683,  true) - efficiency;
+```
+
+
+<a id="orgf625df0"></a>
 
 ## User-defined functions in cling/rootcling     :NOTE:
 
@@ -144,7 +160,7 @@ Inner::Inner (): _inner("inner")
 Functions cannot be auto-loaded without c++ modules. However, [one](https://root-forum.cern.ch/t/using-user-defined-function-in-cling/36049) mentioned that the putting the function inside a namespace or a class. I cannot manage to do it via a namespace but a class.
 
 
-<a id="orga89ff87"></a>
+<a id="orgc65a945"></a>
 
 ## How to generate string using `Form` and `Format`
 
@@ -157,7 +173,7 @@ Please check this [link](https://root-forum.cern.ch/t/question-on-tstring-form/2
 A solution to generate `C++` string can be found in the [link](https://stackoverflow.com/questions/2342162/stdstring-formatting-like-sprintf).
 
 
-<a id="orgc0397e1"></a>
+<a id="org11292e5"></a>
 
 ## How to add include path and load the libraries
 
@@ -192,14 +208,14 @@ if (!TClassTable::GetDict("Event")) {
 You can find it the chapter `TTree` and in old ROOT source code, for example, the [6-08-00 patch](https://github.com/root-project/root/blob/v6-08-00-patches/tutorials/tree/tree4.C). It does not work anymore. Now it is replaced with `R__LOAD_LIBRARY` if you trace the changes under different tags. ROOT team may need to update the user-guide in the future. See the [GitHub Link](https://github.com/root-project/root/blob/master/tutorials/tree/tree4.C).
 
 
-<a id="orgeca18f1"></a>
+<a id="org11a75e5"></a>
 
 ## Colors in `ROOT`
 
 All descriptions are based one the [link](https://root.cern.ch/doc/master/classTColor.html). Colors can be characterized via RGB or HLS. HLS means, hue, light and saturation. I know nothing about HLS so I do not want to use it. There are several functions to manipulate HLS and make conversions between HLS and RGB back and forth.
 
 
-<a id="org9e5d889"></a>
+<a id="orgfe37ed3"></a>
 
 ### How to create a new color
 
@@ -215,7 +231,7 @@ Colors are characterized by RGB attributes. You have two ways to define a new co
         TColor *color = new TColor(ci, 0.1, 0.2, 0.3);
 
 
-<a id="org96200d4"></a>
+<a id="orgc31b194"></a>
 
 ### Classifications
 
@@ -226,7 +242,7 @@ I only discuss predefined colors.
 -   Bright and drak colors. They are for pave and boxes. You could create them via `TColor::GetColorDark` and `TColor::GetColorBright`.
 
 
-<a id="org0f56988"></a>
+<a id="org1358a8d"></a>
 
 ### Views and options
 
