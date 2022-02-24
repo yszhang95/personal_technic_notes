@@ -1,4 +1,6 @@
 #+STARTUP: OVERVIEW
+#+TITLE: Emacs tips
+#+AUTHOR: Yousen Zhang
 * Basic
 ** Files
 *** Find a file
@@ -88,7 +90,7 @@
     On most terminals, the "<" is above the comma, so you must use the
     shift key to type it.
 ** Edit
-*** <DEL>, "Backspace", C-d, M-d, M-<DEL>, c-k, M-k
+*** =<DEL>=, =Backspace=, =C-d=, =M-d=, =M-<DEL>=, =C-k=, =M-k=
     - =<DEL>=    ::    Delete the character just before the cursor
     - =C-d=      ::    Delete the next character after the cursor
 
@@ -176,9 +178,9 @@
     - =C-x o= :: to switch between the windows
     - =C-x 1= :: kill others except the one I am in
     - =C-x 3= :: splits the screen into two, vertically
-    - ==C-x 4 C-f <file-name>= :: Type =C-x 4 C-f= followed by the name of
+    - =C-x 4 C-f <file-name>= :: Type =C-x 4 C-f= followed by the name of
       one of your files.  End with =<Return>=.  See the specified file
-      appear in the bottom window.  The cursor goes there, too.
+      appear in the bottom window. The cursor goes there, too.
 *** RECURSIVE EDITING LEVELS
     This is indicated by square brackets in the mode line,
     surrounding the parentheses around the major mode name.  For
@@ -397,22 +399,24 @@ $emacsclient -e '(client-save-kill-emacs)'
      External links are URL-like locator. They start with a short
      identifying string followed by a colon. There can be no space
      after the colon. Here are some examples:
-| ~http://www.astro.uva.nl/=dominik~        | on the web                       |
-| ~file:/home/dominik/images/jupiter.jpg~   | file (absolute path)             |
-| ~/home/dominik/images/jupiter.jpg~        | same as above                    |
-| ~file:papers/last.pdf~                    | file (relative path)             |
-| ~./papers/last.pdf~                       | same as above                    |
-| ~file:projects.org~                       | another Org file                 |
-| ~docview:papers/last.pdf::NNN~            | open in DocView mode at page NNN |
-| ~id:B7423F4D-2E8A-471B-8810-C40F074717E9~ | link to heading by ID            |
-| ~news:comp.emacs~                         | Usenet link                      |
-| ~mailto:adent@galaxy.net~                 | mail link                        |
-| ~mhe:folder#id~                           | MH-E message link                |
-| ~rmail:folder#id~                         | Rmail message link               |
-| ~gnus:group#id~                           | Gnus article link                |
-| ~bbdb:R.*Stallman~                        | BBDB link (with regexp)          |
-| ~irc:/irc.com/#emacs/bob~                 | IRC link                         |
-| ~info:org#Hyperlinks~                     | Info node link                   |
+     | example                                 | types                            |
+     |-----------------------------------------+----------------------------------|
+     | ~http://www.astro.uva.nl/=dominik~        | on the web                       |
+     | ~file:/home/dominik/images/jupiter.jpg~   | file (absolute path)             |
+     | ~/home/dominik/images/jupiter.jpg~        | same as above                    |
+     | ~file:papers/last.pdf~                    | file (relative path)             |
+     | ~./papers/last.pdf~                       | same as above                    |
+     | ~file:projects.org~                       | another Org file                 |
+     | ~docview:papers/last.pdf::NNN~            | open in DocView mode at page NNN |
+     | ~id:B7423F4D-2E8A-471B-8810-C40F074717E9~ | link to heading by ID            |
+     | ~news:comp.emacs~                         | Usenet link                      |
+     | ~mailto:adent@galaxy.net~                 | mail link                        |
+     | ~mhe:folder#id~                           | MH-E message link                |
+     | ~rmail:folder#id~                         | Rmail message link               |
+     | ~gnus:group#id~                           | Gnus article link                |
+     | ~bbdb:R.*Stallman~                        | BBDB link (with regexp)          |
+     | ~irc:/irc.com/#emacs/bob~                 | IRC link                         |
+     | ~info:org#Hyperlinks~                     | Info node link                   |
 
 ** ~TODO~ items
 *** Basic functionality
@@ -480,11 +484,38 @@ $emacsclient -e '(client-save-kill-emacs)'
 **** Closing items
      =(setq org-log-done 'time)= will help you record the time when an
      item is closed.
-    
+
      =(setq org-log-done 'note)= will prompt for a note to you.
 
-     Or you can use in-buffer setting: =#+STARTUP: logdone= 
+     Or you can use in-buffer setting: =#+STARTUP: logdone=,
      ~#+STARTUP: logenotedone~.
+
+     I would like to say here that there is an option that disable
+     logbook. I have the similar issue to the [[https://www.reddit.com/r/emacs/comments/mlkb9p/cant_disable_logbook_etc_when_marking_todos_as][post]], and the [[https://www.reddit.com/r/emacs/comments/r9nrwq/comment/hne481v/?utm_source=share&utm_medium=web2x&context=3][post]]. I
+     can put
+     : #+STARTUP: nologdone
+     But it does not stop the logbook creation. I also use
+     configurations from purcell. I do not know which configuration
+     prevent me from disabling the logbook during switch of =TODO=
+     status. I can only put it
+     #+begin_src org
+       ,* Anything text you want to set as headline
+       :PROPERTIES:
+       :LOGGING:  nologdone
+       :END:
+     #+end_src
+     This method does work.
+
+     An alternative way is to do like:
+     #+begin_src org
+       # -*- org-log-done: nil -*-
+       ,#+STARTUP: nologdone
+       ,#+TODO: TODO(t) | DONE(d)
+     #+end_src
+     I does not know why this works. Maybe it is because:
+     - LOGBOOK is enabled after startup by the =!= or =@= options in =TODO= setup
+     - LOGBOOK is enabled after =org-log-done= is set to =t=.
+     I have to disable the above two together. Then I can disable the LOGBOOK.
 **** Tracking ~TODO~ state changes
      After taking notes when you close ~TODO~ items, you want to get
      the notes out of the way into a drawer. Customize the variable
@@ -495,12 +526,27 @@ $emacsclient -e '(client-save-kill-emacs)'
      timestamp) and ~@~ (for a note) in parentheses after each keyword.
      For example:
      #+begin_src org
-     #+TODO: TODO(t) WAIT(w@/!) | DONE(d!) CANCELED(c@)
+       ,#+TODO: TODO(t) WAIT(w@/!) | DONE(d!) CANCELED(c@)
      #+end_src
+     I copy the descriptions from the [[https://orgmode.org/manual/Tracking-TODO-state-changes.html#Tracking-TODO-state-changes][reference]] guide.
+     #+begin_quote
+     You not only define global =TODO= keywords and fast access keys,
+     but also request that a time is recorded when the entry is set to
+     ~'DONE'~, and that a note is recorded when switching to ='WAIT'= or
+     ='CANCELED'.= The setting for ='WAIT'= is even more special: the ='!'=
+     after the slash means that in addition to the note taken when
+     entering the state, a timestamp should be recorded when /leaving/
+     the ='WAIT'= state, if and only if the /target/ state does not
+     configure logging for entering it. So it has no effect when
+     switching from ='WAIT'= to ~'DONE'~, because ='DONE'= is configured to
+     record a timestamp only. But when switching from ='WAIT'= back to
+     ='TODO'=, the ='/!'= in the ='WAIT'= setting now triggers a timestamp
+     even though ='TODO'= has no logging configured.
+     #+end_quote
 *** Priorities
     A headline with ~priority cookie~ will look like:
     #+begin_src org
-    *** TODO [#A] Write letter to Sam Fortune
+      ,*** TODO [#A] Write letter to Sam Fortune
     #+end_src
     Priorities are ordered from A to C. A is the highest and B is the default
     if none is given.
@@ -511,22 +557,22 @@ $emacsclient -e '(client-save-kill-emacs)'
     typing =C-c C-c= when the point under =[]=, you will have the cookie updated.
     An example shown here.
     #+begin_src org
-    * Organize Party [%]
-    ** TODO Call people [/]
-    *** TODO Peter
-    *** DONE Sarah
-    ** TODO Buy food
-    ** DONE Talk to neighbor
+      ,* Organize Party [%]
+      ,** TODO Call people [/]
+      ,*** TODO Peter
+      ,*** DONE Sarah
+      ,** TODO Buy food
+      ,** DONE Talk to neighbor
     #+end_src
 
    After =C-c C-c=, it will become:
    #+begin_src org
-   * Organize Party [33%]
-   ** TODO Call people [1/2]
-   *** TODO Peter
-   *** DONE Sarah
-   ** TODO Buy food
-   ** DONE Talk to neighbor
+     ,* Organize Party [33%]
+     ,** TODO Call people [1/2]
+     ,*** TODO Peter
+     ,*** DONE Sarah
+     ,** TODO Buy food
+     ,** DONE Talk to neighbor
    #+end_src
 
 *** Checkboxes
@@ -559,7 +605,7 @@ $emacsclient -e '(client-save-kill-emacs)'
    Tags are normal words containing letters, numbers, ~-~ and ~@~. And they must
    be preceded by and followed by a single colon, e.g., ~:work:~. Several tags
    can be specified, as in ~:work:urgen:~.
-   
+
 *** Tag inheritance
     If a heading has a certain tag, all subheadings inherit the tag as well.
     Here is an example:
@@ -663,7 +709,7 @@ $emacsclient -e '(client-save-kill-emacs)'
    Useful commands:
    - =C-c C-x p= :: Set a property.
    - =C-c C-c d= :: Remove a property.
-     
+
 ** Dates and times
 *** Timestamps
     Please check this [[https://orgmode.org/manual/Timestamps.html][link]].
@@ -734,7 +780,7 @@ $emacsclient -e '(client-save-kill-emacs)'
       With a =C-u= prefix argument, select the target task from a list of
       recently clocked tasks. This functionality is bound to =C-c o j= (purcell
       emacs).
-      
+
 ** Capture, refile and archive
 *** Capture
 **** Setting up capture
@@ -757,14 +803,16 @@ $emacsclient -e '(client-save-kill-emacs)'
 
      I took an example from purcell-emacs:
      #+begin_src emacs-lisp
-(setq org-capture-templates
-      `(("t" "todo" entry (file "")  ; "" => `org-default-notes-file'
-         "* NEXT %?\n%U\n" :clock-resume t)
-        ("n" "note" entry (file "")
-         "* %? :NOTE:\n%U\n%a\n" :clock-resume t)
-        ))
+       (setq org-capture-templates
+             `(("t" "todo" entry (file "")  ; "" => `org-default-notes-file'
+                "* NEXT %?\n%U\n" :clock-resume t)
+               ("n" "note" entry (file "")
+                "* %? :NOTE:\n%U\n%a\n" :clock-resume t)
+               ))
      #+end_src
      Here are some tips:
+     | Shortcuts    | Explainations                                               |
+     |--------------+-------------------------------------------------------------|
      | '%a'         | annotation, normally the link created with org-store-link   |
      | '%i'         | initial content, the region when capture is called with C-u |
      | '%t', '%T'   | timestamp, date only, or date and time                      |
