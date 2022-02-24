@@ -1129,7 +1129,7 @@ $emacsclient -e '(client-save-kill-emacs)'
     #+end_src
     and
     #+begin_src elisp
-      ("org" :components ("org-notes" "org-static")):components
+      ("org" :components ("org-notes" "org-static"))
     #+end_src
     This components will do
     - export the files with extension =.org= under =~/org/= to HTMLs under

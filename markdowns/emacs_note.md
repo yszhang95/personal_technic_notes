@@ -1,153 +1,153 @@
-- [Basic](#orgcff9d4c)
-  - [Files](#org43d563c)
-    - [Find a file](#org00a43d8)
-    - [Save a file](#orgf4262f4)
-    - [to end the Emacs session](#orgd0ecd1c)
-  - [BUFFERS](#org91f3284)
-    - [List, switch and save buffers](#org175bdb5)
-  - [Commands](#orgad7412d)
-    - [Repeat counts](#org5098169)
-    - [To quit a partially entered command](#org42400e1)
-    - [Disabled commands](#org458bb4d)
-    - [Extending the command set](#org856caa1)
-    - [C-z](#org3760339)
-    - [Set margin size](#org4a7bd24)
-    - [Re-fill inside the middle of a paragraph](#orga1973cb)
-    - [Searching](#org00a853d)
-    - [`<ESC> <ESC> <ESC>`](#orga22a82a)
-  - [Windows](#org080351f)
-  - [Movements](#org5259d8d)
-    - [View next (previous) screen](#org5829dad)
-    - [`C-l`](#org02413c9)
-    - [`C-b`, `C-p`, `C-f`, `C-n`, `M-b`, `M-f`](#org283ee8f)
-    - [C-a, C-e, M-a, M-e](#org1ad8b41)
-    - [M-<, M->](#org561279e)
-  - [Edit](#orgcc43dfb)
-    - [`<DEL>`, `Backspace`, `C-d`, `M-d`, `M-<DEL>`, `C-k`, `M-k`](#org184a045)
-    - [Cut, copy and paste](#org95f65df)
-    - [Undo  `C-/`, `C-_`, `C-x u`](#org4b28ed5)
-    - [Completion](#org043c78c)
-    - [Dired](#orgea8adfe)
-  - [HELP](#org602b74a)
-  - [Terms](#orgcf10d86)
-    - [electric](#orgbd59996)
-    - ["continued" line](#orgb8ab572)
-    - [kill, delete and yank](#orgc373e07)
-    - [AUTO SAVE and recover](#orgfba6a70)
-    - [ECHO AREA](#orgab2ac14)
-    - [MODE LINE](#orgdb1ba4e)
-    - [Major modes](#org592254b)
-    - [Minor modes](#org9937155)
-    - [Frames](#org12dff60)
-    - [RECURSIVE EDITING LEVELS](#org02d3bb8)
-    - [Dired](#org7adba3f)
-- [Emacs client](#orgd72090c)
-  - [unix-like](#org7003db3)
-  - [windows](#org31d47b2)
-  - [kill](#org614f970)
-- [Org mode](#org45718d8)
-  - [Outline and document structure](#org9e4bfca)
-    - [Structure editing](#org02eb8df)
-    - [Visibility of cycling](#org6ad0be1)
-    - [Motion](#org52c6cf8)
-    - [Sparse tree](#org8d5aab3)
-    - [Plain lists](#orge65dd9b)
-  - [Table](#org2eb3740)
-    - [Creation and conversion](#orgad78c9d)
-    - [Re-aligning and field motion](#org9d6352a)
-  - [Hyperlinks](#org0ee86e8)
-    - [Link](#orgab02540)
-  - [`TODO` items](#orgeec31c0)
-    - [Basic functionality](#org975467e)
-    - [Multi-state workflow](#orgfc3b214)
-    - [Progress logging](#org43ba2c4)
-    - [Priorities](#orge4f45c9)
-    - [Breaking tasks down into subtasks](#orgfa07cc7)
-    - [Checkboxes](#orga78a755)
-  - [Tags](#orgf4c35ea)
-    - [Tag inheritance](#org7c7c7b2)
-    - [Setting tags](#org870b4f5)
-    - [Tag groups](#org43c8b19)
-    - [Tag searches](#orgc9cbad0)
-  - [Properties](#org0a5aca8)
-  - [Dates and times](#org7a3aeeb)
-    - [Timestamps](#org2bf9531)
-    - [Creating timestamps](#org6412634)
-    - [Deadlines and Scheduling](#org3e5f9d5)
-    - [Clocking work time](#orge58c52c)
-  - [Capture, refile and archive](#orgb5789b6)
-    - [Capture](#org5d2957c)
-  - [Agenda Views](#org281819d)
-    - [Agenda files](#orgac39341)
-    - [The agenda dispatcher](#orgf3f5f88)
-    - [The weekly/daily agenda](#orgd673150)
-    - [The global TODO list](#org5f8fa50)
-    - [Matching tags and properties](#org215022c)
-    - [Search view](#org4ac0470)
-    - [Commands in the agenda buffer.](#orgd4a1887)
-  - [Code blocks](#org2822b8a)
-    - [Inline](#orgb1f7145)
-    - [Structure templates](#orgbedbc96)
-    - [Evaluating code blocks](#org2f3212b)
-  - [Export](#org6a6936c)
-    - [Commands](#org3b5f700)
-    - [Code blocks](#orga7c0cb5)
-    - [Latex](#org305b79d)
-    - [Publish a project of HTML](#org0f0313a)
-  - [Paragraphs](#orgb658ec4)
-- [Compilation](#org60cf017)
-  - [C++](#orgc634491)
-    - [Simplest codes](#org418fcb8)
-    - [Makefile exists](#org46b6db3)
-- [TRAMP](#org6a9dde9)
-  - [cleanup](#orgb98700c)
-- [Miscellaneous](#org5481e01)
-  - [Font Lock mode](#org66d9bd3)
-  - [Insert the current date to the current buffer](#org727c344)
-  - [Define a new keybinidng](#org09eb55f)
-  - [Desktop](#org9716c60)
-    - [bookmark](#org981da7b)
-  - [Rescure a frozen emacs](#org87b5d95)
+- [Basic](#org62f1ab6)
+  - [Files](#orgdb7e722)
+    - [Find a file](#org6be7646)
+    - [Save a file](#orgbc077ba)
+    - [to end the Emacs session](#org651783f)
+  - [BUFFERS](#org83f72c7)
+    - [List, switch and save buffers](#org65d4752)
+  - [Commands](#org5749849)
+    - [Repeat counts](#org3b96805)
+    - [To quit a partially entered command](#org47b776f)
+    - [Disabled commands](#org17bcc9d)
+    - [Extending the command set](#org3b8ff3e)
+    - [C-z](#org6a9483e)
+    - [Set margin size](#org7dbf07b)
+    - [Re-fill inside the middle of a paragraph](#org1f7c256)
+    - [Searching](#orgb20ae71)
+    - [`<ESC> <ESC> <ESC>`](#orgb2a0984)
+  - [Windows](#orgc7eb612)
+  - [Movements](#orga810bb7)
+    - [View next (previous) screen](#org015331b)
+    - [`C-l`](#orgebd41ea)
+    - [`C-b`, `C-p`, `C-f`, `C-n`, `M-b`, `M-f`](#orga1f9778)
+    - [C-a, C-e, M-a, M-e](#org96c981c)
+    - [M-<, M->](#org6551d47)
+  - [Edit](#orgd68541b)
+    - [`<DEL>`, `Backspace`, `C-d`, `M-d`, `M-<DEL>`, `C-k`, `M-k`](#orgf8be2da)
+    - [Cut, copy and paste](#org1c99e4f)
+    - [Undo  `C-/`, `C-_`, `C-x u`](#org5054f74)
+    - [Completion](#org2b77bfc)
+    - [Dired](#orgecb093b)
+  - [HELP](#orgbbfc540)
+  - [Terms](#org965499b)
+    - [electric](#org8b33960)
+    - ["continued" line](#orgf7288e9)
+    - [kill, delete and yank](#orga3ca89f)
+    - [AUTO SAVE and recover](#org35abdef)
+    - [ECHO AREA](#orgd655470)
+    - [MODE LINE](#org55b6d39)
+    - [Major modes](#org3105de8)
+    - [Minor modes](#orgae29c0d)
+    - [Frames](#orgc6da53a)
+    - [RECURSIVE EDITING LEVELS](#org159f5c6)
+    - [Dired](#org6479df7)
+- [Emacs client](#org98a5092)
+  - [unix-like](#org33f4268)
+  - [windows](#orgcbfe0c8)
+  - [kill](#orgcb5b866)
+- [Org mode](#org47ceec9)
+  - [Outline and document structure](#org34c4d59)
+    - [Structure editing](#org1b9e5ba)
+    - [Visibility of cycling](#org72c9a38)
+    - [Motion](#org64fa38a)
+    - [Sparse tree](#org4dace9b)
+    - [Plain lists](#org3ed8e2d)
+  - [Table](#orga5e0847)
+    - [Creation and conversion](#org169a5cc)
+    - [Re-aligning and field motion](#org292d422)
+  - [Hyperlinks](#org0aaf3df)
+    - [Link](#org41af21a)
+  - [`TODO` items](#org3593b24)
+    - [Basic functionality](#org24681da)
+    - [Multi-state workflow](#org4f0f387)
+    - [Progress logging](#orgb124dcd)
+    - [Priorities](#org3704dbf)
+    - [Breaking tasks down into subtasks](#org29e0bf0)
+    - [Checkboxes](#org23a43f1)
+  - [Tags](#org1318532)
+    - [Tag inheritance](#org111ebf1)
+    - [Setting tags](#orgbc4baac)
+    - [Tag groups](#org94df8a8)
+    - [Tag searches](#org9cfce5e)
+  - [Properties](#orgac74594)
+  - [Dates and times](#orgca3d95d)
+    - [Timestamps](#org6fdca3d)
+    - [Creating timestamps](#org786565f)
+    - [Deadlines and Scheduling](#org3bddae4)
+    - [Clocking work time](#orgdc0ac94)
+  - [Capture, refile and archive](#org736e790)
+    - [Capture](#orgd517542)
+  - [Agenda Views](#orgb803f80)
+    - [Agenda files](#orgf595b05)
+    - [The agenda dispatcher](#org3c7266b)
+    - [The weekly/daily agenda](#org88e8a79)
+    - [The global TODO list](#orge8250a2)
+    - [Matching tags and properties](#org5bb0912)
+    - [Search view](#org2cb988b)
+    - [Commands in the agenda buffer.](#org9e20726)
+  - [Code blocks](#org333db7e)
+    - [Inline](#orgfef999b)
+    - [Structure templates](#orgfc3661c)
+    - [Evaluating code blocks](#org5d7354f)
+  - [Export](#orgb62ce08)
+    - [Commands](#org2b8ebef)
+    - [Code blocks](#org942f09a)
+    - [Latex](#org249f27d)
+    - [Publish a project of HTML](#orgab34991)
+  - [Paragraphs](#org5808f5a)
+- [Compilation](#org1a7842d)
+  - [C++](#orgcc6f2e2)
+    - [Simplest codes](#org62228fc)
+    - [Makefile exists](#org1c0b6a2)
+- [TRAMP](#orgee56e9a)
+  - [cleanup](#org95a6048)
+- [Miscellaneous](#org2130c1f)
+  - [Font Lock mode](#org23e94d1)
+  - [Insert the current date to the current buffer](#orgd6feec4)
+  - [Define a new keybinidng](#orgb46cc8c)
+  - [Desktop](#org5bbc1c1)
+    - [bookmark](#org835b288)
+  - [Rescure a frozen emacs](#orgc7b3e28)
 
 
 
-<a id="orgcff9d4c"></a>
+<a id="org62f1ab6"></a>
 
 # Basic
 
 
-<a id="org43d563c"></a>
+<a id="orgdb7e722"></a>
 
 ## Files
 
 
-<a id="org00a43d8"></a>
+<a id="org6be7646"></a>
 
 ### Find a file
 
 -   **`C-x C-f`:** Find a file
 
 
-<a id="orgf4262f4"></a>
+<a id="orgbc077ba"></a>
 
 ### Save a file
 
 -   **`C-x C-s`:** Save the file
 
 
-<a id="orgd0ecd1c"></a>
+<a id="org651783f"></a>
 
 ### to end the Emacs session
 
 type `C-x C-c`.
 
 
-<a id="org91f3284"></a>
+<a id="org83f72c7"></a>
 
 ## BUFFERS
 
 
-<a id="org175bdb5"></a>
+<a id="org65d4752"></a>
 
 ### List, switch and save buffers
 
@@ -159,12 +159,12 @@ type `C-x C-c`.
     -   **`M-x kill-matching-buffers` :** Offer to kill all buffers matching a regular expression.
 
 
-<a id="orgad7412d"></a>
+<a id="org5749849"></a>
 
 ## Commands
 
 
-<a id="org5098169"></a>
+<a id="org3b96805"></a>
 
 ### Repeat counts
 
@@ -174,21 +174,21 @@ type `C-x C-c`.
     -   exceptions, `C-u 8 C-v` only scrolls by 8 lines, not screens
 
 
-<a id="org42400e1"></a>
+<a id="org47b776f"></a>
 
 ### To quit a partially entered command
 
 type `C-g`
 
 
-<a id="org458bb4d"></a>
+<a id="org17bcc9d"></a>
 
 ### Disabled commands
 
 If you really want to try the command, type <SPC> (the Space bar) in answer to the question. Normally, if you do not want to execute the disabled command, answer the question with "n".
 
 
-<a id="org856caa1"></a>
+<a id="org3b8ff3e"></a>
 
 ### Extending the command set
 
@@ -205,94 +205,94 @@ If you really want to try the command, type <SPC> (the Space bar) in answer to t
     -   `M-x replace-string`
 
 
-<a id="org3760339"></a>
+<a id="org6a9483e"></a>
 
 ### C-z
 
 `C-z` is the command to exit Emacs **temporarily**&#x2013;so that you can go back to the same Emacs session afterward. When Emacs is running on a text terminal, C-z "suspends" Emacs; that is, it returns to the shell but does not destroy the Emacs job. In the most common shells, you can resume Emacs with the "fg" command or with "%emacs".
 
 
-<a id="org4a7bd24"></a>
+<a id="org7dbf07b"></a>
 
 ### Set margin size
 
 `C-x f`
 
 
-<a id="orga1973cb"></a>
+<a id="org1f7c256"></a>
 
 ### Re-fill inside the middle of a paragraph
 
 `M-q`
 
 
-<a id="org00a853d"></a>
+<a id="orgb20ae71"></a>
 
 ### Searching
 
 `C-s`, forward search, `C-r`, reverse search
 
 
-<a id="orga22a82a"></a>
+<a id="orgb2a0984"></a>
 
 ### `<ESC> <ESC> <ESC>`
 
 That is an all-purpose "get out" command. You can also use it for eliminating extra windows, and getting out of the minibuffer.
 
 
-<a id="org080351f"></a>
+<a id="orgc7eb612"></a>
 
 ## Windows
 
 `C-x 1` One window (i.e., kill all other windows)
 
 
-<a id="org5259d8d"></a>
+<a id="orga810bb7"></a>
 
 ## Movements
 
 
-<a id="org5829dad"></a>
+<a id="org015331b"></a>
 
 ### View next (previous) screen
 
 `C-v`, `M-v`
 
 
-<a id="org02413c9"></a>
+<a id="orgebd41ea"></a>
 
 ### `C-l`
 
 Clear screen and redisplay all the text, moving the text around the cursor to the center of the screen. (That's CONTROL-L, not CONTROL-1.)
 
 
-<a id="org283ee8f"></a>
+<a id="orga1f9778"></a>
 
 ### `C-b`, `C-p`, `C-f`, `C-n`, `M-b`, `M-f`
 
 Backward, previous line, forward, next line, no M-p nor M-n
 
 
-<a id="org1ad8b41"></a>
+<a id="org96c981c"></a>
 
 ### C-a, C-e, M-a, M-e
 
 beginning or end of a line / sentence.
 
 
-<a id="org561279e"></a>
+<a id="org6551d47"></a>
 
 ### M-<, M->
 
 `M-<` (META Less-than), which moves to the beginning of the whole text, and `M->` (META Greater-than), which moves to the end of the whole text. On most terminals, the "<" is above the comma, so you must use the shift key to type it.
 
 
-<a id="orgcc43dfb"></a>
+<a id="orgd68541b"></a>
 
 ## Edit
 
 
-<a id="org184a045"></a>
+<a id="orgf8be2da"></a>
 
 ### `<DEL>`, `Backspace`, `C-d`, `M-d`, `M-<DEL>`, `C-k`, `M-k`
 
@@ -306,7 +306,7 @@ beginning or end of a line / sentence.
 -   **`M-k`     :** Kill to the end of the current sentence
 
 
-<a id="org95f65df"></a>
+<a id="org1c99e4f"></a>
 
 ### Cut, copy and paste
 
@@ -319,19 +319,19 @@ beginning or end of a line / sentence.
 5.  `C-y` (yank), `M-y` yank more previous kills.
 
 
-<a id="org4b28ed5"></a>
+<a id="org5054f74"></a>
 
 ### Undo  `C-/`, `C-_`, `C-x u`
 
 
-<a id="org043c78c"></a>
+<a id="org2b77bfc"></a>
 
 ### Completion
 
 Can be found in the manual Completion. It helps enter arguments.
 
 
-<a id="orgea8adfe"></a>
+<a id="orgecb093b"></a>
 
 ### Dired
 
@@ -342,7 +342,7 @@ Dired makes an Emacs buffer containing a listing of a directory, and optionally 
     C-x d
 
 
-<a id="org602b74a"></a>
+<a id="orgbbfc540"></a>
 
 ## HELP
 
@@ -355,68 +355,68 @@ Dired makes an Emacs buffer containing a listing of a directory, and optionally 
 -   `C-h r` read manuals
 
 
-<a id="orgcf10d86"></a>
+<a id="org965499b"></a>
 
 ## Terms
 
 
-<a id="orgbd59996"></a>
+<a id="org8b33960"></a>
 
 ### electric
 
 The <Return> key is special, in that pressing it may do more than just insert a Newline character. Depending on the surrounding text, it may insert whitespace after the Newline character, so that when you start typing on the newly created line, the text lines up with that on the previous line. We call this behavior (where pressing a key does more than simply inserting the relevant character) "electric".
 
 
-<a id="orgb8ab572"></a>
+<a id="orgf7288e9"></a>
 
 ### "continued" line
 
 If you're using a graphical display, little curved arrows appear in the narrow spaces on each side of the text area (the left and right "fringes"), to indicate where a line has been continued. If you're using a text terminal, the continued line is indicated by a backslash ('\\') on the rightmost screen column.
 
 
-<a id="orgc373e07"></a>
+<a id="orga3ca89f"></a>
 
 ### kill, delete and yank
 
 The difference between "killing" and "deleting" is that "killed" text can be reinserted (at any position), whereas "deleted" things cannot be reinserted in this way (you can, however, undo a deletion&#x2013;see below). Reinsertion of killed text is called "yanking".
 
 
-<a id="orgfba6a70"></a>
+<a id="org35abdef"></a>
 
 ### AUTO SAVE and recover
 
 For example, if your file is named "hello.c", its auto save file's name is "#hello.c#". You can recover your auto-saved editing by finding the file normally (the file you were editing, **not** the auto save file) and then typing `M-x recover-this-file <Return>`.
 
 
-<a id="orgab2ac14"></a>
+<a id="orgd655470"></a>
 
 ### ECHO AREA
 
 If Emacs sees that you are typing multicharacter commands slowly, it shows them to you at the bottom of the screen in an area called the "echo area". The echo area contains the bottom line of the screen.
 
 
-<a id="orgdb1ba4e"></a>
+<a id="org55b6d39"></a>
 
 ### MODE LINE
 
 e.g `-:**- TUTORIAL 63% L749 (Fundamental)`
 
 
-<a id="org592254b"></a>
+<a id="org3105de8"></a>
 
 ### Major modes
 
 e.g. fundamental `C-h m`, To view documentation on your current major mode. `M-x modes you want`
 
 
-<a id="org9937155"></a>
+<a id="orgae29c0d"></a>
 
 ### Minor modes
 
 e.g. auto fill, `M-x auto-fill-mode`
 
 
-<a id="org12dff60"></a>
+<a id="orgc6da53a"></a>
 
 ### Frames
 
@@ -428,26 +428,26 @@ e.g. auto fill, `M-x auto-fill-mode`
 -   **`C-x 4 C-f <file-name>`:** Type `C-x 4 C-f` followed by the name of one of your files. End with `<Return>`. See the specified file appear in the bottom window. The cursor goes there, too.
 
 
-<a id="org02d3bb8"></a>
+<a id="org159f5c6"></a>
 
 ### RECURSIVE EDITING LEVELS
 
 This is indicated by square brackets in the mode line, surrounding the parentheses around the major mode name. For example, you might see [(Fundamental)] instead of (Fundamental). To get out of the recursive editing level, type `<ESC> <ESC> <ESC>`. You cannot use `C-g` to get out of a recursive editing level. This is because `C-g` is used for canceling commands and arguments **WITHIN** the recursive editing level.
 
 
-<a id="org7adba3f"></a>
+<a id="org6479df7"></a>
 
 ### Dired
 
 
-<a id="orgd72090c"></a>
+<a id="org98a5092"></a>
 
 # Emacs client
 
 [EmacsClient](https://www.emacswiki.org/emacs/EmacsClient)
 
 
-<a id="org7003db3"></a>
+<a id="org33f4268"></a>
 
 ## unix-like
 
@@ -460,7 +460,7 @@ $emacsclient -c file # open in a window
 ```
 
 
-<a id="org31d47b2"></a>
+<a id="orgcbfe0c8"></a>
 
 ## windows
 
@@ -474,7 +474,7 @@ $runemacs --daemon
 Double click the shortcut.
 
 
-<a id="org614f970"></a>
+<a id="orgcb5b866"></a>
 
 ## kill
 
@@ -484,21 +484,21 @@ $emacsclient -e '(client-save-kill-emacs)'
 ```
 
 
-<a id="org45718d8"></a>
+<a id="org47ceec9"></a>
 
 # Org mode
 
 Please consult this [link](https://orgmode.org/orgguide.pdf) (maybe outdated) and [its translation](https://www.cnblogs.com/Open_Source/archive/2011/07/17/2108747.html).
 
 
-<a id="org9e4bfca"></a>
+<a id="org34c4d59"></a>
 
 ## Outline and document structure
 
 `org-cycle` is bound to `TAB`.
 
 
-<a id="org02eb8df"></a>
+<a id="org1b9e5ba"></a>
 
 ### Structure editing
 
@@ -522,7 +522,7 @@ Please consult this [link](https://orgmode.org/orgguide.pdf) (maybe outdated) an
     [Using Org on a TTY](https://orgmode.org/manual/TTY-Keys.html)
 
 
-<a id="org6ad0be1"></a>
+<a id="org72c9a38"></a>
 
 ### Visibility of cycling
 
@@ -537,7 +537,7 @@ When `EMACS` first visits an `Org` file, the global state is set to `OVERVIEW`. 
 ```
 
 
-<a id="org52c6cf8"></a>
+<a id="org64fa38a"></a>
 
 ### Motion
 
@@ -548,7 +548,7 @@ When `EMACS` first visits an `Org` file, the global state is set to `OVERVIEW`. 
 -   **`C-c C-u`:** backward to higher level heading
 
 
-<a id="org8d5aab3"></a>
+<a id="org4dace9b"></a>
 
 ### Sparse tree
 
@@ -558,7 +558,7 @@ Sparse tree shows selected information in an outline tree and hide others.
 -   **`C-c / r`:** Occur. Prompts for a `regexp` and shows a sparse with all matches. Each match is also highlighted; the highlights disappear by pressing `C-c C-c`.
 
 
-<a id="orge65dd9b"></a>
+<a id="org3ed8e2d"></a>
 
 ### Plain lists
 
@@ -582,7 +582,7 @@ The following commands act on items when point is in the first line of an item (
 -   **`C-c -`:** Cycle the entire list level through the different itemize/enumerate bullets ('-','+','\*','1.','1)').
 
 
-<a id="org2eb3740"></a>
+<a id="orga5e0847"></a>
 
 ## Table
 
@@ -613,14 +613,14 @@ and then type `TAB`. The second is
 and then type `C-c RET`.
 
 
-<a id="orgad78c9d"></a>
+<a id="org169a5cc"></a>
 
 ### Creation and conversion
 
 -   **`C-c |`:** Convert the active region to table. `TAB` and `comma` would serve as delimiters.
 
 
-<a id="org9d6352a"></a>
+<a id="org292d422"></a>
 
 ### Re-aligning and field motion
 
@@ -640,12 +640,12 @@ and then type `C-c RET`.
 -   **`C-c ^`:** Sort the table lines in the region.
 
 
-<a id="org0ee86e8"></a>
+<a id="org0aaf3df"></a>
 
 ## Hyperlinks
 
 
-<a id="orgab02540"></a>
+<a id="org41af21a"></a>
 
 ### Link
 
@@ -697,12 +697,12 @@ and then type `C-c RET`.
     | `info:org#Hyperlinks`                     | Info node link                   |
 
 
-<a id="orgeec31c0"></a>
+<a id="org3593b24"></a>
 
 ## `TODO` items
 
 
-<a id="org975467e"></a>
+<a id="org24681da"></a>
 
 ### Basic functionality
 
@@ -717,7 +717,7 @@ Here is an example: `*** TODO Write letter to Sam Fortune`. Other useful command
 Changing a `TODO` state can also trigger tag changes. See the docstring of the option `org-todo-state-tags-triggers` for details.
 
 
-<a id="orgfc3b214"></a>
+<a id="org4f0f387"></a>
 
 ### Multi-state workflow
 
@@ -752,7 +752,7 @@ To define `TODO` keywords that are valid only in a single file, use the followin
 After changing one of these lines, use `C-c C-c` with the cursor still in the line to make the changes known to Org mode.
 
 
-<a id="org43ba2c4"></a>
+<a id="orgb124dcd"></a>
 
 ### Progress logging
 
@@ -813,7 +813,7 @@ To record a timestamp and a note when changing a `TODO` state, call the command 
     > You not only define global `TODO` keywords and fast access keys, but also request that a time is recorded when the entry is set to `'DONE'`, and that a note is recorded when switching to `'WAIT'` or `'CANCELED'.` The setting for `'WAIT'` is even more special: the `'!'` after the slash means that in addition to the note taken when entering the state, a timestamp should be recorded when *leaving* the `'WAIT'` state, if and only if the *target* state does not configure logging for entering it. So it has no effect when switching from `'WAIT'` to `'DONE'`, because `'DONE'` is configured to record a timestamp only. But when switching from `'WAIT'` back to `'TODO'`, the `'/!'` in the `'WAIT'` setting now triggers a timestamp even though `'TODO'` has no logging configured.
 
 
-<a id="orge4f45c9"></a>
+<a id="org3704dbf"></a>
 
 ### Priorities
 
@@ -829,7 +829,7 @@ Priorities are ordered from A to C. A is the highest and B is the default if non
 -   `S-UP/DOWN`, Increase/decrease the priority of the current headline.
 
 
-<a id="orgfa07cc7"></a>
+<a id="org29e0bf0"></a>
 
 ### Breaking tasks down into subtasks
 
@@ -856,7 +856,7 @@ After `C-c C-c`, it will become:
 ```
 
 
-<a id="orga78a755"></a>
+<a id="org23a43f1"></a>
 
 ### Checkboxes
 
@@ -886,14 +886,14 @@ User commands are:
 -   **`M-S-RET`:** Insert a new item with a checkbox when the point is already in a plain list item.
 
 
-<a id="orgf4c35ea"></a>
+<a id="org1318532"></a>
 
 ## Tags
 
 Tags are normal words containing letters, numbers, `-` and `@`. And they must be preceded by and followed by a single colon, e.g., `:work:`. Several tags can be specified, as in `:work:urgen:`.
 
 
-<a id="org7c7c7b2"></a>
+<a id="org111ebf1"></a>
 
 ### Tag inheritance
 
@@ -912,7 +912,7 @@ You can set tags inherited by all entries in a file:
 ```
 
 
-<a id="org870b4f5"></a>
+<a id="orgbc4baac"></a>
 
 ### Setting tags
 
@@ -940,7 +940,7 @@ Or locally set up in the file you are editing
     #+TAGS: @work(w) @home(h) @tennisclub(t) laptop(l) pc(p)
 
 
-<a id="org43c8b19"></a>
+<a id="org94df8a8"></a>
 
 ### Tag groups
 
@@ -957,7 +957,7 @@ When you search for a group tag, it returns matches for all members in the group
 If you want to ignore group tags temporarily, toggle group tags support with `org-toggle-tags-groups`, bound to `C-c C-x q`.
 
 
-<a id="orgc9cbad0"></a>
+<a id="org9cfce5e"></a>
 
 ### Tag searches
 
@@ -968,7 +968,7 @@ If you want to ignore group tags temporarily, toggle group tags support with `or
 These commands all prompt for a match string which allows basic `Boolean` logic like `+boss+urgent-project1`, to find entries with tags `boss` and `urgent`, but not `project1`; `Kathy|Sally` to find entries which are tagged like `Kathy` or `Sally`.
 
 
-<a id="org0a5aca8"></a>
+<a id="orgac74594"></a>
 
 ## Properties
 
@@ -1004,19 +1004,19 @@ Useful commands:
 -   **`C-c C-c d`:** Remove a property.
 
 
-<a id="org7a3aeeb"></a>
+<a id="orgca3d95d"></a>
 
 ## Dates and times
 
 
-<a id="org2bf9531"></a>
+<a id="org6fdca3d"></a>
 
 ### Timestamps
 
 Please check this [link](https://orgmode.org/manual/Timestamps.html).
 
 
-<a id="org6412634"></a>
+<a id="org786565f"></a>
 
 ### Creating timestamps
 
@@ -1030,7 +1030,7 @@ Useful commands:
 When Org mode prompts for a date/time, it accepts any string containing some date and/or time information, and intelligently interprets the string, deriving defaults for unspecified information from the current date and time. You can also select a date in the pop-up calendar.
 
 
-<a id="org3e5f9d5"></a>
+<a id="org3bddae4"></a>
 
 ### Deadlines and Scheduling
 
@@ -1054,7 +1054,7 @@ Repeaters can also be used in "DEADLINE" and "SCHEDULED", as in "timestamp". Exa
 It means the task repeats every one month (`1m`) from that time.
 
 
-<a id="orge58c52c"></a>
+<a id="orgdc0ac94"></a>
 
 ### Clocking work time
 
@@ -1067,12 +1067,12 @@ To clock the time you spend on the tasks in a project.
 -   **`C-c C-x j`:** Jump to the headline of the currently clocked in task. With a `C-u` prefix argument, select the target task from a list of recently clocked tasks. This functionality is bound to `C-c o j` (purcell emacs).
 
 
-<a id="orgb5789b6"></a>
+<a id="org736e790"></a>
 
 ## Capture, refile and archive
 
 
-<a id="org5d2957c"></a>
+<a id="orgd517542"></a>
 
 ### Capture
 
@@ -1151,12 +1151,12 @@ To clock the time you spend on the tasks in a project.
         #+ARCHIVE: %s_done::
 
 
-<a id="org281819d"></a>
+<a id="orgb803f80"></a>
 
 ## Agenda Views
 
 
-<a id="orgac39341"></a>
+<a id="orgf595b05"></a>
 
 ### Agenda files
 
@@ -1167,7 +1167,7 @@ The information to be shown is normally collected from all agenda files, the fil
 -   **`C-'` and `C-,`:** Cycle through agenda file list, visting one file after the other.
 
 
-<a id="orgf3f5f88"></a>
+<a id="org3c7266b"></a>
 
 ### The agenda dispatcher
 
@@ -1179,7 +1179,7 @@ The views are created through a dispatcher, accessible with `M-x org-agenda`, or
 -   **s:** Create a list of entries selected by a boolean expression of keywords and/or regular expressions that must or must not occur in the entry.
 
 
-<a id="orgd673150"></a>
+<a id="org88e8a79"></a>
 
 ### The weekly/daily agenda
 
@@ -1205,7 +1205,7 @@ Org mode understands the syntax of the diary and allows you to use diary express
 Or can interact with Emacs appointments notification facility. To add the appointments of your agenda files, use the command `org-agenda-to-appt`.
 
 
-<a id="org5f8fa50"></a>
+<a id="orge8250a2"></a>
 
 ### The global TODO list
 
@@ -1215,7 +1215,7 @@ Useful keybinds:
 -   **`M-x org-agenda T`:** Like the above, but allows selection of a specific TODO keyword.
 
 
-<a id="org215022c"></a>
+<a id="org5bb0912"></a>
 
 ### Matching tags and properties
 
@@ -1231,7 +1231,7 @@ A search string can use Boolean operators `&` for AND and `|` for OR. `&` binds 
 -   **`work|laptop+night`:** Like before, but require `laptop` lines to be tagged also `night`.
 
 
-<a id="org4ac0470"></a>
+<a id="org2cb988b"></a>
 
 ### Search view
 
@@ -1242,7 +1242,7 @@ Search view can also search for specific keywords in the entry, using boolean lo
 not that in addition to the agenda file, this command also searches the files listed in `org-agenda-text-search-extra-files`.
 
 
-<a id="orgd4a1887"></a>
+<a id="org9e20726"></a>
 
 ### Commands in the agenda buffer.
 
@@ -1312,47 +1312,47 @@ not that in addition to the agenda file, this command also searches the files li
     -   **`v`:** The same search, but limiting it to headlines that are also TODO items.
 
 
-<a id="org2822b8a"></a>
+<a id="org333db7e"></a>
 
 ## Code blocks
 
 [CodeBlocks](https://orgmode.org/manual/Structure-of-Code-Blocks.html),
 
 
-<a id="orgb1f7145"></a>
+<a id="orgfef999b"></a>
 
 ### Inline
 
 you can also use ~~ and == for inline codes.
 
 
-<a id="orgbedbc96"></a>
+<a id="orgfc3661c"></a>
 
 ### Structure templates
 
 [StructureTemplates](https://orgmode.org/manual/Structure-Templates.html#Structure-Templates) `C-c C-,`
 
 
-<a id="org2f3212b"></a>
+<a id="org5d7354f"></a>
 
 ### Evaluating code blocks
 
 [link](https://orgmode.org/manual/Evaluating-Code-Blocks.html)
 
 
-<a id="org6a6936c"></a>
+<a id="orgb62ce08"></a>
 
 ## Export
 
 
-<a id="org3b5f700"></a>
+<a id="org2b8ebef"></a>
 
 ### Commands
 
 `C-c C-e` and then other options.
 
 
-<a id="orga7c0cb5"></a>
+<a id="org942f09a"></a>
 
 ### Code blocks
 
@@ -1362,7 +1362,7 @@ you can also use ~~ and == for inline codes.
 -   Use `#+begin_src <language>[<header arguments>]{<body>} #+end_src` and `[header arguments]` is optional. To insert these, use `C-c, C-,`.
 
 
-<a id="org305b79d"></a>
+<a id="org249f27d"></a>
 
 ### Latex
 
@@ -1407,7 +1407,7 @@ either $$ a=+\sqrt{2} $$ or \[ a=-\sqrt{2} \].
         ```
 
 
-<a id="org0f0313a"></a>
+<a id="orgab34991"></a>
 
 ### Publish a project of HTML
 
@@ -1459,7 +1459,7 @@ and
 and
 
 ```elisp
-("org" :components ("org-notes" "org-static")):components
+("org" :components ("org-notes" "org-static"))
 ```
 
 This components will do
@@ -1471,43 +1471,43 @@ This components will do
 There are also other setups. Please refer to the [tutorial](https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html).
 
 
-<a id="orgb658ec4"></a>
+<a id="org5808f5a"></a>
 
 ## Paragraphs
 
 Paragraphs are separated by at least one empty line. Regarding formats: VERSE, QUOTE and CENTER, details can be found in [Paragraphs](https://orgmode.org/guide/Paragraphs.html#Paragraphs).
 
 
-<a id="org60cf017"></a>
+<a id="org1a7842d"></a>
 
 # Compilation
 
 
-<a id="orgc634491"></a>
+<a id="orgcc6f2e2"></a>
 
 ## C++
 
 
-<a id="org418fcb8"></a>
+<a id="org62228fc"></a>
 
 ### Simplest codes
 
 `M-x compile` and then clean commands, type in `g++ hello_world.cpp`.
 
 
-<a id="org46b6db3"></a>
+<a id="org1c0b6a2"></a>
 
 ### Makefile exists
 
 `M-x compile` and then `make`.
 
 
-<a id="org6a9dde9"></a>
+<a id="orgee56e9a"></a>
 
 # TRAMP
 
 
-<a id="orgb98700c"></a>
+<a id="org95a6048"></a>
 
 ## cleanup
 
@@ -1519,26 +1519,26 @@ Paragraphs are separated by at least one empty line. Regarding formats: VERSE, Q
 -   `tramp-cleanup-all-buffers`
 
 
-<a id="org5481e01"></a>
+<a id="org2130c1f"></a>
 
 # Miscellaneous
 
 
-<a id="org66d9bd3"></a>
+<a id="org23e94d1"></a>
 
 ## Font Lock mode
 
 Please check this [wiki](https://www.emacswiki.org/emacs/FontLockMode) link. In a nutshell, it is a minor mode helping highlight the file according to the programming syntaxes.
 
 
-<a id="org727c344"></a>
+<a id="orgd6feec4"></a>
 
 ## Insert the current date to the current buffer
 
 `C-u M-! date`. See more in the [link](https://www.emacswiki.org/emacs/InsertingTodaysDate) and [link](https://stackoverflow.com/questions/251908/how-can-i-insert-current-date-and-time-into-a-file-using-emacs).
 
 
-<a id="org09eb55f"></a>
+<a id="orgb46cc8c"></a>
 
 ## Define a new keybinidng
 
@@ -1557,19 +1557,19 @@ I read this [link](https://stackoverflow.com/questions/906368/what-is-the-differ
     ```
 
 
-<a id="org9716c60"></a>
+<a id="org5bbc1c1"></a>
 
 ## Desktop
 
 
-<a id="org981da7b"></a>
+<a id="org835b288"></a>
 
 ### bookmark
 
 'desktop-path' is searched to find a desktop file to load. if you use Bookmark+, then you have any number of desktops and use them as bookmarks, jumping from one to another at anytime. You create a desktop bookmark using `C-x r K` (command 'bmkp-set-desktop-bookmark')
 
 
-<a id="org87b5d95"></a>
+<a id="orgc7b3e28"></a>
 
 ## Rescure a frozen emacs
 
