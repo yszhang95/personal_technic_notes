@@ -1,0 +1,263 @@
+#+TITLE: Tips for HEP softwares
+* HepMC3
+** Basic concepts
+   <<hepmc3-basic-concepts>>
+   A record is classified into
+   - general information which are common for a run of events
+   - event-specific information
+     - particles
+     - vertices
+     - (optional) attributes
+
+   Particles act as graph edges (also called links or lines). They
+   connects "production vertex" and "end vertex". Exceptions are:
+   - final state particles which have no end vertex with the incoming
+     beam particles which are assigned to a unique "root vertex"
+     without incoming particles
+   - "root vertex" does not have incoming particles.
+
+   There are also several rules one need to keep in mind. I copy them
+   from the [[https://doi.org/10.1016/j.cpc.2020.107310][paper]]:
+   #+begin_quote
+   - All particles and vertices in the event should be connected with
+     each other, e.g. the event should not contain dangling particles
+     or vertices
+   - Cyclic relations, where a particle can be its own ancestor,
+     should be avoided.
+   - All vertices should have at least one outgoing particle.
+   - All vertices but root vertex should have at least one incoming
+     particle.
+   - Vertices should have a meaningful or zero status code:
+     - Particles with no end vertex should be assigned status 1
+     - The incoming particles should be assigned status 4.
+   - The number of weights in the event should match the number of the
+     names for weights in the run information.
+   #+end_quote
+
+   The event specific information consists of particles and
+   vertices. Particles and vertices are collectively referred as
+   "object". Each object will be associated with an ID, called object
+   ID (OID). The event itself is labelled as 0 (OID is 0). The OID
+   should be uniquely determined.
+   - OID for particles are positive. The [[https://doi.org/10.1016/j.cpc.2020.107310][paper]] says "the OIDs should
+     be deducible from the event topology, i.e. the particles are
+     sorted according to the event topology and their indices
+     correspond to their position in the sorted list". I have no clear
+     idea what the "topology" means in an exact way. And I am not sure
+     about "indices". I have the following understandings:
+     - One can draw a diagram to show the flow of particles:
+       #+begin_example
+       e+ (1)               mu+(4)
+        \     gamma(3)     /
+       (-1) ~~~~~~~~~~~~~(-3)
+        /                  \
+       e- (2)               mu-(5)
+       #+end_example
+       The 1-5 on each particles are "indices". These "indices" should
+       be used as OID for particles. The negative numbers are
+       associated with vertices but let us discuss them later.
+   - OID for vertices are negative. The [[https://doi.org/10.1016/j.cpc.2020.107310][paper]] says "the indices of
+     vertices correspond to the minimal index of their incoming
+     particles taken with minus sign, and are negative." From my
+     understanding, the vertices are -1 and -3 for the above
+     diagram. One has to remember, "root vertex" cannot find such a
+     correspondence. The root vertex has no index and all its
+     properties are stored in the event.
+
+   Besides particles and vertices, one can supplement more information
+   to the event, via attributes. For example, one can set the value of
+   alpha QED is some number by assigning the attribute with the
+   correct OID, i.e., 0 in this case since alpha is an event-level
+   value.
+
+   In practice, one can understand the attributes better if he explore
+   the interfaces. One can use =GenEvent::attributes=. It looks like:
+   : std::map< std::string, std::map<int, std::shared_ptr<Attribute> > > attributes() const
+   So the outer map take the name of the attributes as the key. The
+   corresponding value is another map, taking the OID as the key and
+   smarter pointer to =Attribute= as the value. This ensure that each
+   attribute is attached to proper object.
+
+   To verify these thoughts, I created a test =Asciiv3= file (the
+   4-momenta and positions of vertices are unphysical because I always
+   put zero):
+   #+begin_example
+   HepMC::Version 3.0.0
+   HepMC::Asciiv3-START_EVENT_LISTING
+   W 0
+   E 0 2 5
+   U GEV MM
+   A 0 alphaQED 0.007818181
+   A 1 charge 1
+   A 2 charge -1
+   A 3 charge 0
+   A 4 charge 1
+   A 5 charge -1
+   A 1 type incoming
+   A 2 type incoming
+   A 3 type propagator
+   A 4 type outgoing
+   A 5 type outgoing
+   P 1 0 -11 0 0 0 0 0.000511 4
+   P 2 0 11 1 0 0 1 0.000511 4
+   P 3 -1 22 1 0 0 -1 0. 2
+   P 4 -3 -13 1 0 0 1 0.106 1
+   P 5 -3 13 1 0 0 -1 0.106 1
+   V -1 0 [1,2]
+   V -3 0 [3]
+   HepMC::Asciiv3-END_EVENT_LISTING
+   #+end_example
+** How to write input and read the output
+*** How to write an =Asciiv3= input
+    One example starting from beam particles is given in
+    sec. [[hepmc3-basic-concepts]]. I copy the descriptions in the
+    [[https://doi.org/10.1016/j.cpc.2020.107310][paper]]. (Perhaps) I have corrected for typos here. Please refer to
+    discussions in [[hepmc3-discussions]].
+
+    Every input file need to start from header lines
+    : HepMC::Version X.Y.Z
+    : HepMC::Asciiv3-START_EVENT_LISTING
+    and ends with the footer line
+    : HepMC::Asciiv3-END_EVENT_LISTING
+    Following the header lines, one need to give general run
+    information, which tagged by =W=, =N=, =T=.
+    - W ::
+      : W number_of_weights
+    - N ::
+      : N name_of_weight_1 name_of_weight_2 ...
+    - T ::
+      : name_of_tool_1 version_of_tool_1 description_of_tool_1
+    Tags =T= can occur multiple times.
+
+    After the run information, "each event starts from line with =E= and
+    ends with the next line with leading =E= or footer line.", quoted
+    from the [[https://doi.org/10.1016/j.cpc.2020.107310][paper]]. For each event, following lines can be added
+    - E :: required
+      : E event_number num_of_vtxs num_of_particles
+      or
+      : E event_number num_of_vtxs num_of_particles @ x y z t
+    - W ::
+      : W value_of_weight_1 value_of_weight_2 ...
+    - U ::
+      : U momentum_unit length_unit
+    - A ::
+      : A object_OID attribute_name string_1 string_2 ...
+    - P ::
+      : P particle_OID parent_vertex_OID PDG_ID px py pz E particle_mass status
+      or in case that there is only one parent (incoming) particle
+      : P particle_OID parent_particle_OID PDG_ID px py pz E particle_mass status
+    - V ::
+      : V vertex_OID status comma_sepearted_list_of_incoming_OIDs @ x y z t
+      or in case that all components of positions are 0
+      : V vertex_OID status comma_sepearted_list_of_incoming_OIDs
+    And I quote from the paper
+    #+begin_quote
+    The tags E, W, U should appear only once per event. Multiple A, P,
+    V, T tags per event are allowed. Note that vertex with no position
+    and zero status will not appear in the listing explicitly.
+    #+end_quote
+
+    With the above knowledge, I test a bit. I am confused by the
+    following behavior:
+    - if you make use of
+      : P particle_OID parent_vertex_OID PDG_ID px py pz E particle_mass status
+      you need to explicitly write out the vertex information
+    - if you make use of
+      : P particle_OID parent_particle_OID PDG_ID px py pz E particle_mass status
+      you cannot write the vertex explicitly because a vertex will be
+      automatically attached to the event and it will be counted.
+
+    I give two examples which should be quivalent (I put the parent
+    particle with status 2 rather than 4. You could choose which one
+    you want. I like the status 2.)
+    This one make use of particle OID:
+    #+begin_example
+    HepMC::Version 3.02.04
+    HepMC::Asciiv3-START_EVENT_LISTING
+    W 0
+    E 0 1 3
+    U GEV MM
+    P 1 0 410 0 0 0 0 1.865 2
+    P 2 1 321 0 0 0 0 0.494 1
+    P 3 1 -211 0 0 0 0 0.140 1
+    HepMC::Asciiv3-END_EVENT_LISTING
+    #+end_example
+    This one make use of vertex OID:
+    #+begin_example
+    HepMC::Version 3.02.04
+    HepMC::Asciiv3-START_EVENT_LISTING
+    W 0
+    E 0 1 3
+    U GEV MM
+    P 1 0 410 0 0 0 0 1.865 2
+    P 2 -1 321 0 0 0 0 0.494 1
+    P 3 -1 -211 0 0 0 0 0.140 1
+    V -1 0 [1] @ 0 0 0 0
+    HepMC::Asciiv3-END_EVENT_LISTING
+    #+end_example
+
+    Note that in the former one, you cannot set position information
+    for the vertex.
+
+    I do not know what is the correct vertex OID for incoming
+    particles. I set it as 0 now. Feel free to teach me about the
+    proper way to set it.
+
+** References and discussions
+*** References
+    <<hepmc3-references>>
+    It is helpful to read the
+    [[https://doi.org/10.1016/j.cpc.2020.107310]]. A [[https://arxiv.org/pdf/1912.08005.pdf][preprint]] version is
+    also available.
+
+    A few [[https://indico.cern.ch/event/708041/contributions/3266767/attachments/1810831/2957332/AndriiVerbytskyi-ACAT2019.pdf][slides]], and [[https://indico.in2p3.fr/event/24502/contributions/96733/attachments/65291/90825/HepMC-MCEGs-QCD.pdf][slides]](new version), are also helpful to
+    illustrate examples.
+
+    The user guide for [[https://hepmc.web.cern.ch/hepmc/releases/HepMC2_user_manual.pdf][HepMC2]] is also recommended.
+
+*** Discussions
+    <<hepmc3-discussions>>
+    I actually find some typos(? maybe) in the =HepMC3= paper, at least
+    in the =Asciiv3= part. I figure out how the software works via the
+    examples in slides and descriptions in =HepMC2= user-guide, together
+    with reading source code of =HepMC3=. It is a pain.
+
+    The [[https://doi.org/10.1016/j.cpc.2020.107310][paper]] and [[https://indico.in2p3.fr/event/24502/contributions/96733/attachments/65291/90825/HepMC-MCEGs-QCD.pdf][slides]] say the =Asciiv3= should start and end with
+    : HepMC::Version X.Y.Z
+    : HepMC::Ascii3-START_EVENT_LISTING
+    : HepMC::Ascii3-END_EVENT_LISTING
+    However, one need to replace =Ascii3= with =Asciiv3=.
+    : HepMC::Version 3.0.0
+    : HepMC::Asciiv3-START_EVENT_LISTING
+    : HepMC::Asciiv3-END_EVENT_LISTING
+
+    The [[https://doi.org/10.1016/j.cpc.2020.107310][paper]] also says the tag =E= is followed by number of particles
+    and number of vertices. However, this does not work. After
+    exploring [[https://indico.in2p3.fr/event/24502/contributions/96733/attachments/65291/90825/HepMC-MCEGs-QCD.pdf][slides]], I found one need to put three numbers after tag
+    =E=. I explored the function =ReaderAscii::parse_event_information= in
+    the source code. I guess one need to give
+    - event number
+    - number of events
+    - number of particles
+    in order, which is different from
+    - number of particles
+    - number of events
+    in the descriptions from [[https://doi.org/10.1016/j.cpc.2020.107310][paper]].
+
+    You can also add position offset for the tag E, from the source code
+    : E event_number num_of_vtxs num_of_particles @ x y z t
+
+    The [[https://doi.org/10.1016/j.cpc.2020.107310][paper]] also denote the energy with =e= and says it explicitly in
+    the main context. I mis-interpreted it as charge at the begining.
+
+    Regarding the descriptions of vertex tag, it is also not very
+    accurate and accessible. The paper says one need to supply with
+    : (comma-separated list of incoming OIDs)
+    After checking the function =ReaderAscii::parse_vertex_information=,
+    I find that the format of the list is like:
+    : [1,2]
+    One needs to enclose the list with =[]=. You may add whitespaces
+    between comma and numbers. But I do not know if this is a good
+    idea. The =HepMC3= team make use of =atoi= function at the moment
+    [2022-02-25 Fri]. If you know what =atoi= does, do things you are
+    confident.
