@@ -1,39 +1,62 @@
 #+TITLE: RooFit tips
-* Version
+
+* TOC
+:PROPERTIES:
+:TOC:      :include all :ignore this :depth 1
+:END:
+
+:CONTENTS:
+- [[#miscellaneous][Miscellaneous]]
+  - [[#plot-pdf-with-expected-yields][Plot PDF with expected yields]]
+  - [[#plot-filled-area-in-roofit][Plot filled area in RooFit]]
+  - [[#merge-datasets-row-wise][Merge datasets row-wise]]
+  - [[#message-services-with-roomsgservice][Message services with RooMsgService]]
+  - [[#options-for-plotting][Options for plotting]]
+  - [[#generate-binned-data-from-unbinned-one][Generate binned data from unbinned one]]
+  - [[#template-fit-in-roofit][Template fit in RooFit]]
+  - [[#a-few-words-for-roodatahist][A few words for RooDataHist]]
+:END:
+
+* Nothing interesting
+:PROPERTIES:
+:TOC:     :ignore this
+:END:
+
+** Version
   ROOT v6.24
-* Roo1DTable                                                                    :DONE:
+** Roo1DTable                                                                   :DONE:
   It implements a one-dimensional table.  A table is the category
   equivalent of a plot. To create a table use the ~RooDataSet::table~
   method.
-* RooAbsAnaConvPdf                                                              :WAITING:
+** RooAbsAnaConvPdf                                                             :WAITING:
   It is the base class for PDFs that represent a physics model that
   can be analytically convolved with a resolution model.
-* RooAbsArg                                                                     :WAITING:
+** RooAbsArg                                                                    :WAITING:
   RooAbsArg is the common abstract base class for objects that
   represent a value and a "shape" in RooFit.
 
   Therefore, RooAbsArg provides functionality to connect objects of
   type RooAbsArg into a computation graph to pass values between those
   objects.
-* RooAbsBinning                                                                 :DONE:
+** RooAbsBinning                                                                :DONE:
   ~RooAbsBinning~ is the abstract base class for ~RooRealVar~ binning
   definitions.
 
   The class defines the interface to retrieve bin boundaries, ranges
   etc.
-* RooAbsCache                                                                   :WAITING:
-* RooAbsCachedPdf                                                               :WAITING:
+** RooAbsCache                                                                  :WAITING:
+** RooAbsCachedPdf                                                              :WAITING:
   It is the abstract class for p.d.f.s that need or want to cache
   their ~evaluate~ output in a ~RooHistPdf~ defined in terms of the used
   observables.
-* RooAbsCachedReal                                                              :WAITING:
+** RooAbsCachedReal                                                             :WAITING:
   It is the abstract base class for functions that need or want to
   cache their ~evaluate~ output in a ~RoohistFunc~ defined in terms of the
   used observables.
-* RooAbsCacheElement                                                            :WAITING:
+** RooAbsCacheElement                                                           :WAITING:
   It is the abstract base class for objects to be stored in
   ~RooAbsCache~ cache manager objects.
-* RooAbsCategory                                                                :WAITING:
+** RooAbsCategory                                                               :WAITING:
   It is the base class for objects that represent a discrete value
   with a finite number of states.
 
@@ -42,80 +65,80 @@
   efficient. Conversion between index and name can be done using
   ~lookupName~ or ~lookupIndex~. It is possible to iterate through all
   defined states using ~begin~ and ~end~.
-* RooAbsCategoryLValue                                                          :WAITING:
+** RooAbsCategoryLValue                                                         :WAITING:
   It is the common abstract base class for objects that represent a
   discrete value that can be set from the outside, i.e. that may
   appear on the left hand side of an assignment (lvalue).
-* RooAbsCollection                                                              :WAITING:
+** RooAbsCollection                                                             :WAITING:
   It is an abstract object that can hold multiple ~RooAbsArg~.
-* RooAbsData                                                                    :TOREAD:
+** RooAbsData                                                                   :TOREAD:
 It is the is the common abstract base class for binned and unbinned
 datasets.
-** Global observables                                                           :WAITING:
-** Create histograms from RooAbsData
+*** Global observables                                                          :WAITING:
+*** Create histograms from RooAbsData
    Make use of ~createHistogram()~.
-** Fill a histogram
+*** Fill a histogram
    Make use of ~fillHistogram()~.
-** Make plots
+*** Make plots
    Make use of ~plotOn()~. Several arguments can be specified. Please
    check the [[https://root.cern.ch/doc/master/classRooAbsData.html#a00a476834b0f2d246f85da34a915fcd9][link]].
-** Statistic analysis
+*** Statistic analysis
    Make use of ~mean()~, ~sigma()~, ~skewness()~, ~moment()~,
    ~correlationMatrix()~, ~correlation()~, ~covarianceMatrix()~, ~covariance()~,
    ~corrcov()~, and ~corrcovMatrix()~.
-** Apply cuts and create a subset
+*** Apply cuts and create a subset
    Make use of ~reduce()~.
-** Add a row
+*** Add a row
    Make use of ~add()~.
-** Storage
+*** Storage
    - vector storage :: make use of ~convertToVectorStore()~.
    - tree storage :: make use of ~convertToTreeStore()~.
-* RooAbsDataStore                                                               :WAITING:
+** RooAbsDataStore                                                              :WAITING:
   It is the abstract base class for data collection that use a ~TTree~
   as internal storage mechanism.
-* RooAbsFunc                                                                    :WAITING:
+** RooAbsFunc                                                                   :WAITING:
   Abstract interface for evaluating a real-valued function of one real
   variable and performing numerical algorithms on it.
-* RooAbsGenContext                                                              :WAITING:
+** RooAbsGenContext                                                             :WAITING:
   Related to generator contexts.
-* RooAbsHiddenReal                                                              :WAITING:
+** RooAbsHiddenReal                                                             :WAITING:
   A base class for objects that want to hide their return value from
   interactive use, e.g. for implementations of parameter unblinding
   functions.
-* RooAbsIntegrator                                                              :WAITING:
+** RooAbsIntegrator                                                             :WAITING:
   the abstract interface for integrators of real-valued functions that
   implement the RooAbsFunc interface.
-* RooAbsLValue                                                                  :WAITING:
+** RooAbsLValue                                                                 :WAITING:
   Abstract base class for objects that are lvalues, i.e. objects
   whose value can be modified directly. This class implements abstract
   methods for binned fits that return the number of fit bins and
   change the value of the object to the central value of a given fit
   bin, regardless of the type of value.
-* RooAbsMCStudyModule                                                           :WAITING:
+** RooAbsMCStudyModule                                                          :WAITING:
   RooAbsMCStudyModule is a base class for add-on modules to ~RooMCStudy~
   that can perform additional calculations on each generate+fit cycle
   managed by ~RooMCStudy~.
-* RooAbsMoment                                                                  :WAITING:
+** RooAbsMoment                                                                 :WAITING:
   ~RooAbsMoment~ represents the first, second, or third order derivative
   of any ~RooAbsReal~ as calculated (numerically) by the ~MathCore~
   Richardson derivator class.
-* RooAbsNumGenerator                                                            :WAITING:
+** RooAbsNumGenerator                                                           :WAITING:
   Class ~RooAbsNumGenerator~ is the abstract base class for MC event
   generator implementations like ~RooAcceptReject~ and ~RooFoam~.
-* RooAbsOptTestStatistic                                                        :WAITING:
+** RooAbsOptTestStatistic                                                       :WAITING:
   ~RooAbsOptTestStatistic~ is the abstract base class for test
   statistics objects that evaluate a function or PDF at each point of
   a given dataset.
-* RooAbsPdf                                                                     :TOREAD:
+** RooAbsPdf                                                                    :TOREAD:
   ~RooAbsPdf~ is the abstract interface for all probability density
   functions. The class provides hybrid analytical/numerical
   normalization for its implementations, error tracing and a MC
   generator interface.
-**  A Minimal PDF Implementation
+***  A Minimal PDF Implementation
    A minimal implementation of a PDF class derived from ~RooAbsPdf~
    should override the ~evaluate()~ function. This function should
    return the PDF's value (which does not need to be normalized).
-*** Normalization/Integration
+**** Normalization/Integration
     Although the normalization of a PDF is an integral part of a
     probability density function, normalization is treated separately
     in RooAbsPdf. The reason is that a ~RooAbsPdf~ object is more than a
@@ -155,7 +178,7 @@ datasets.
     ill-defined, e.g. in case the proxy holds a function, and will
     trigger an assert. Integrated category dependents should always be
     summed over all of their states.
-*** Direct generation of observables
+**** Direct generation of observables
     Distributions for any PDF can be generated with the accept/reject
     method, but for certain PDFs, more efficient methods may be
     implemented. To implement direct generation of one or more
@@ -173,7 +196,7 @@ datasets.
     be a dependent via the generation code. Doing so may be
     ill-defined, e.g. in case the proxy holds a function, and will
     trigger an assert.
-*** Batched function evaluations
+**** Batched function evaluations
     To speed up computations with large numbers of data events in
     unbinned fits, it is beneficial to override ~evaluateSpan()~. Like
     this, large spans of computations can be done, without having to
@@ -182,40 +205,43 @@ datasets.
     implementation that is capable of SIMD computations. If
     ~evaluateSpan~ is not implemented, the classic and slower ~evaluate()~
     will be called for each data event.
-* RooAbsProxy                                                                   :WAITING:
+** RooAbsProxy                                                                  :WAITING:
   ~RooAbsProxy~ is the abstact interface for proxy classes.
 
   Proxy classes hold pointers to other Roofit objects and process
   serverRedirect changes so that the proxied pointers are updated
   accordingly on a clone or copy of of the owning class.
-* RoxoAbsReal                                                                   :TOREAD:
+** RoxoAbsReal                                                                  :TOREAD:
   ~RooAbsReal~ is the common abstract base class for objects that
   represent a real value and implements functionality common to all
   real-valued objects such as the ability to plot them, to construct
   integrals of them, the ability to advertise (partial) analytical
   integrals etc.
-* RooAbsRealLValue                                                              :WAITING:
+** RooAbsRealLValue                                                             :WAITING:
   ~RooAbsRealLValue~ is the common abstract base class for objects that
   represent a real value that may appear on the left hand side of an
   equation (~lvalue~).
-* RooAbsRootFinder                                                              :WAITING:
+** RooAbsRootFinder                                                             :WAITING:
   ~RooAbsRootFinder~ is the abstract interface for finding roots of
   real-valued 1-dimensional function that implements the ~RooAbsFunc~
   interface.
-* RooAbsSelfCachedPdf                                                           :WAITING:
+** RooAbsSelfCachedPdf                                                          :WAITING:
   ~RooAbsSelfCachedPdf~ is an abstract base class for probability
   density functions whose output is cached in terms of a histogram in
   all observables between ~getVal()~ and ~evaluate()~.
-* RooAbsSelfCachedReal                                                          :WAITING:
+** RooAbsSelfCachedReal                                                         :WAITING:
   ~RooAbsSelfCachedReal~ is an abstract base class for functions whose
   output is cached in terms of a histogram in all observables between
   ~getVal()~ and ~evaluate()~.
-* RooAbsStudy                                                                   :WAITING:
+** RooAbsStudy                                                                  :WAITING:
   ~RooAbsStudy~ is an abstract base class for ~RooStudyManager~ modules.
-* RooAbsTestStatistic                                                           :WAITING:
+** RooAbsTestStatistic                                                          :WAITING:
   ~RooAbsTestStatistic~ is the abstract base class for all test
   statistics.
 * Miscellaneous
+:PROPERTIES:
+:TOC:      :include descendants :depth 1 :force (depth) :ignore (nothing) :local (nothing)
+:END:
 ** Plot PDF with expected yields                                                :NOTE:
    :PROPERTIES:
    :GROUP:    roofit
@@ -318,3 +344,73 @@ datasets.
    I usually use =createHistogram= to produce 1-D histogram. There are
    several implementations. Try the one you want. After having the
    histogram object, I create a correspond =RooDataHist=.
+** Template fit in RooFit                                                       :NOTE:
+:PROPERTIES:
+:GROUP:    roofit
+:END:
+
+As said in the [[https://root.cern.ch/doc/master/classRooHistPdf.html][documentation]]
+: The histogram distribution is explicitly normalized by RooHistPdf and can have an arbitrary number of real or discrete dimensions.
+
+I checked the source code in version 6.26/10. The =RooHistPdf= relies on
+the its link to =RooDataHist=. The =evaluate= method calculate the value
+as suggested in documentation:
+: Return the current value: The value of the bin enclosing the current coordinates of the observables, normalized by the histograms contents.
+In practice, it makes use of =RooDataHist::weightFast=. See [[https://root.cern.ch/doc/v626/RooHistPdf_8cxx_source.html#l00220][here]]. The
+=_unitNorm= flag seems always false.
+
+If you want to use =RooHistPdf=, you must ensure the lifetime of the
+input =RooDataSet= linked with =RooHistPdf=. And you also needs to give a
+template histogram *without* normalizing it by bin widths.
+*** How to create binned dataset?
+I have no idea. It seems that creating a dataset from a =TH1= pointer in
+constructor will not correct for the bin width by default. See [[https://root.cern.ch/doc/v626/RooDataHist_8cxx_source.html#l00233][here]].
+The choice of choose desnsity or counts can be found in =Import=
+option. See [[https://root.cern.ch/doc/v626/classRooDataHist.html#a8ea006b2e17e480f6b7ff52b69b04587][here]]. I do not understand their descriptions. I made
+several tests:
+- Given the histogram with the variable bin size, I do not normalize
+  it. And then I tried different method of initializing the dataset:
+  - =TH1= pointer: I got the same results using =h->GetBinContent(1)= and
+    =dh.weight(0)=.
+  - =Import(h, kFALSE=): I got the same results using =h->GetBinContent(1)= and
+    =dh.weight(0)=.
+  - =Import(h, kTRUE)=: I get the same results using
+    =h->GetBinContent(1)*h->GetBinWidth(1)= and =dh.weight(0)=.
+  My conclusion is that
+  - The correction is done by multiplying the bin content with the bin
+    width. This is natural since the dataset should contain
+    counts. Note, here it is operation =*=, while in the =weightFast=, the
+    =weight= will be divided by bin width if the correction is enabled.
+  - Passing =false= to =Import= will yield the same result of histogram
+    itself.
+- Given the histogram with and without normalization, I tried to plot
+  the distributions and generate =RooDataHist=. The histogram with
+  =normalization= cannot be drawn properly if =Import(h, kFALSE)= is
+  given.
+
+I can convert the dataset to density by hand. But I do not see
+significantly differences in the template fit.
+
+I will go with *histogram without normalization* in the template fit
+because the plotting is correct only for histograms without
+normalizations.
+
+I also do not know how =RooFit= make the plot. It seems that =RooFit=
+always plot the density of data.
+** A few words for =RooDataHist=
+*** Be clear if you will pass normalize the histogram in
+I must be careful about the normalization of histograms with uneven
+binning.
+
+It is a class holding the "data". I guess the concept drive the design
+of this class that it holds the "counts" in =weight= for each bin.
+
+To be consistent with the concept (I may be wrong), I need to do
+- Pass the histogram without normalization (=h->Scale(1, "width"=) using
+  pointer or =Import(h, kFALSE)=.
+- Pass the histogram with normalization using =Import(h, kTRUE)=.
+
+See also the discussion in this [[https://root-forum.cern.ch/t/fitting-and-plotting-variable-bins-histogram-in-roofit/38375][link]]. He made a few examples. I have
+not gone through them. I will do it later.
+*** Normalization and plotting.
+In =RooFit=, =RooDataHist::plotOn= will plot the density of data.
