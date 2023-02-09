@@ -407,7 +407,7 @@ of this class that it holds the "counts" in =weight= for each bin.
 
 To be consistent with the concept (I may be wrong), I need to do
 - Pass the histogram without normalization (=h->Scale(1, "width"=) using
-  pointer or =Import(h, kFALSE)=.
+  pointer or ~Import(h, kFALSE)~.
 - Pass the histogram with normalization using =Import(h, kTRUE)=.
 
 See also the discussion in this [[https://root-forum.cern.ch/t/fitting-and-plotting-variable-bins-histogram-in-roofit/38375][link]]. He made a few examples. I have
