@@ -398,7 +398,7 @@ normalizations.
 I also do not know how =RooFit= make the plot. It seems that =RooFit=
 always plot the density of data.
 ** A few words for =RooDataHist=
-*** Be clear if you will pass normalize the histogram in
+*** Be clear if you will pass the normalized histogram in
 I must be careful about the normalization of histograms with uneven
 binning.
 
