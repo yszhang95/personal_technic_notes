@@ -1,18 +1,21 @@
+* Knowledge from Developer user-guide
 All of the following are based on
 [[rmail:http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/ForApplicationDeveloper/fo/BookForApplicationDevelopers.pdf][Geant4.10.6BookForApplicationDevelopers]].
-Sections follow the same order in the userguide.
+Sections follow the same order in the user guide.
 
-* Installation
-** Instructions from official website
+** Installation
+*** Instructions from official website
   You can begin installing Geant4 by downloading the [[https://cern.ch/geant4/support/download][code]] from the
   distribution page. Next, consult the Installation [[http://geant4-userdoc.web.cern.ch/geant4-userdoc/UsersGuides/InstallationGuide/html/][Guide]] for the
   instructions required to set up Geant4 in your computing
   environment.
-** What I did
+*** What I did
+**** MacOS
   On MacOS, I execute in terminal src_sh[:exports code]{sudo port install geant4}.
-* An example
-** A main() program
-*** Source code
+**** TODO Debian
+** An example
+*** A main() program
+**** Source code
  #+name: simplest-example-of-main
  #+begin_src c++
  #include "G4RunManager.hh"
@@ -50,7 +53,11 @@ Sections follow the same order in the userguide.
    return 0;
  }
  #+end_src
-*** G4RunManager
+**** G4RunManager
     It must be created. It controls the flow the program and manages the
     event loop(s) within a run. It cannot be used multi-threadedly. Use
     G4MTRunManager instead
+
+* Knowledge from summer school
+I checked Geant4 Course at [[https://agenda.infn.it/event/33233/][XX Seminar on Software for Nuclear,
+Sub-nuclear and Applied Physics]].
