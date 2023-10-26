@@ -106,6 +106,34 @@
    #+end_src
    And you need to do =M-x toggle-debug-on-quit= inside emacs.
 
+** SSH
+*** How to connect to VNC through tunneling
+**** Server
+I checked from [[https://twiki.cern.ch/twiki/bin/viewauth/Sandbox/JosephHaleySandbox][twiki]].
+
+Start a VNC instance on the server. A simple example on Debian
+bullseye is
+: apt install tightvncserver
+: vncserver -geometry 1920x1080 :1
+For the first time, it will ask you to create password. The
+configuration ~:1~ configures to =5901= the port number of the VNC
+application to listen.
+
+
+We may encounter some issues containing keywords =DBUS= when we connect
+to the server using VNC viewer. It is probably because of the improper
+setup of VNC startup. I use Mate Desktop. One way to configure Mate
+Desktop when VNC start up can be found in this [[https://forums.linuxmint.com/viewtopic.php?t=99225][thread]].
+
+**** Client
+Create a SSH tunnel using
+: ssh -L 5901:ip.address.you.want:5901 username@ssh.gate.way
+The first =5901= is the port number which the local application listens
+to.  So the IP address which VNC viewer needs to connect is
+=localhost:1=.  The second =5901= is the port number we configured on the
+server side. If you work on lxplus, then the machine
+=ip.address.you.want= is ~localhost~ as well -- local host at remove
+server.
 * Windows subsystem (WSL)
 ** Fedora
 *** Installations
