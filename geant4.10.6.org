@@ -61,3 +61,45 @@ Sections follow the same order in the user guide.
 * Knowledge from summer school
 I checked Geant4 Course at [[https://agenda.infn.it/event/33233/][XX Seminar on Software for Nuclear,
 Sub-nuclear and Applied Physics]].
+
+** Introduction and concepts
+The link to the course is [[https://agenda.infn.it/event/33233/sessions/24311/attachments/106153/149454/Pandola%20-%20Geant4-Intro.pdf][here]].
+
+Geant4 is a toolkit (= a collection of tools), i.e., you /cannot/ run it
+out of the box. You must /write an application/, which /uses/ Geant4 tools.
+*** Required
+*** Optional
+
+*** The main() program
+
+**** Required
+
+**** Optional
+
+*** Build an application
+*** Materials and geometry
+*** Generation of a primary event
+*** Physics processes
+* Knowledge from the attempts
+*** Miscellaneous
+**** Disable Decay
+See [[https://geant4-userdoc.web.cern.ch/UsersGuides/ForApplicationDeveloper/html/TrackingAndPhysics/physicsProcess.html?#particle-decay-process][Documentation]].
+#+begin_quote
+Decay for some particles may be switched on or off by using
+=G4ParticleDefinition::SetPDGStable()= as well as ~ActivateProcess()~ and
+=InActivateProcess()= methods of ~G4ProcessManager~.
+#+end_quote
+
+An example I tried is:
+#+begin_src C++
+  G4ParticleDefinition *pionDef = particleTable->FindParticle("pi+");
+  // a setup for electron, https://apc.u-paris.fr/~franco/g4doxy/html/classG4Electron.html
+  pionDef->SetPDGStable(true);
+  pionDef->SetPDGLifeTime(-1);
+  pionDef->SetDecayTable(NULL);
+
+  G4ProcessManager *manager =  pionDef->GetProcessManager();
+  // maybe other decay type, G4DecayProcessType.hh
+  // https://apc.u-paris.fr/~franco/g4doxy/html/G4DecayProcessType_8hh-source.html#l00043
+  manager->SetProcessActivation(static_cast<int>(DECAY), false);
+#+end_src
