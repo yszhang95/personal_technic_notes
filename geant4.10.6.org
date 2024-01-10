@@ -103,3 +103,33 @@ An example I tried is:
   // https://apc.u-paris.fr/~franco/g4doxy/html/G4DecayProcessType_8hh-source.html#l00043
   manager->SetProcessActivation(static_cast<int>(DECAY), false);
 #+end_src
+* Knowledge from forum posts
+** Dump available GEANT4 *built-in* physics processes
+Reference is [[https://geant4-forum.web.cern.ch/t/get-process-type-and-subtype-table/10381/2][here]].
+*** Dump all *built-in* processes along with their type and subtype tables
+The macro command (UI command) is =/run/particle/dumpOrderingParam=.  No
+matter the it is defined in user physics lists, built-in processes
+known by GEANT4 are dumped. User defined custom processes are not
+included. The type and subtype of the processes are also given.
+
+*** Dump all processes for a given particle
+The macro commands are
+#+begin_example
+  /paritcle/select e-
+  /particle/process/dump
+#+end_example
+It will *not* tell you the subtype assignment but the name and the type
+as a string.
+
+** Get the step's process name
+Reference is [[https://geant4-forum.web.cern.ch/t/how-to-get-the-steps-processname-and-print-it-out/5057][here]].
+
+Given a instance of =G4Step=, ~step~, try
+#+begin_src C++
+    const G4String& procName =
+      step->GetPreStepPoint()->GetProcessDefinedStep()->GetProcessName();
+    G4cout << "ProcName: " << procName << G4endl;
+#+end_src
+Before dereferencing a pointer, it is better to try if it is null.  In
+this case, it is checking
+=step->GetPreStepPoint()->GetProcessDefinedStep()=.
