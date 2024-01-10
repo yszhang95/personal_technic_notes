@@ -1,7 +1,7 @@
 * Miscellaneous
 ** Redirect =stdout=                                                              :NOTE:
    :PROPERTIES:
-   :GROUP:    python
+   :GROUP:    python-io
    :END:
  [2021-12-02 Thu 10:31]
 
@@ -29,7 +29,7 @@
 
 ** Directory manipulation                                                       :NOTE:
    :PROPERTIES:
-   :GROUP:    python
+   :GROUP:    python-io
    :END:
  [2021-12-02 Thu 10:37]
 
@@ -50,7 +50,7 @@
  See discussions in this [[https://stackoverflow.com/questions/273192/how-can-i-safely-create-a-nested-directory-in-python][link]]
 ** Return true/false along one dimension                                        :NOTE:
    :PROPERTIES:
-   :GROUP:    python
+   :GROUP:    numpy
    :END:
  [2021-12-12 Sun 11:56]
 
@@ -58,7 +58,7 @@
 
 ** Remove elements, rows, and something                                         :NOTE:
    :PROPERTIES:
-   :GROUP:    python
+   :GROUP:    numpy
    :END:
  [2021-12-12 Sun 12:00]
 
@@ -107,3 +107,97 @@
    lga_df_points = lga_df.copy()
    lga_df_points["geometry"] = lga_df_points["geometry"].centroid
  #+end_src
+
+** Open a /single/ file using uproot                                              :NOTE:
+:PROPERTIES:
+:GROUP:    uproot
+:END:
+See [[https://masonproffitt.github.io/uproot-tutorial/02-files/index.html][link]].
+
+Try
+#+begin_src python
+  import uproot
+  f = uproot.open("/path/to/file.root")
+#+end_src
+
+** Inspect contents of a =ROOT= file                                              :NOTE:
+:PROPERTIES:
+:GROUP:    uproot
+:END:
+See [[https://masonproffitt.github.io/uproot-tutorial/02-files/index.html][link]].  We use "key" to refer to the name of each item in the file.
+We can dump the content of each file using ~keys()~. To tell the data
+type of each item, we need =classnames()=.
+#+begin_src python
+  # f = uproot.open("example.root")
+  f.keys()
+  f.classnames()
+#+end_src
+The method =keys()= also applies to ~TTree~ objects. See [[https://masonproffitt.github.io/uproot-tutorial/03-trees/index.html][link]].
+
+** Access an item in a =ROOT= file                                                :NOTE:
+:PROPERTIES:
+:GROUP:    uproot
+:END:
+See [[https://masonproffitt.github.io/uproot-tutorial/02-files/index.html][link]] and [[https://masonproffitt.github.io/uproot-tutorial/03-trees/index.html][link]].
+
+Suppose that we have a file labeled =f= by ~uproot~ and a =TTree= object with key name ~Events~ in it.
+We can access =Events= using its key name,
+#+begin_src python
+  # f = uproot.open("example.root")
+  f["Events"]
+  f["Events"].keys()
+#+end_src
+
+We can also inspect the keys of =TTree= using ~keys()~. To access the
+data/numbers inside =TTree=, we can use the method ~arrays~. It looks like
+#+begin_src python
+  tree = f["Events"]
+  tree.keys()
+  # ['nMuon', 'Muon_pt', 'Muon_eta', 'Muon_phi', 'Muon_mass', 'Muon_charge']
+  tree.arrays()
+  # <Array [{nMuon: 2, Muon_pt: [10.8, ... -1, 1]}] type='100000 * {"nMuon": uint32,...'>
+  # It is an array of events; each event is referenced by its index;
+  branches = tree.arrays()
+  branches['nMuon'] # see the output of tree.keys()
+  # <Array [2, 2, 1, 4, 4, 3, ... 0, 3, 2, 3, 2, 3] type='100000 * uint32'>
+  branches['Muon_pt'][0]
+  # <Array [10.8, 15.7] type='2 * float32'>
+  branches[0]
+  # <Record ... 0.106], Muon_charge: [-1, -1]} type='{"nMuon": uint32, "Muon_pt": va...'>
+  # All the information in a single event is saved in Record
+  branches[0].tolist()
+  # convert Record to plain python list
+#+end_src
+A few key points:
+- We can get the array of events using ~branches = tree.arrays()~. An
+  =Array= object is provided.
+- We can retrieve the information of a single branch over all events
+  using ~branches["key"].arrays()~. An =Array= object is returned.
+- We can read all the information of a single event using
+  ~braches[0]~. A =Record= object is returned.
+- The =Array= is a special type provided by ~awkward-array~. When printing
+  it using python, it may look like ~Array [[1], [22, 11], ... []]
+  type='1000 * var *float 32',~ which means that the type is a jagged
+  array and each item is a varied sized array of the 32-bit precision
+  float number.
+- The =Record= is another special type provided by ~awkward-array~. It
+  behave similarly as python =dict=. it can be converted to plain python
+  format using ~tolist()~.
+- It is worth noting =tolist()= may exhaust memories and cause crashes.
+** Jagged arrays                                                                :NOTE:
+:PROPERTIES:
+:GROUP:    awkward-array
+:END:
+The original material is from [[https://masonproffitt.github.io/uproot-tutorial/01-introduction/index.html][here]]. I copied the text below.
+
+In HEP, different number of physics objects in each event can be
+found.  An example is that the number of jets are varied across
+different events and each jet may be associated with various number of
+tracks. Jagged arrays are used for modeling their data structure.
+
+If the number of elements in each row of a 2-D array varies and we
+align them by the first element in each row, the ridge edges of the
+2-D array will be "jagged" as opposite to straight.
+
+Packages =uproot= and ~awkward-array~ are powerful to read and manipulate
+jagged arrays.
